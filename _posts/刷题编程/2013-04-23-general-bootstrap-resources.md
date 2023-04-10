@@ -1,30 +1,92 @@
 ---
 layout: post
-title: Bootstrap常用资源
+title: Number of Islands
 category: 刷题编程
-tags: Bootstrap
-description: 列举自己搜集的Bootstrap资源，给像我这样前端不太行的WEB开发者
+tags: DFS, BFS, Union Find
+description: graph的三种解法
 ---
 
-### 官方资源
+这道题是一道经典的graph问题，用了DFS,BFS,Union Find三种思路去解，可以作为类似问题的模板.
 
-- [官方首页](http://twitter.github.io/bootstrap/)
+
+### 原题地址
+
+- [原题地址](https://leetcode.com/problems/number-of-islands/description/)
   
-### 字体图标
+###  UNION FIND
 
-- [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
+''''
+class Solution:
+    def find(self, x):
+        if self.root[x] == -1:           
+            return x
+        self.root[x] = self.find(self.root[x])
+        return self.root[x]
 
-  扩展bootstrap的图标，是基于css的，非常漂亮，而且还支持视网膜屏，但是貌似手机上没法支持（测试过UC）
+    def union(self, x, y):
+        RootX = self.find(x)
+        RootY = self.find(y)
+        if RootX != RootY:
+            self.root[RootY] = RootX
+            self.count -=1
 
-### 下拉按钮
+    def numIslands(self, grid: List[List[str]]) -> int:
+        if not grid or len(grid) == 0:
+            return 0
+        rows = len(grid)
+        cols = len(grid[0])
+        self.root = {}
+        self.count = 0
 
-- [Bootstrap Mutiselect](http://davidstutz.github.io/bootstrap-multiselect/)
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col] == "1":
+                    self.root[row*cols + col] = -1
+                    self.count +=1
 
-  多选下拉列表插件
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col] == "1":
+                    #scan locations for 4 directions using tuple
+                    for (r,c) in [(1,0),(0,1),(-1,0),(0,-1)]:
+                        newrow = row + r
+                        newcolumn = col + c
+                        if  0 <= newrow <= rows-1 and 0 <= newcolumn <= cols-1 and grid[newrow][newcolumn] == "1":
+                            self.union(row*cols+col , newrow*cols + newcolumn)
+        return self.count
+'''
 
-### 表单扩展
+ 
 
-- [Bootstrap Form Helpers](http://vincentlamanna.com/BootstrapFormHelpers/index.html)
+### DFS
 
-  扩展常用的表单功能，包括日期选择、时间选择等
+'''
 
+class Solution:
+    def dfs(self,visited,grid,row,col):
+        if  0 > row or self.rows <= row or 0 > col or self.cols <= col or grid[row][col] == "0" or visited[(row,col)]:
+            return 
+        visited[(row,col)] = True 
+        #scan locations for 4 directions using tuple
+        for (r,c) in [(1,0),(0,1),(-1,0),(0,-1)]:
+            newrow = row + r
+            newcolumn = col + c
+            self.dfs(visited,grid,newrow,newcolumn)
+
+    def numIslands(self, grid: List[List[str]]) -> int:  
+        if not grid or len(grid) == 0:
+            return 0
+        self.rows = len(grid)
+        self.cols = len(grid[0])    
+        visited = collections.defaultdict(bool)
+        count = 0
+        for row in range(self.rows):
+            for col in range(self.cols):
+                if grid[row][col] == "1" and not visited[(row,col)]:
+                    self.dfs(visited,grid, row, col)
+                    count +=1
+        return count
+
+'''
+
+### BFS
