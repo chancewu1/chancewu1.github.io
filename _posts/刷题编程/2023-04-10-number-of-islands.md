@@ -15,7 +15,7 @@ description: graph的三种解法
   
 ###  UNION FIND
 
-'''
+'''python
 class Solution:
     def find(self, x):
         if self.root[x] == -1:           
@@ -60,7 +60,7 @@ class Solution:
 
 ### DFS
 
-'''
+'''python
 class Solution:
     def dfs(self,visited,grid,row,col):
         if  0 > row or self.rows <= row or 0 > col or self.cols <= col or grid[row][col] == "0" or visited[(row,col)]:
