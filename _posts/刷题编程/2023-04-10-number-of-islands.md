@@ -15,7 +15,7 @@ description: graph的三种解法
   
 ###  UNION FIND
 
-'''python
+```python
 class Solution:
     def find(self, x):
         if self.root[x] == -1:           
@@ -54,13 +54,13 @@ class Solution:
                         if  0 <= newrow <= rows-1 and 0 <= newcolumn <= cols-1 and grid[newrow][newcolumn] == "1":
                             self.union(row*cols+col , newrow*cols + newcolumn)
         return self.count
-'''
+```
 
  
 
 ### DFS
 
-'''python
+```python
 class Solution:
     def dfs(self,visited,grid,row,col):
         if  0 > row or self.rows <= row or 0 > col or self.cols <= col or grid[row][col] == "0" or visited[(row,col)]:
@@ -86,6 +86,6 @@ class Solution:
                     count +=1
         return count
 
-'''
+```
 
 ### BFS
