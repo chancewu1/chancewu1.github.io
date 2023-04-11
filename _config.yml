@@ -5,7 +5,7 @@ description: Study is all you need # this means to ignore newlines until "baseur
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: # http://yansu.org # the base hostname & protocol for your site
 rss_url: /pages/feed.xml
-author: Su Yan
+author: chenghaowu
 
 # Sidebar filter
 # Choose 'tag' or 'category' as filter in sidebar.
