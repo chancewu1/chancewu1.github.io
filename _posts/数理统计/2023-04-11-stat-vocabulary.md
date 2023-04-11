@@ -38,7 +38,7 @@ Title of Chapter: Statistical Vocabulary
         sum(rainfall) / length(rainfall)  # Compute the mean the hard way
         mean(rainfall)   # Use a function to compute the mean
         
-        ![Screen Shot 2022-01-24 at 5.09.11 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-24_at_5.09.11_PM.png)
+        ![Screen Shot 2022-01-24 at 5.09.11 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-24_at_5.09.11_PM.png)
         
 
 The first line creates a vector of seven values using the c() command, the second two lines has the same function.
@@ -52,7 +52,7 @@ The first line creates a vector of seven values using the c() command, the secon
     
              median(rainfall)
     
-    ![Screen Shot 2022-01-24 at 5.18.17 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-24_at_5.18.17_PM.png)
+    ![Screen Shot 2022-01-24 at 5.18.17 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-24_at_5.18.17_PM.png)
     
 
 - **The mode(modal value, the most typical evalue, statistical mode.)**
@@ -66,7 +66,7 @@ The first line creates a vector of seven values using the c() command, the secon
         mfv(rainfall)                               # mfv stands for most frequent value
         
 
-![Screen Shot 2022-01-24 at 5.33.56 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-24_at_5.33.56_PM.png)
+![Screen Shot 2022-01-24 at 5.33.56 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-24_at_5.33.56_PM.png)
 
 **Conclusion of measure of central tendency:**
 
@@ -86,7 +86,7 @@ The first line creates a vector of seven values using the c() command, the secon
     - Cons: Because one isolated value on either the high end or the low end can completely throw things off.
     - Example in R( range()  function will give you the highest and the lowest value in the vector)
     
-    ![Screen Shot 2022-01-24 at 6.24.06 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-24_at_6.24.06_PM.png)
+    ![Screen Shot 2022-01-24 at 6.24.06 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-24_at_6.24.06_PM.png)
     
 - **Deviations from the mean**
     - The DFM of a scalar from vector = the scalar - the mean.
@@ -107,7 +107,7 @@ The first line creates a vector of seven values using the c() command, the secon
     - Example in R (also be careful of the parentheses, it tells you the order of the calculation)
         
         
-        ![Screen Shot 2022-01-25 at 4.42.24 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_4.42.24_PM.png)
+        ![Screen Shot 2022-01-25 at 4.42.24 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_4.42.24_PM.png)
         
     
 - **Standard Deviation**
@@ -119,18 +119,18 @@ The first line creates a vector of seven values using the c() command, the secon
     
     Using population
     
-    ![Screen Shot 2022-01-25 at 5.02.57 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_5.02.57_PM.png)
+    ![Screen Shot 2022-01-25 at 5.02.57 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_5.02.57_PM.png)
     
 
         Using sample
 
-![Screen Shot 2022-01-25 at 5.15.07 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_5.15.07_PM.png)
+![Screen Shot 2022-01-25 at 5.15.07 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_5.15.07_PM.png)
 
 - **Mathematic formula for mean and sd**
 
-![Screen Shot 2022-01-25 at 5.17.26 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_5.17.26_PM.png)
+![Screen Shot 2022-01-25 at 5.17.26 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_5.17.26_PM.png)
 
-![Screen Shot 2022-01-25 at 5.18.53 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_5.18.53_PM.png)
+![Screen Shot 2022-01-25 at 5.18.53 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_5.18.53_PM.png)
 
 ****
 
@@ -152,13 +152,13 @@ If we can use the measure of the central tendency and of dispersion depends on t
 
 **hist( rnorm(n=1000, mean=100, sd=10) )**
 
-![Screen Shot 2022-01-25 at 8.27.59 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_8.27.59_PM.png)
+![Screen Shot 2022-01-25 at 8.27.59 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_8.27.59_PM.png)
 
 You can also define the number of groups using the parameter” breaks= “
 
 **hist( rnorm(n=10000, mean=100, sd=10), breaks=100 )**
 
-![Screen Shot 2022-01-25 at 8.57.43 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_8.57.43_PM.png)
+![Screen Shot 2022-01-25 at 8.57.43 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_8.57.43_PM.png)
 
 The more the breaks, it will be more smooth and more like a bell curve. 
 
@@ -166,7 +166,7 @@ With an infinite number of categories and an infinite amount of normally distrib
 
 **hist( rnorm(n=10000, mean=100, sd=10), breaks=1000 )**
 
-![Screen Shot 2022-01-25 at 9.01.07 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.01.07_PM.png)
+![Screen Shot 2022-01-25 at 9.01.07 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.01.07_PM.png)
 
 **Statistical significance referred to thinking about chance occurrences and likelihoods in terms of a model.** The normal distribution is one of these models—in fact prob- ably the single most popular model for reasoning about statistical significance.
 
@@ -196,12 +196,12 @@ Helpful link  :[https://www.zhihu.com/question/26441147](https://www.zhihu.com/q
     
     二项分布中： 均值=期望=u=lambda
     
-    ![Screen Shot 2022-01-27 at 8.07.14 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-27_at_8.07.14_PM.png)
+    ![Screen Shot 2022-01-27 at 8.07.14 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-27_at_8.07.14_PM.png)
     
 
 hist( rpois(n=1000, lambda=1) )
 
-![Screen Shot 2022-01-25 at 9.21.37 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.21.37_PM.png)
+![Screen Shot 2022-01-25 at 9.21.37 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.21.37_PM.png)
 
 one way of thinking about values that make a Poisson distribution is thinking of them as delays between arrival times—in other words the interval of time between two neighboring arrivals.
 
@@ -209,19 +209,19 @@ eg: Most cars will have 1-2 mins delay passing a specific location,  and if we h
 
 We can also check the mean of this poisson distribution( expected 1 but never will  be 1, it will change every time) 
 
-![Screen Shot 2022-01-25 at 9.32.50 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.32.50_PM.png)
+![Screen Shot 2022-01-25 at 9.32.50 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.32.50_PM.png)
 
 One way to set seed is assigning it to a variable. 
 
-![Screen Shot 2022-01-25 at 9.36.50 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.36.50_PM.png)
+![Screen Shot 2022-01-25 at 9.36.50 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.36.50_PM.png)
 
 then each time you run the code below, it will give you the same mean. 
 
-![Screen Shot 2022-01-25 at 9.37.43 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.37.43_PM.png)
+![Screen Shot 2022-01-25 at 9.37.43 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.37.43_PM.png)
 
 Also we can check the sd of a  poisson distribution:(it’s sampled from 1000 using sd())
 
-![Screen Shot 2022-01-25 at 9.38.44 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.38.44_PM.png)
+![Screen Shot 2022-01-25 at 9.38.44 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.38.44_PM.png)
 
 # Chapter Wrap Up
 
@@ -254,9 +254,9 @@ those 100 points, calculates the mean of those points, and calculates the standa
 deviation. Make sure to use the technique shown just above that begins with assigning
 the 100 points to a vector that can be reused for all of the other commands.**
 
-![Screen Shot 2022-01-25 at 9.53.03 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.53.03_PM.png)
+![Screen Shot 2022-01-25 at 9.53.03 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.53.03_PM.png)
 
-![Screen Shot 2022-01-25 at 9.53.23 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.53.23_PM.png)
+![Screen Shot 2022-01-25 at 9.53.23 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.53.23_PM.png)
 
 1. **Use the data() function to get a list of the data sets that are included with the basic
 installation of R: just type “data()” at the command line and press enter. Choose a
@@ -267,7 +267,7 @@ description of the mean and median of each numeric variable in the data set. Mak
 sure you define what a “mean” and a “median” are, that is, the technical definition and
 practical meaning of each of these quantities.**
     
-    ![Screen Shot 2022-01-25 at 9.58.16 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.58.16_PM.png)
+    ![Screen Shot 2022-01-25 at 9.58.16 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_9.58.16_PM.png)
     
 
 The average tooth growth length in our dataset is 18.81 and the number lies on the central location is 19.25, which means we may have a lower outliers drag the mean to the left direction.
@@ -282,14 +282,14 @@ ple, hist(LakeHuron). Describe the shape of the histogram in words. Which of the
 bution types do you think these data fit most closely (e.g., normal, Poisson). Speculate
 on why your selected data may fit that distribution.**
 
-![Screen Shot 2022-01-25 at 10.09.47 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_10.09.47_PM.png)
+![Screen Shot 2022-01-25 at 10.09.47 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-25_at_10.09.47_PM.png)
 
 It’s more fits normal distribution.
 
 [https://www.notion.so](https://www.notion.so)
 
-![Screen Shot 2022-01-27 at 3.46.19 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-27_at_3.46.19_PM.png)
+![Screen Shot 2022-01-27 at 3.46.19 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-27_at_3.46.19_PM.png)
 
 [https://www.notion.so](https://www.notion.so)
 
-![Screen Shot 2022-01-27 at 3.47.01 PM.png](Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-27_at_3.47.01_PM.png)
+![Screen Shot 2022-01-27 at 3.47.01 PM.png](/assets/img/data-reasoning-book/Chapter%201%20Statistical%20Vocabulary%20Notes%20dafda006edd147768abfe8f7dff1d2f6/Screen_Shot_2022-01-27_at_3.47.01_PM.png)
