@@ -76,7 +76,7 @@ JavaScript一种直译式脚本语言，它的解释器被称为JavaScript引擎
 
 但是谈到JavaScript的历史，必须提到一个公司和一个人，那就是Netscape公司及其员工Brendan Eich，网景公司在发布了Navigator之后，急于解决浏览器与用户交互这个问题，Javascript之父Brendan Eich只用了10天的时间发明了livescript(让我辈情何以堪）,由于网景高层是java的粉丝，或者说为了抱上当时热炒的java的大腿，livascript更名为javascript,Brendan Eich他的思路是：
 
-    （1）借鉴C语言的基本语法；
+     (1)借鉴C语言的基本语法；
 
 　　（2）借鉴Java语言的数据类型和内存管理；
 
