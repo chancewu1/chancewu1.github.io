@@ -2,7 +2,6 @@
 title: chiswu
 email: chancewu1@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
-  闫肃的博客
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: # http://yansu.org # the base hostname & protocol for your site
 rss_url: /pages/feed.xml
@@ -21,7 +20,7 @@ instagram: suyan404
 linkedin: suyan404
 
 # avatar and Favicon
-avatar: http://imgs.yansu.org/site-avatar.png
+avatar: avatar.jpg
 favicon: http://imgs.yansu.org/site-favicon.ico
 
 # disqus config
