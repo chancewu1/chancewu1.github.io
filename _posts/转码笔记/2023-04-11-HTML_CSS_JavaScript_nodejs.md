@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 一文讲清HTML，CSS, JavaScript, Node.JS
+title: 一文讲清HTML, CSS, JavaScript, Node.JS
 category: 转码笔记
 tags: [front-end]
 description: 前端入门
