@@ -74,9 +74,9 @@ CSS3新增的选择器和属性请见《CSS3新增的选择器和属性》
 
 JavaScript一种直译式脚本语言，它的解释器被称为JavaScript引擎，是浏览器的一部分，即：JavaScript是由客户端的浏览器解释执行的，所以在谈JavaScript的历史之前我们要先说一下浏览器，最早的web浏览器是创建于1991年的WorldWideWeb，后来改名为Nexus，之后出现了各类浏览器，直到1994年，网景公司（Netscape）发布了Navigator浏览器0.9版，这是历史上第一个比较成熟的网络浏览器，随后的1995年微软推出了IE浏览器，从此掀起了浏览器大战，微软采取操作系统捆绑IE浏览器，最终获得压倒性胜利，战争失利的Netscape在之后被收购、合并、解散。之后一段时间IE独领风骚，之后被Opera，Safari，Firefox，Chrome陆续瓜分掉一些市场份额，改变了一家独大的局面。
 
-但是谈到JavaScript的历史，必须提到一个公司和一个人，那就是Netscape公司及其员工Brendan Eich，网景公司在发布了Navigator之后，急于解决浏览器与用户交互这个问题，Javascript之父Brendan Eich只用了10天的时间发明了livescript(让我辈情何以堪）,由于网景高层是java的粉丝，或者说为了抱上当时热炒的java的大腿，livascript更名为javascript,Brendan Eich他的思路是：
+但是谈到JavaScript的历史，必须提到一个公司和一个人，那就是Netscape公司及其员工Brendan Eich，网景公司在发布了Navigator之后，急于解决浏览器与用户交互这个问题，Javascript之父Brendan Eich只用了10天的时间发明了livescript(让我辈情何以堪）,由于网景高层是java的粉丝，或者说为了抱上当时热炒的java的大腿，livascript更名为javascript,Brendan Eich他的思路是： 
 
-     (1)借鉴C语言的基本语法；
+   (1)借鉴C语言的基本语法；
 
 　　（2）借鉴Java语言的数据类型和内存管理；
 
