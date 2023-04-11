@@ -119,3 +119,10 @@ Node.js于2009年首次推出，由Ryan Dahl开发，是一个建立在谷歌V8�
 *JavaScript需要任何运行环境，因为它可以在任何引擎上执行，如Firefox的spider monkey、google chrome的v8引擎、Safari的JavaScript核心，而Node.js只在google chrome的v8引擎上运行。
 
 JavaScript是一种高级的、轻量级的（简单的语法）和面向对象的编程语言，几乎每个网络开发者都会使用它来创建网页、网络应用程序、移动应用程序，也被用于游戏开发。Node.js是一个建立在google v8引擎上的JavaScript运行环境，用于在浏览器之外运行JavaScript，简单地说，它只是一个具有许多模块的JavaScript库的扩展，因此使JavaScript更加强大。
+
+附上一些链接方便查阅学习
+
+[JavaScript Tutorial](w3schools.com/js/default.asp)
+[HTML Tutorial](https://www.w3schools.com/html/default.asp)
+[CSS Tutorial](https://www.w3schools.com/css/css_rwd_mediaqueries.asp)
+[Node.JS](https://www.w3schools.com/nodejs/nodejs_intro.asp)
