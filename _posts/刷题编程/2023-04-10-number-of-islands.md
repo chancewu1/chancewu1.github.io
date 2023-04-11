@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Number of Islands
+title: 200.Number of Islands
 category: 刷题编程
 tags: DFS, BFS, Union Find
 description: graph的三种解法
