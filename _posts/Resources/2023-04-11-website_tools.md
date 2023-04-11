@@ -6,6 +6,6 @@ keywords: 工具网站
 ---
 
 ## python
-![w3school](https://www.w3schools.com/python/default.asp)
+[w3school](https://www.w3schools.com/python/default.asp)
 
 ## SQL
