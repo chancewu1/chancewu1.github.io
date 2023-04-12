@@ -1,5 +1,5 @@
 # Site settings
-title: chiswu
+title: chriswu
 email: chancewu1@gmail.com
 description: Study is all you need # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog/
