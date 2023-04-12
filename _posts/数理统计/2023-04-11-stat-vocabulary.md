@@ -3,7 +3,7 @@ layout: post
 title: Statistical Vocabulary 笔记
 category: 数理统计
 tags: book note
-description: IST722
+description: Data Reasoning
 ---
 
 # Chapter 1 Statistical Vocabulary Notes
