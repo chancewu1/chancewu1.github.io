@@ -12,13 +12,13 @@ description: 工作时的小发现
 这时需要进行单位转化来分析我们的objects size. 一开始转成了Bytes in decimal by timing 1000000 , 后来被senior指出应该转化成为Bytes in binary获得更准确的结果，在python里可以使用 `pow()` function.
 
 
--转化 128mb to bytes: 
+- 转化 128mb to bytes: 
 
 ```python
 128 * pow(2,20) #2的20此方
 ```
 
--转化 2gb to bytes:
+- 转化 2gb to bytes:
 
 ```python
 2 * pow(2,30)
