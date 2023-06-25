@@ -61,53 +61,99 @@ class Solution:
 
 ```python
 class Solution:
-    def dfs(self,visited,grid,row,col):
-        if  0 > row or self.rows <= row or 0 > col or self.cols <= col or grid[row][col] == "0" or visited[(row,col)]:
+    def dfs(self,grid,row,col):
+        #recursive base case
+        if  0 > row or self.rows <= row or 0 > col or self.cols <= col or grid[row][col] != "1":
             return 
-        visited[(row,col)] = True 
+        #initiate all none visited point
+        grid[row][col] = '#'
         #scan locations for 4 directions using tuple
         for (r,c) in [(1,0),(0,1),(-1,0),(0,-1)]:
             newrow = row + r
             newcolumn = col + c
-            self.dfs(visited,grid,newrow,newcolumn)
+            self.dfs(grid,newrow,newcolumn)
 
     def numIslands(self, grid: List[List[str]]) -> int:  
+        #edge case 
         if not grid or len(grid) == 0:
             return 0
+        #tranverse all point in matrix
         self.rows = len(grid)
         self.cols = len(grid[0])    
-        visited = collections.defaultdict(bool)
         count = 0
         for row in range(self.rows):
             for col in range(self.cols):
-                if grid[row][col] == "1" and not visited[(row,col)]:
-                    self.dfs(visited,grid, row, col)
+        #countinue condition
+                if grid[row][col] == "1":
+                    self.dfs(grid, row, col)
                     count +=1
         return count
+``` 
+#### BFS
 
-```
 ```py
-class Solution:
+class Solution(object):
+
+    def bfs(self, grid, r, c):
+        queue = collections.deque()
+        queue.append((r, c))
+        while queue:
+            v_row, v_col = queue.popleft()
+            if self.m <= v_row or v_row < 0 or self.n <= v_col or v_col < 0 or grid[v_row][v_col] != '1':
+                continue
+            grid[v_row][v_col] = '#'
+            for (row,col) in [(0,1),(0,-1),(-1,0),(1,0)]:
+                newrow = v_row + row
+                newcol = v_col + col
+                queue.append((newrow, newcol))
+         
     def numIslands(self, grid):
-        if not grid:
+        if not grid or not grid[0]:
             return 0
-            
+        self.m, self.n = len(grid), len(grid[0])
         count = 0
-        for i in range(len(grid)):
-            for j in range(len(grid[0])):
-                if grid[i][j] == '1':
-                    self.dfs(grid, i, j)
+        for row in range(self.m):
+            for col in range(self.n):
+                if grid[row][col] == '1':
+                    self.bfs(grid, row, col)
                     count += 1
         return count
 
-    def dfs(self, grid, i, j):
-        
-        if i<0 or j<0 or i>=len(grid) or j>=len(grid[0]) or grid[i][j] != '1':
-            return
-        grid[i][j] = '#'
-        self.dfs(grid, i+1, j)
-        self.dfs(grid, i-1, j)
-        self.dfs(grid, i, j+1)
-        self.dfs(grid, i, j-1)
-``` 
-#### BFS
+                            
+```
+### 690. Employee Importance
+
+- [原题地址](https://leetcode.com/problems/employee-importance/）
+这道题可以用哈希表解决
+```py
+"""
+# Definition for Employee.
+class Employee(object):
+    def __init__(self, id, importance, subordinates):
+    	#################
+        :type id: int
+        :type importance: int
+        :type subordinates: List[int]
+        #################
+        self.id = id
+        self.importance = importance
+        self.subordinates = subordinates
+"""
+
+class Solution(object):
+
+    def getImportance(self, employees, id):
+        """
+        :type employees: List[Employee]
+        :type id: int
+        :rtype: int
+        """
+   
+        emap = {e.id:e for e in employees}
+        def dfs(e):
+            imp = emap[e].importance
+            for s in emap[e].subordinates:
+                imp += dfs(s)
+            return imp
+        return dfs(id)
+```
