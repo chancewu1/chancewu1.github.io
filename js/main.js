@@ -30,6 +30,9 @@ $(function () {
 
     applyFs(localStorage.getItem('fs') || 'md');
 
+    // Re-apply sidebar filter after every page load
+    applyFilter(sessionStorage.getItem('sidebar_filter') || 'recent');
+
     var tocInner = $('#post-toc-inner');
     if (tocInner.length) {
       tocInner.empty();
@@ -76,15 +79,19 @@ $(function () {
 
   // ===== Category / tag filter =====
   function applyFilter(filter) {
-    toc.hide();
+    // Always re-query fresh toc elements from the live DOM
+    var freshToc = $('#post-toc-ul .toc-link');
+    freshToc.closest('li').hide();
+    var visible;
     if (filter === 'recent') {
-      toc.slice(0, RECENT_NUM).fadeIn(300);
+      visible = freshToc.slice(0, RECENT_NUM);
     } else {
-      toc.filter(function () {
+      visible = freshToc.filter(function () {
         var tags = $(this).data('tags') || '';
         return (' ' + tags + ' ').indexOf(' ' + filter + ' ') !== -1;
-      }).fadeIn(300);
+      });
     }
+    visible.closest('li').fadeIn(300);
     $('#sidebar-tags .sidebar-tag').removeClass('active')
       .filter('[data-filter="' + filter + '"]').addClass('active');
     sessionStorage.setItem('sidebar_filter', filter);
@@ -106,10 +113,11 @@ $(function () {
       applyFilter(sessionStorage.getItem('sidebar_filter') || 'recent');
       return;
     }
-    toc.hide();
-    toc.filter(function () {
+    var freshToc = $('#post-toc-ul .toc-link');
+    freshToc.closest('li').hide();
+    freshToc.filter(function () {
       return $(this).text().toLowerCase().indexOf(q) !== -1;
-    }).fadeIn(300);
+    }).closest('li').fadeIn(300);
     $('#sidebar-tags .sidebar-tag').removeClass('active');
   });
 
