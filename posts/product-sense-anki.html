@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>Product Sense Flashcards | Chris Wu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+        /* Anki card styles */
+        .anki-card {
+          border: 1px solid var(--border, #efefef);
+          border-radius: 10px;
+          margin-bottom: 12px;
+          overflow: hidden;
+          background: var(--card-bg, #fff);
+          box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+          transition: box-shadow 0.2s;
+        }
+        .anki-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .anki-q {
+          display: flex; align-items: flex-start; gap: 12px;
+          padding: 14px 18px;
+          cursor: pointer;
+          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 14px; font-weight: 600; color: #1d1d1f;
+          user-select: none;
+        }
+        .anki-num {
+          min-width: 24px; height: 24px;
+          background: var(--accent, #0071e3);
+          color: #fff; border-radius: 6px;
+          font-size: 11px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; margin-top: 1px;
+        }
+        .anki-question { flex: 1; line-height: 1.5; }
+        .anki-toggle {
+          color: #aaa; font-size: 12px; transition: transform 0.2s;
+          flex-shrink: 0; margin-top: 4px;
+        }
+        .anki-card.open .anki-toggle { transform: rotate(90deg); color: var(--accent,#0071e3); }
+        .anki-a {
+          display: none;
+          padding: 0 18px 16px 54px;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          font-size: 13.5px; line-height: 1.75; color: #3a3a3c;
+          border-top: 1px solid var(--border, #efefef);
+        }
+        .anki-card.open .anki-a { display: block; }
+        .anki-a p { margin-bottom: 8px; }
+        .anki-a ul { padding-left: 1.4em; margin-bottom: 8px; }
+        .anki-a li { margin-bottom: 4px; }
+        .anki-a strong { font-weight: 700; color: #1d1d1f; }
+        .anki-meta {
+          font-family: -apple-system, sans-serif;
+          font-size: 13px; color: #8e8e93;
+          margin-bottom: 24px;
+          display: flex; align-items: center; gap: 8px;
+        }
+        .anki-meta span { background: #f2f2f7; padding: 3px 10px; border-radius: 20px; font-size: 12px; }</style>
+</head>
+<body>
+
+  <div id="sidebar" class="open">
+    <div class="sidebar-left">
+      <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
+      <div id="sidebar-tags">
+        <div class="sidebar-tag active" data-filter="recent">最新文章</div>
+        <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
+        <div class="sidebar-tag" data-filter="machine-learning">机器学习</div>
+        <div class="sidebar-tag" data-filter="life">生活</div>
+        <div class="sidebar-tag" data-filter="leetcode">Leetcode</div>
+        <div class="sidebar-tag" data-filter="language">语言学习</div>
+        <div class="sidebar-tag" data-filter="interview">面试记录</div>
+        <div class="sidebar-tag" data-filter="resources">Resources</div>
+        <div class="sidebar-tag" data-filter="business">商业分析</div>
+        <div class="sidebar-tag" data-filter="statistics">数理统计</div>
+        <div class="sidebar-tag" data-filter="notes">转码笔记</div>
+      </div>
+      <div class="fs-control">
+        <button class="fs-btn" data-fs="sm">A</button>
+        <button class="fs-btn active" data-fs="md">A</button>
+        <button class="fs-btn" data-fs="lg">A</button>
+        <button class="fs-btn" data-fs="xl">A</button>
+      </div>
+    </div>
+    <div class="sidebar-right">
+      <input id="search-input" type="text" placeholder="Search posts…" autocomplete="off" />
+      <ul id="post-toc-ul" class="toc-ul">
+      </ul>
+    </div>
+  </div>
+
+  <div id="menu">&#9776;</div>
+
+  <div id="main" class="fadeIn">
+    <div id="post-toc-menu" title="Table of Contents">&#8801;</div>
+    <div id="post-toc"><ul id="post-toc-inner"></ul></div>
+
+    <div class="post">
+      <div class="post-content">
+        <div class="post-header">
+          <div class="post-meta">
+            <span class="post-date">March 07, 2026</span>
+            <span class="post-tag">商业分析</span>
+          </div>
+          <h1 id="post-title">Product Sense Flashcards</h1>
+        </div>
+
+        <div class="anki-meta">
+          From Anki deck: <span>Product Sense</span>
+          <span>5 cards</span>
+        </div>
+
+        <p style="font-family:-apple-system,sans-serif;font-size:13.5px;color:#6e6e73;margin-bottom:20px;">
+          Click any question to reveal the answer.
+        </p>
+
+        
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">1</span>
+            <span class="anki-question">measuring product quality Template--- for how to measure success/ health / growth</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>eg: how would you measure x [quality] on y [product]</p>
+<p>common x are: growth, success, health</p>
+<p>Mesure product sucess/growth</p>
+<p>Mesure product health</p>
+<p>*Template -- GAME:</p>
+<p>---- use arrrg or heart here</p>
+<p>On white board</p>
+<p>1. Business goal</p>
+<p>Engagement? Growth? Monetization?</p>
+<p>2. who is the audience</p>
+<p>3. Action-user journey funnel</p>
+<p>4. Metrics</p>
+<p>5. Evaluation</p>
+<p>Primary metrics</p>
+<p>Second metrics</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">2</span>
+            <span class="anki-question">measure product quality - growth</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>For growth/sucess type:</p>
+<p>use aerr</p>
+<p>Measuring growth ensures that a product is in creasing it's active user size:</p>
+<p>Acquisition - new user enrollmet (eg: sign-up rate)</p>
+<p>Engagement - measure of usage (eg: # of search, # of post)</p>
+<p>Referrals - measure of shares</p>
+<p>Retention</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">3</span>
+            <span class="anki-question">Types of products and the key metrics</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>1. E-Commerce</p>
+<ul>
+<li>Key Products: Amazon, eBay, Shopify, WooCommerce.</li>
+<li>Key Metrics:</li>
+<li>Conversion Rate: Percentage of visitors who make a purchase.</li>
+<li>Average Order Value (AOV): Revenue per transaction.</li>
+<li>Customer Lifetime Value (CLTV): Revenue generated by a customer over their lifetime.</li>
+<li>Cart Abandonment Rate: Percentage of initiated checkouts not completed.</li>
+<li>Gross Merchandise Value (GMV): Total sales volume.</li>
+<li>Return on Ad Spend (ROAS): Revenue generated per advertising dollar spent.2. Travel and Hospitality</li>
+<li>Key Products: Booking.com, Airbnb, Skyscanner, Uber.</li>
+<li>Key Metrics:</li>
+<li>Booking Volume: Number of bookings made.</li>
+<li>Revenue per Booking: Average revenue generated from each booking.</li>
+<li>Occupancy Rate: Percentage of available properties or seats booked.</li>
+<li>Customer Satisfaction Score (CSAT): Guest feedback.</li>
+<li>Cancellation Rate: Percentage of bookings canceled.</li>
+<li>Time to Book: Average time from search to booking completion.3. Healthcare and Wellness</li>
+<li>Key Products: Teladoc, Fitbit, BetterHelp, Epic.</li>
+<li>Key Metrics:</li>
+<li>Appointment Completion Rate: Percentage of scheduled appointments attended.</li>
+<li>Patient Retention Rate: Percentage of repeat patients.</li>
+<li>Monthly Active Users (MAU): Number of unique active users per month.</li>
+<li>Health Improvement Metrics: User-reported outcomes (e.g., steps, weight loss).</li>
+<li>Time to Resolution: Time taken to resolve a patient’s issue or provide a diagnosis.</li>
+<li>Revenue per Consultation: Average revenue per patient session.4. Social Media and Communication</li>
+<li>Key Products: Facebook, Slack, WhatsApp, Zoom.</li>
+<li>Key Metrics:</li>
+<li>Monthly Active Users (MAU) / Daily Active Users (DAU): User engagement levels.</li>
+<li>Average Session Duration: Time users spend on the platform.</li>
+<li>Retention Rate: Percentage of users returning over time.</li>
+<li>Virality Coefficient: Rate at which users invite others.</li>
+<li>Churn Rate: Percentage of users leaving the platform.</li>
+<li>Revenue per User (ARPU): Average revenue generated per user.5. Education and E-Learning</li>
+<li>Key Products: Coursera, Khan Academy, Duolingo.</li>
+<li>Key Metrics:</li>
+<li>Course Completion Rate: Percentage of users completing a course.</li>
+<li>Engagement Rate: Frequency and duration of user activity.</li>
+<li>Active Learners: Number of users actively learning per period.</li>
+<li>Revenue per Learner: Average income generated per user.</li>
+<li>Certification Rate: Percentage of users earning certificates.</li>
+<li>Content Rating Score: Feedback on course quality.6. Financial Services</li>
+<li>Key Products: Mint, Robinhood, PayPal, Stripe.</li>
+<li>Key Metrics:</li>
+<li>Total Transaction Value (TTV): Volume of money processed.</li>
+<li>Revenue per Transaction: Average revenue generated per financial interaction.</li>
+<li>Active Accounts: Number of users actively using services.</li>
+<li>Net Promoter Score (NPS): Customer satisfaction and loyalty.</li>
+<li>Fraud Rate: Percentage of fraudulent transactions.</li>
+<li>Retention Rate: Percentage of users retained month-over-month.7. Real Estate</li>
+<li>Key Products: Zillow, Realtor.com, Redfin.</li>
+<li>Key Metrics:</li>
+<li>Listing Engagement: Views, clicks, and inquiries per property.</li>
+<li>Leads Generated: Number of interested buyers/renters.</li>
+<li>Conversion Rate: Percentage of leads converting to sales.</li>
+<li>Average Property Value: Value of listed properties.</li>
+<li>Time on Market: Average time a listing remains unsold.</li>
+<li>Commission per Sale: Revenue generated per transaction.8. Entertainment and Media</li>
+<li>Key Products: Netflix, TikTok, Steam.</li>
+<li>Key Metrics:</li>
+<li>Monthly Active Users (MAU): Number of active users in a month.</li>
+<li>Average Viewing Time: Time spent consuming content.</li>
+<li>Subscriber Retention Rate: Percentage of subscribers retained.</li>
+<li>Content Engagement Rate: Likes, shares, comments on media.</li>
+<li>Revenue per Subscriber: Average revenue generated per user.</li>
+<li>Content Production ROI: Revenue generated relative to production costs.9. Retail and Consumer Services</li>
+<li>Key Products: DoorDash, Square POS, Toast.</li>
+<li>Key Metrics:</li>
+<li>Delivery Completion Rate: Percentage of successful deliveries.</li>
+<li>Revenue per Delivery: Average income from each order.</li>
+<li>Order Accuracy Rate: Percentage of correctly fulfilled orders.</li>
+<li>Average Transaction Value: Revenue per sale in retail.</li>
+<li>Customer Retention Rate: Percentage of repeat customers.</li>
+<li>Operational Efficiency: Time per transaction or delivery.10. Logistics and Transportation</li>
+<li>Key Products: FedEx Ship Manager, Route4Me.</li>
+<li>Key Metrics:</li>
+<li>Delivery Timeliness: Percentage of on-time deliveries.</li>
+<li>Cost per Delivery: Expense incurred per shipment.</li>
+<li>Fleet Utilization Rate: Percentage of active vehicles.</li>
+<li>Route Optimization Score: Efficiency of delivery routes.</li>
+<li>Package Accuracy Rate: Percentage of undamaged and correct deliveries.</li>
+<li>Carbon Footprint Reduction: Environmental impact metrics.11. Business Services</li>
+<li>Key Products: Salesforce, Jira, Workday.</li>
+<li>Key Metrics:</li>
+<li>Sales Pipeline Velocity: Time taken to close deals.</li>
+<li>Task Completion Rate: Percentage of completed tasks.</li>
+<li>Employee Satisfaction: Measured through surveys or ratings.</li>
+<li>Customer Churn Rate: Percentage of lost customers.</li>
+<li>Revenue per Employee: Average income generated per staff member.</li>
+<li>SLA Compliance Rate: Percentage of tasks meeting service level agreements.12. Creative and Design</li>
+<li>Key Products: Canva, Adobe Creative Suite.</li>
+<li>Key Metrics:</li>
+<li>User Adoption Rate: Percentage of new users joining and actively using.</li>
+<li>Time to Task Completion: Time users spend completing tasks.</li>
+<li>Design Engagement Rate: Likes, shares, and downloads of created content.</li>
+<li>Subscription Retention Rate: Percentage of users renewing subscriptions.</li>
+<li>Average Revenue per User (ARPU): Income per user.</li>
+<li>Content Creation Volume: Total projects or designs created.13. Data and Analytics</li>
+<li>Key Products: Tableau, Snowflake, Google Analytics.</li>
+<li>Key Metrics:</li>
+<li>Query Response Time: Speed of data retrieval.</li>
+<li>Dashboard Engagement: Views and interactions with visualizations.</li>
+<li>User Retention: Percentage of repeat users.</li>
+<li>Data Accuracy Rate: Percentage of error-free data insights.</li>
+<li>Revenue per Insight: Income generated by actionable analytics.</li>
+<li>Time to Insight: Average time to generate meaningful results.14. Community and Events</li>
+<li>Key Products: Eventbrite, Discord, Meetup.</li>
+<li>Key Metrics:</li>
+<li>Event Attendance Rate: Percentage of registered users attending.</li>
+<li>Engagement Rate: Interactions within the platform (comments, RSVPs).</li>
+<li>Revenue per Event: Income generated per hosted event.</li>
+<li>Community Growth Rate: Percentage increase in members.</li>
+<li>Active Members: Number of consistently engaged users.</li>
+<li>Sponsorship Revenue: Income from event or community sponsorships.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">4</span>
+            <span class="anki-question">Template for Metric investgation questions</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>we see an unexpect change in one metric, how would you investigate it?</p>
+<p>in this step, just provide an overview</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">5</span>
+            <span class="anki-question">product improvement template</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>A product case that involves a discussion of data analysis, trade-offs and testing to detetmine what feature to built and how to test it.</p>
+<p>Type 1. should you build a feature?</p>
+<p>Type 2: Should you build feature X or feature Y</p>
+<p>Type 3:</p>
+<p>How to improve a feature?</p>
+          </div>
+        </div>
+
+        <div class="post-nav" style="margin-top:32px;">
+          <a href="../index.html" class="back-link">&#8592; Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/editor.js"></script>
+</body>
+</html>

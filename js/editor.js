@@ -380,8 +380,11 @@
               <button class="rte-btn" onclick="ED.insertImage()" title="Insert image">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               </button>
-              <button class="rte-btn" onclick="ED.insertVideo()" title="Insert video">
+              <button class="rte-btn" onclick="ED.insertVideo()" title="Upload video file">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              </button>
+              <button class="rte-btn" onclick="ED.embedVideoUrl()" title="Embed video from URL (YouTube, Vimeo, etc.)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/><line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="4" y2="18"/></svg>
               </button>
             </div>
             <input type="file" id="ed-img-input" accept="image/*" style="display:none" />
@@ -615,6 +618,54 @@
       if (url) { document.execCommand('createLink', false, url); syncPreview(); }
     },
 
+    embedVideoUrl: function () {
+      var url = prompt('Paste video URL:\n(YouTube, Vimeo, or direct .mp4 link)');
+      if (!url) return;
+
+      var html = '';
+
+      // YouTube
+      var yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (yt) {
+        html = '<figure class="media-figure">' +
+          '<iframe src="https://www.youtube-nocookie.com/embed/' + yt[1] + '?rel=0" ' +
+          'frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen ' +
+          'style="width:100%;aspect-ratio:16/9;display:block;border-radius:8px;"></iframe>' +
+          '</figure>';
+      }
+
+      // Vimeo
+      var vim = url.match(/vimeo\.com\/(\d+)/);
+      if (!html && vim) {
+        html = '<figure class="media-figure">' +
+          '<iframe src="https://player.vimeo.com/video/' + vim[1] + '" ' +
+          'frameborder="0" allowfullscreen ' +
+          'style="width:100%;aspect-ratio:16/9;display:block;border-radius:8px;"></iframe>' +
+          '</figure>';
+      }
+
+      // Direct video file (.mp4, .webm, .mov)
+      if (!html && url.match(/\.(mp4|webm|mov|ogg)(\?|$)/i)) {
+        html = '<figure class="media-figure">' +
+          '<video controls style="width:100%;border-radius:8px;">' +
+          '<source src="' + url + '">' +
+          '</video>' +
+          '</figure>';
+      }
+
+      // Fallback: just embed as iframe
+      if (!html) {
+        html = '<figure class="media-figure">' +
+          '<iframe src="' + url + '" frameborder="0" allowfullscreen ' +
+          'style="width:100%;aspect-ratio:16/9;display:block;border-radius:8px;"></iframe>' +
+          '</figure>';
+      }
+
+      document.getElementById('ed-rte').focus();
+      document.execCommand('insertHTML', false, html);
+      syncPreview();
+    },
+
     rteClear: function () {
       document.execCommand('removeFormat', false, null);
       document.execCommand('formatBlock', false, 'p');
@@ -846,9 +897,16 @@
 
     // ── Sidebar editor ─────────────────────────────────────────
     openSidebar: function () {
+      var modal = document.getElementById('ed-sb-modal');
+      var catsList = document.getElementById('ed-cats-list');
+      var postsList = document.getElementById('ed-posts-list');
+      if (!modal || !catsList || !postsList) {
+        alert('Sidebar editor not ready. Please refresh the page and unlock admin again.');
+        return;
+      }
       this._renderCats();
       this._renderPosts();
-      document.getElementById('ed-sb-modal').classList.add('open');
+      modal.classList.add('open');
     },
 
     closeSidebar: function (e) {
@@ -886,7 +944,7 @@
         var href  = a.getAttribute('href');
         var file  = href.split('/').pop();
         var cat   = a.dataset.tags || '';
-        html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+        html += '<div style="display:flex;align-items:center;gap:6px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.05);">' +
           '<div style="flex:1;min-width:0;">' +
             '<div style="color:#ebebf5;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + title + '</div>' +
             '<div style="color:#636366;font-size:11px;font-family:monospace;">' + file + '</div>' +

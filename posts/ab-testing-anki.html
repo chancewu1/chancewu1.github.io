@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>A/B Testing Flashcards | Chris Wu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+        /* Anki card styles */
+        .anki-card {
+          border: 1px solid var(--border, #efefef);
+          border-radius: 10px;
+          margin-bottom: 12px;
+          overflow: hidden;
+          background: var(--card-bg, #fff);
+          box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+          transition: box-shadow 0.2s;
+        }
+        .anki-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .anki-q {
+          display: flex; align-items: flex-start; gap: 12px;
+          padding: 14px 18px;
+          cursor: pointer;
+          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 14px; font-weight: 600; color: #1d1d1f;
+          user-select: none;
+        }
+        .anki-num {
+          min-width: 24px; height: 24px;
+          background: var(--accent, #0071e3);
+          color: #fff; border-radius: 6px;
+          font-size: 11px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; margin-top: 1px;
+        }
+        .anki-question { flex: 1; line-height: 1.5; }
+        .anki-toggle {
+          color: #aaa; font-size: 12px; transition: transform 0.2s;
+          flex-shrink: 0; margin-top: 4px;
+        }
+        .anki-card.open .anki-toggle { transform: rotate(90deg); color: var(--accent,#0071e3); }
+        .anki-a {
+          display: none;
+          padding: 0 18px 16px 54px;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          font-size: 13.5px; line-height: 1.75; color: #3a3a3c;
+          border-top: 1px solid var(--border, #efefef);
+        }
+        .anki-card.open .anki-a { display: block; }
+        .anki-a p { margin-bottom: 8px; }
+        .anki-a ul { padding-left: 1.4em; margin-bottom: 8px; }
+        .anki-a li { margin-bottom: 4px; }
+        .anki-a strong { font-weight: 700; color: #1d1d1f; }
+        .anki-meta {
+          font-family: -apple-system, sans-serif;
+          font-size: 13px; color: #8e8e93;
+          margin-bottom: 24px;
+          display: flex; align-items: center; gap: 8px;
+        }
+        .anki-meta span { background: #f2f2f7; padding: 3px 10px; border-radius: 20px; font-size: 12px; }</style>
+</head>
+<body>
+
+  <div id="sidebar" class="open">
+    <div class="sidebar-left">
+      <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
+      <div id="sidebar-tags">
+        <div class="sidebar-tag active" data-filter="recent">最新文章</div>
+        <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
+        <div class="sidebar-tag" data-filter="machine-learning">机器学习</div>
+        <div class="sidebar-tag" data-filter="life">生活</div>
+        <div class="sidebar-tag" data-filter="leetcode">Leetcode</div>
+        <div class="sidebar-tag" data-filter="language">语言学习</div>
+        <div class="sidebar-tag" data-filter="interview">面试记录</div>
+        <div class="sidebar-tag" data-filter="resources">Resources</div>
+        <div class="sidebar-tag" data-filter="business">商业分析</div>
+        <div class="sidebar-tag" data-filter="statistics">数理统计</div>
+        <div class="sidebar-tag" data-filter="notes">转码笔记</div>
+      </div>
+      <div class="fs-control">
+        <button class="fs-btn" data-fs="sm">A</button>
+        <button class="fs-btn active" data-fs="md">A</button>
+        <button class="fs-btn" data-fs="lg">A</button>
+        <button class="fs-btn" data-fs="xl">A</button>
+      </div>
+    </div>
+    <div class="sidebar-right">
+      <input id="search-input" type="text" placeholder="Search posts…" autocomplete="off" />
+      <ul id="post-toc-ul" class="toc-ul">
+      </ul>
+    </div>
+  </div>
+
+  <div id="menu">&#9776;</div>
+
+  <div id="main" class="fadeIn">
+    <div id="post-toc-menu" title="Table of Contents">&#8801;</div>
+    <div id="post-toc"><ul id="post-toc-inner"></ul></div>
+
+    <div class="post">
+      <div class="post-content">
+        <div class="post-header">
+          <div class="post-meta">
+            <span class="post-date">March 07, 2026</span>
+            <span class="post-tag">数理统计</span>
+          </div>
+          <h1 id="post-title">A/B Testing Flashcards</h1>
+        </div>
+
+        <div class="anki-meta">
+          From Anki deck: <span>A/B testing</span>
+          <span>44 cards</span>
+        </div>
+
+        <p style="font-family:-apple-system,sans-serif;font-size:13.5px;color:#6e6e73;margin-bottom:20px;">
+          Click any question to reveal the answer.
+        </p>
+
+        
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">1</span>
+            <span class="anki-question">Statistical Significance and Practical Significance</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>In A/B testing, two key concepts to understand are statistical significance and practical significance. They both play important roles in determining whether an observed difference between groups is meaningful.Statistical Significance</p>
+<ul>
+<li>Definition: Statistical significance refers to the likelihood that the observed difference between two groups (A and B) is not due to random chance. It is measured using a p-value, which indicates the probability of obtaining the observed results if the null hypothesis is true.</li>
+<li>Criteria:</li>
+<li>A result is considered statistically significant if the p-value is below a predefined threshold, often 0.05 (or 5%).</li>
+<li>A low p-value suggests strong evidence against the null hypothesis, meaning the observed difference is unlikely to be due to chance.</li>
+<li>Key Points:</li>
+<li>Statistical significance does not measure the magnitude of the difference.</li>
+<li>It depends on sample size: A larger sample size increases the power to detect small differences.Practical Significance</li>
+<li>Definition: Practical significance evaluates whether the observed difference is large enough to be meaningful or relevant in a real-world context. It answers the question: &quot;Is this difference worth acting upon?&quot;</li>
+<li>Criteria:</li>
+<li>A result has practical significance if the difference has a meaningful impact on the business, user experience, or other goals.</li>
+<li>The size of the effect is critical. For example, a 0.01% increase in conversion rate might not justify the cost of implementing the change.</li>
+<li>Key Points:</li>
+<li>Even if a result is statistically significant, it may not be practically significant.</li>
+<li>Practical significance requires domain knowledge and judgment to interpret the impact.ExampleImagine you’re running an A/B test for a new button color on your website:</li>
+<li>Statistical Significance: You find that the click-through rate for the new button (Group B) is 1.2% higher than the old button (Group A), with a p-value of 0.03. This indicates the difference is statistically significant.</li>
+<li>Practical Significance: Despite being statistically significant, the 1.2% increase may not be meaningful for your business if the cost of redesigning and implementing the change outweighs the additional revenue generated by the increase in clicks.Conclusion</li>
+<li>Statistical significance ensures the result is not due to chance.</li>
+<li>Practical significance ensures the result is meaningful and worth acting on.</li>
+<li>Both are necessary for making sound decisions in A/B testing.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">2</span>
+            <span class="anki-question">Size vs. Power Trade-Off?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>The size vs. power trade-off refers to the relationship between the significance level (size of the test) and the power of a statistical test. Understanding this trade-off is crucial in designing and interpreting hypothesis tests, including A/B tests.</p>
+<p>Key Terms</p>
+<ul>
+<li>Size of the Test (α):</li>
+<li>The probability of making a Type I error (rejecting the null hypothesis when it is true).</li>
+<li>Commonly denoted by α, often set at 0.05 (5% significance level).</li>
+<li>Lower α reduces the risk of falsely identifying a difference that doesn't exist.</li>
+<li>Power of the Test:</li>
+<li>The probability of correctly rejecting the null hypothesis when the alternative hypothesis is true.</li>
+<li>Power=1−β, where β is the probability of a Type II error (failing to reject the null hypothesis when it is false).</li>
+<li>Higher power means the test is more likely to detect a true effect.</li>
+<li>Statistics textbooks frequently define power to mean the same thing as sensitivity, that is, 1 - beta. However, conversationally power often means the probability that your test draws the correct conclusions, and this probability depends on both alpha and beta. In this course, we'll use the second definition, and we'll use sensitivity to refer to 1 - beta.</li>
+<li>Type I and Type II Errors:</li>
+<li>Type I error (False Positive): Detecting an effect when there isn’t one.</li>
+<li>Type II error (False Negative): Failing to detect an effect when there is one.The Trade-Off</li>
+<li>Lowering α (size):</li>
+<li>Reduces the probability of a Type I error (fewer false positives).</li>
+<li>Increases the probability of a Type II error, reducing the power of the test (more false negatives).</li>
+<li>Increasing Power:</li>
+<li>Reduces the probability of a Type II error (fewer false negatives).</li>
+<li>Typically requires increasing the sample size or raising α, which might increase the chance of Type I errors.Factors Affecting the Trade-Off</li>
+<li>Sample Size:</li>
+<li>Larger sample sizes can improve power without increasing α.</li>
+<li>A larger sample makes it easier to detect small differences between groups.</li>
+<li>Effect Size:</li>
+<li>A larger effect size naturally increases power because the difference is easier to detect.</li>
+<li>Significance Level (α):</li>
+<li>Choosing a smaller α (e.g., 0.01 instead of 0.05) decreases the chance of Type I errors but requires a larger sample to maintain the same power.</li>
+<li>Variability in Data:</li>
+<li>Higher variability reduces power. Reducing noise or increasing measurement precision can improve power.Balancing the Trade-Off</li>
+<li>Context and Stakes:</li>
+<li>If the cost of a Type I error is high (e.g., approving an ineffective drug), use a smaller α.</li>
+<li>If the cost of a Type II error is high (e.g., missing a life-saving treatment), prioritize power.</li>
+<li>Sample Size:</li>
+<li>Increasing sample size reduces the need to compromise between α and power, as it improves the test's ability to detect true effects without increasing the risk of Type I errors.</li>
+<li>Pre-study Power Analysis:</li>
+<li>Conduct a power analysis to determine the required sample size for detecting a meaningful effect with a given significance level.Example</li>
+<li>You’re testing whether a new website design increases conversions:</li>
+<li>Setting α=0.01: You reduce the risk of falsely declaring the new design better, but you may miss real improvements unless you increase your sample size.</li>
+<li>Setting α=0.1: You’re more likely to detect a real improvement but at the risk of more false positives.By adjusting the sample size or accepting a moderate trade-off, you can balance the risk of both types of errors.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">3</span>
+            <span class="anki-question">what is the difference between power, sensitivity, alpha and beta in AB testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>In A/B testing, power, sensitivity, alpha, and beta are critical concepts that define the reliability and accuracy of your experiment. Here's a breakdown of each:1. Power:</p>
+<ul>
+<li>Definition: The probability of correctly rejecting the null hypothesis when it is false (i.e., detecting a true effect when there is one).</li>
+<li>Formula: Power=1−β</li>
+<li>Importance: High power (typically 80% or 90%) ensures that the test is sensitive enough to detect meaningful changes.</li>
+<li>Interpretation: If your test has 80% power, there's an 80% chance you'll detect a real difference if it exists.2. Sensitivity:</li>
+<li>Definition: The ability of a test to detect a difference or effect when one exists. It is closely related to power.</li>
+<li>Importance: Higher sensitivity increases the likelihood of identifying small, yet significant, effects.</li>
+<li>Relation to Power: Sensitivity can be thought of as a broader term encompassing the test's ability to detect changes, while power specifically refers to detecting true positives.3. Alpha (α):</li>
+<li>Definition: The significance level, representing the probability of a Type I error (rejecting the null hypothesis when it is actually true).</li>
+<li>Typical Value: Commonly set at 0.05 (5%), meaning there's a 5% chance of a false positive.</li>
+<li>Importance: Controls the likelihood of detecting an effect due to random chance rather than a true difference.</li>
+<li>Interpretation: A lower alpha reduces the risk of false positives but requires a larger sample size to maintain power.4. Beta (β):</li>
+<li>Definition: The probability of a Type II error (failing to reject the null hypothesis when it is actually false).</li>
+<li>Formula: β=1−Power</li>
+<li>Importance: A smaller beta means a lower chance of missing a true effect.</li>
+<li>Interpretation: If beta is 20%, there's a 20% chance you'll miss a real difference (false negative).Interrelationships:</li>
+<li>Power vs. Alpha: Lower alpha (more stringent test) reduces the likelihood of Type I error but can reduce power unless the sample size is increased.</li>
+<li>Beta vs. Power: Beta is inversely related to power. Higher power means a lower chance of missing an effect.</li>
+<li>Sensitivity vs. Alpha and Beta: Sensitivity increases when alpha and beta are balanced appropriately and sample size is sufficient.</li>
+<li>Practical Example:</li>
+<li>If you set alpha at 0.05, power at 80%, and observe no significant result, there's a 5% chance of a false positive (Type I error) and a 20% chance of a false negative (Type II error).In summary, these terms are interdependent and together influence the reliability and accuracy of your A/B test conclusions. Balancing them involves trade-offs between risk of errors, sample size, and the ability to detect meaningful effects.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">4</span>
+            <span class="anki-question">ethical priciples A/B testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Most studies, due to the nature of the online service, are likely minimal risk, and the bigger question is about data collection with regards to identifiability, privacy, and confidentiality / security. That said, arguably, a neutral third party outside of the company should be making these calls rather than someone with a vested interest in the outcome. One growing risk in online studies is that of bias and the potential for discrimination, such as differential pricing and whether that is discriminatory to a particular population for example.</p>
+<p>Our recommendation is that there should be internal reviews of all proposed studies by experts regarding the questions:</p>
+<ul>
+<li>Are participants facing more than minimal risk?</li>
+</ul>
+<ul>
+<li>Do participants understand what data is being gathered?</li>
+</ul>
+<ul>
+<li>Is that data identifiable?</li>
+</ul>
+<ul>
+<li>How is the data handled?</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">5</span>
+            <span class="anki-question">Techniques to Gather Additional Data</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>1. User Surveys and Feedback</p>
+<ul>
+<li>How: Create surveys or questionnaires to collect opinions, preferences, or needs directly from users.</li>
+<li>Tools: Google Forms, Typeform, SurveyMonkey.</li>
+<li>Example: Asking users about their favorite app features or pain points.2. Interviews and Focus Groups</li>
+<li>How: Conduct one-on-one interviews or group discussions to dive deeper into user behaviors or preferences.</li>
+<li>Use Case: Exploring the motivations or frustrations of a particular user segment.3. Analytics Tools</li>
+<li>How: Use tools to track user behavior on your website, app, or platform.</li>
+<li>Tools: Google Analytics, Mixpanel, Heap, Hotjar.</li>
+<li>Example: Analyzing where users drop off in a sign-up process.4. Observational Studies</li>
+<li>How: Observe users as they interact with your product in real time to identify problems or opportunities.</li>
+<li>Tools: Screen-recording tools like UserTesting or in-person observation.</li>
+<li>Example: Watching how users navigate a complex app workflow.5. A/B Testing</li>
+<li>How: Run experiments to compare two variations and determine which performs better.</li>
+<li>Tools: Optimizely, VWO, Google Optimize.</li>
+<li>Example: Testing two different landing page designs to see which drives more conversions.6. Social Media Listening</li>
+<li>How: Monitor social media platforms for mentions of your brand or relevant keywords.</li>
+<li>Tools: Hootsuite, Brandwatch, Sprout Social.</li>
+<li>Example: Identifying trending customer complaints or requests.7. Transactional Data Analysis</li>
+<li>How: Analyze existing sales or transactional data for patterns or trends.</li>
+<li>Use Case: Understanding purchase behavior or product preferences.8. Competitor Analysis</li>
+<li>How: Study competitors’ products, reviews, and customer feedback to identify gaps or opportunities.</li>
+<li>Tools: SEMrush, SimilarWeb, public reviews.9. Public Data Sources</li>
+<li>How: Use government, academic, or third-party open datasets to supplement your data.</li>
+<li>Sources: Kaggle, Data.gov, World Bank.10. Customer Support Insights</li>
+<li>How: Review support tickets or chat logs to uncover recurring issues or requests.</li>
+<li>Tools: Zendesk, Intercom, Salesforce.11. Community Engagement</li>
+<li>How: Participate in forums, online communities, or user groups to gather informal insights.</li>
+<li>Example: Reddit threads or niche forums related to your product.12. Experimentation</li>
+<li>How: Create MVPs, prototypes, or mock-ups to gather real-world feedback.</li>
+<li>Example: Launching a beta feature to a subset of users and analyzing its usage.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">6</span>
+            <span class="anki-question">AB testing template</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>A/B Testing Template1. Define Your Objective</p>
+<ul>
+<li>What are you trying to achieve? (e.g., increase click-through rates, improve user engagement, reduce churn)</li>
+<li>Example Question:</li>
+<li>&quot;What outcome metric will define success for this test?&quot;2. Define Your Hypothesis</li>
+<li>State a clear hypothesis about the expected effect.</li>
+<li>Example:</li>
+<li>&quot;If we change the button color from blue to red, users will be more likely to click.&quot;</li>
+<li>Example Question:</li>
+<li>&quot;What is the expected impact of this change?&quot;3. Design the Experiment</li>
+<li>Identify the treatment (e.g., the feature or change you are testing) and the control (the baseline).</li>
+<li>Example Question:</li>
+<li>&quot;What is the treatment group, and how does it differ from the control group?&quot;</li>
+<li>Assign participants randomly to avoid bias.</li>
+<li>Decide sample size based on statistical power calculations.</li>
+<li>&quot;How many users do we need for a statistically significant result?&quot;4. Collect Data</li>
+<li>Track the performance metrics for both control and treatment groups over the testing period.</li>
+<li>Example Question:</li>
+<li>&quot;How will we ensure the data collection process is accurate and unbiased?&quot;5. Analyze Results</li>
+<li>Use statistical tests (e.g., t-test, chi-square) to compare the treatment and control groups.</li>
+<li>Example Question:</li>
+<li>&quot;Is the difference between groups statistically significant?&quot;6. Draw Conclusions</li>
+<li>Determine whether to adopt, reject, or iterate on the change based on the results.</li>
+<li>Example Question:</li>
+<li>&quot;Does the data support the hypothesis?&quot;</li>
+<li>Consider external factors or confounders.7. Implement and Iterate</li>
+<li>Roll out the winning variation or refine your experiment further.</li>
+<li>Example Question:</li>
+<li>&quot;What steps should we take to deploy the successful change?&quot;Causal Inference Template1. Define the Research Question</li>
+<li>Identify the cause-and-effect relationship you want to study.</li>
+<li>Example Question:</li>
+<li>&quot;Does implementing feature X increase user engagement?&quot;2. Define the Treatment and Control</li>
+<li>Identify the &quot;treatment group&quot; (exposed to the intervention) and the &quot;control group&quot; (not exposed).</li>
+<li>Example Question:</li>
+<li>&quot;What defines someone as treated or not treated?&quot;3. Ensure Randomization or Control for Confounders</li>
+<li>Use randomization if possible, or control for confounders using matching, regression, or propensity score methods.</li>
+<li>Example Question:</li>
+<li>&quot;How will we address any differences between treatment and control groups?&quot;4. Collect Data</li>
+<li>Gather relevant observational or experimental data.</li>
+<li>Example Question:</li>
+<li>&quot;What data do we need to measure both the treatment and outcome accurately?&quot;5. Analyze the Data</li>
+<li>Use causal inference techniques like:</li>
+<li>Difference-in-Differences</li>
+<li>Instrumental Variables</li>
+<li>Propensity Score Matching</li>
+<li>Regression Discontinuity</li>
+<li>Example Question:</li>
+<li>&quot;What statistical method is most appropriate for our data?&quot;6. Validate Results</li>
+<li>Check for robustness using sensitivity analyses or placebo tests.</li>
+<li>Example Question:</li>
+<li>&quot;Do our results hold under different assumptions?&quot;7. Draw and Interpret Conclusions</li>
+<li>Summarize findings and their implications.</li>
+<li>Example Question:</li>
+<li>&quot;What actionable insights can we draw from this causal relationship?&quot;Key Steps to Conduct A/B Testing or Causal Inference</li>
+<li>Clearly define the objective and hypothesis.</li>
+<li>Identify treatment and control groups.</li>
+<li>Randomize or use statistical techniques to minimize bias.</li>
+<li>Ensure sufficient sample size for statistical power.</li>
+<li>Collect and analyze data using appropriate tools and statistical methods.</li>
+<li>Interpret results and draw actionable conclusions.</li>
+<li>Validate findings and communicate results effectively.Let me know if you'd like help tailoring this template to a specific project or problem!</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">7</span>
+            <span class="anki-question">How to Choose summary Metrics Based on Sensitivity and Robustness</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>When designing experiments or conducting analyses, selecting the right metrics is critical. Metrics need to be sensitive enough to detect meaningful changes and robust enough to avoid noise or bias. Here’s how to evaluate and choose the best metrics:</p>
+<p>we can genreate plot like this to find both robust and sensitive metrics to investigate video lantency; Using retrospective analysis(histiogram) or exsiting experiment we had to find.</p>
+<p>so that we can use 85th percential as summary metrics.</p>
+<p>1. Sensitivity: Detecting Changes</p>
+<p>A sensitive metric quickly and accurately reflects the impact of changes in the system. It should respond to the changes you're testing without requiring an overly large sample size.Key Considerations for Sensitivity:</p>
+<ul>
+<li>Granularity: Choose metrics that capture fine-grained changes.</li>
+<li>Example: Use &quot;click-through rate&quot; (CTR) instead of &quot;total revenue&quot; for an experiment testing button designs.</li>
+<li>Signal-to-Noise Ratio: Look for metrics with low variability unrelated to the treatment.</li>
+<li>Example: Revenue per user (RPU) might be more sensitive than total revenue because it normalizes user activity.</li>
+<li>Direct Impact: Metrics should closely tie to the change you’re testing.</li>
+<li>Example: If you change a login page, measure &quot;login success rate,&quot; not &quot;daily active users.&quot;</li>
+<li>Time to Reflect Change: Choose metrics that update quickly after changes.</li>
+<li>Example: Measure daily retention instead of monthly retention for short-term experiments.2. Robustness: Handling Noise and BiasA robust metric remains stable and reliable in the presence of random variations, user heterogeneity, or external noise.Key Considerations for Robustness:</li>
+<li>Stability Over Time: Ensure the metric isn’t overly influenced by external factors.</li>
+<li>Example: &quot;Average session duration&quot; may be unstable if user behavior varies due to holidays or promotions.</li>
+<li>Independence from Sample Bias: Avoid metrics skewed by specific user groups or outliers.</li>
+<li>Example: Use the median instead of the mean to reduce the effect of extreme values in purchase amounts.</li>
+<li>Scalability Across Samples: Ensure the metric behaves consistently across different subsets of data.</li>
+<li>Example: A metric like &quot;percent of users completing a task&quot; works better across cohorts than &quot;raw completion counts.&quot;</li>
+<li>Minimal External Confounding: Control for or exclude metrics that are influenced by factors outside your experiment.</li>
+<li>Example: Revenue might be confounded by marketing campaigns during the experiment.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">8</span>
+            <span class="anki-question">what is summary metrics</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Summary metrics in A/B testing are high-level, aggregated measurements that provide a concise way to evaluate the performance of your test groups (control and treatment). They distill the data into key numbers that reflect the success or failure of your test, making it easier to interpret and draw actionable insights.Characteristics of Summary Metrics</p>
+<ul>
+<li>Aggregated: Combine data points across users or sessions (e.g., average revenue per user).</li>
+<li>Directly Linked to Business Goals: Reflect key outcomes like revenue, engagement, or retention.</li>
+<li>Actionable: Help determine whether to adopt, reject, or iterate on a feature or change.</li>
+<li>Sensitive and Robust: Capture meaningful differences between control and treatment while minimizing noise.Types of Summary Metrics1. Business Metrics</li>
+<li>Represent the core objectives of the business.</li>
+<li>Examples:</li>
+<li>Revenue per user (RPU): Measures how much revenue is generated on average per user.</li>
+<li>Conversion rate: Percentage of users completing a desired action (e.g., purchase, signup).2. Behavioral Metrics</li>
+<li>Measure user engagement or interactions with the product.</li>
+<li>Examples:</li>
+<li>Click-through rate (CTR): Percentage of users clicking a specific button or link.</li>
+<li>Time on page/session: Average time users spend on a page or during a session.</li>
+<li>Task completion rate: Percentage of users successfully completing a task.3. Performance Metrics</li>
+<li>Assess the technical impact of changes.</li>
+<li>Examples:</li>
+<li>Page load time: Average time taken for a page to load.</li>
+<li>Error rate: Percentage of failed actions (e.g., failed logins, broken links).4. Retention Metrics</li>
+<li>Track how well users stick with your product over time.</li>
+<li>Examples:</li>
+<li>Daily/Weekly Active Users (DAU/WAU): Number of users engaging with the product regularly.</li>
+<li>Retention rate: Percentage of users returning after a specific period.Why Use Summary Metrics?</li>
+<li>Simplify Decision-Making: Instead of looking at individual data points, summary metrics aggregate the results into easy-to-understand numbers.</li>
+<li>Highlight Trends: They reveal whether the treatment outperforms the control in key areas.</li>
+<li>Ensure Alignment: Focus on metrics that align with business or product goals.</li>
+<li>Measure Trade-offs: Guardrail metrics ensure that the change does not negatively affect other areas (e.g., faster page loads might increase bounce rates).How to Choose Good Summary Metrics</li>
+<li>Aligned to the Objective: Ensure the metric reflects what you want to optimize.</li>
+<li>Example: For a checkout process, use &quot;conversion rate&quot; rather than &quot;time on site.&quot;</li>
+<li>Sensitive to Changes: Pick metrics that quickly detect meaningful differences.</li>
+<li>Example: &quot;Revenue per user&quot; is more sensitive than &quot;total revenue.&quot;</li>
+<li>Robust to Noise: Use metrics that aren't overly influenced by random fluctuations or outliers.</li>
+<li>Example: Median values often work better than averages for metrics like session duration.</li>
+<li>Easy to Interpret: Ensure stakeholders can easily understand the metric.</li>
+<li>Example: &quot;Click-through rate&quot; is more intuitive than a complex weighted metric.Example of Summary Metrics in A/B TestingScenario: Testing a New Checkout Flow</li>
+<li>Primary Metric (Business Goal): Conversion rate (percentage of users completing a purchase).</li>
+<li>Behavioral Metrics: Time to complete checkout, drop-off rate during checkout.</li>
+<li>Performance Metrics: Page load time during checkout.</li>
+<li>Guardrail Metrics: Bounce rate on the checkout page (ensure changes don’t hurt overall engagement).Common Pitfalls with Summary Metrics</li>
+<li>Over-Focusing on One Metric: Ignoring secondary or guardrail metrics can lead to biased conclusions.</li>
+<li>Example: A higher click-through rate might decrease conversion if users are misled.</li>
+<li>Ignoring Context: A good metric for one test might not work for another.</li>
+<li>Example: &quot;Revenue per user&quot; might not be ideal for testing onboarding flows.</li>
+<li>Sensitivity vs. Robustness Trade-Off: Highly sensitive metrics can be noisy, while highly robust metrics may miss smaller changes.SummarySummary metrics in A/B testing are the aggregated measures used to evaluate test results and make decisions. They should:</li>
+<li>Align with business goals.</li>
+<li>Be sensitive enough to detect meaningful changes.</li>
+<li>Be robust to noise and outliers.</li>
+<li>Be simple and interpretable for all stakeholders.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">9</span>
+            <span class="anki-question">is summary metrics and primary merics are the same thing?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>No, summary metrics and primary metrics are not exactly the same, though they can overlap in some cases. Here's the distinction:Primary Metrics</p>
+<ul>
+<li>Definition: The primary metric is the key measure of success for your A/B test. It directly answers the question: &quot;Did the treatment achieve its goal?&quot;</li>
+<li>Purpose:</li>
+<li>It reflects the main objective of the test.</li>
+<li>You use it to determine if the treatment is better than the control.</li>
+<li>Examples:</li>
+<li>Conversion rate for an e-commerce checkout test.</li>
+<li>Click-through rate (CTR) for testing a new call-to-action button.</li>
+<li>Retention rate for testing a new onboarding process.Summary Metrics</li>
+<li>Definition: Summary metrics are aggregated, high-level metrics used to evaluate test results more holistically. They may include:</li>
+<li>The primary metric.</li>
+<li>Secondary and guardrail metrics to capture the broader impact of the change.</li>
+<li>Purpose:</li>
+<li>Provide a comprehensive view of the test’s outcome, beyond the single primary objective.</li>
+<li>Highlight trade-offs or unintended side effects.</li>
+<li>Examples:</li>
+<li>Primary metric: Conversion rate.</li>
+<li>Summary metrics: Conversion rate + average order value (AOV) + bounce rate.Key DifferencesAspectPrimary MetricSummary MetricsScopeFocuses on one main goal.Includes the primary metric + secondary metrics.PurposeDetermines the success of the test.Provides a holistic view of test performance.Number of MetricsTypically, just one.A set of metrics (primary + secondary + guardrails).ExamplesConversion rate, revenue per user.Conversion rate, page load time, retention rate.When They Overlap</li>
+<li>The primary metric is often included as one of the summary metrics, but summary metrics expand to include other key aspects of the test that may be indirectly affected.Why You Need Both</li>
+<li>Primary Metric: Helps you make a clear &quot;yes/no&quot; decision about the test’s success.</li>
+<li>Summary Metrics: Help you understand the broader impact and ensure no trade-offs or unintended consequences (e.g., a higher click-through rate but lower customer satisfaction).</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">10</span>
+            <span class="anki-question">Absolute vs. Relative Difference When Comparing Metrics</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>When analyzing the results of an A/B test, you can use either absolute difference or relative difference to compare metrics. Each method has its strengths and trade-offs, depending on the context and the audience.1. Absolute Difference</p>
+<ul>
+<li>Definition: Measures the raw difference between the metric values for the treatment and control groups.</li>
+<li>Formula:</li>
+<li>Example:</li>
+</ul>
+<p>If the conversion rate for the control group is 10% and for the treatment group is 12%, the absolute difference is:12%−10%=2%</p>
+<ul>
+<li>When to Use:</li>
+<li>When the actual values of the metric matter more than the proportional change.</li>
+<li>For metrics already expressed as percentages or rates (e.g., conversion rate, error rate).</li>
+<li>Trade-Offs:</li>
+<li>Advantages:</li>
+<li>Easy to interpret and understand.</li>
+<li>Useful when small absolute changes have significant implications (e.g., revenue per user).</li>
+<li>Disadvantages:</li>
+<li>Less intuitive for metrics with a wide range of baseline values (e.g., sales volume for small vs. large groups).2. Relative Difference</li>
+<li>Definition: Measures the proportional change relative to the control group’s metric value.</li>
+<li>Formula:</li>
+<li></li>
+<li>Example:</li>
+</ul>
+<p>Using the same numbers as above, the relative difference in conversion rate is:</p>
+<ul>
+<li>When to Use:</li>
+<li>When you need to communicate the proportional impact of the change (e.g., &quot;Treatment increased conversions by 20%!&quot;).</li>
+<li>For metrics with small baseline values (e.g., a rare event like churn rate).</li>
+<li>Trade-Offs:</li>
+<li>Advantages:</li>
+<li>Highlights the significance of changes, especially for metrics with small baselines.</li>
+<li>Useful for comparisons across different experiments or groups.</li>
+<li>Disadvantages:</li>
+<li>Can exaggerate the importance of changes when the baseline metric is very small.</li>
+<li>Requires context to avoid misleading interpretations.Key Trade-Offs Between Absolute and Relative DifferencesAspectAbsolute DifferenceRelative DifferenceEase of InterpretationSimple and intuitive.May require explanation (especially to non-technical stakeholders).Focus on MagnitudeReflects the raw magnitude of the change.Emphasizes proportional impact.Small Baseline ValuesLess effective for small baseline values.Amplifies changes for small baseline values.Cross-Experiment ComparisonHarder to compare across experiments.Easier to compare proportional impacts.Examples of When to Use EachScenario 1: E-Commerce</li>
+<li>Metric: Revenue per user.</li>
+<li>Use Absolute Difference:</li>
+<li>Absolute difference shows the exact dollar increase (e.g., $50 to $55 is a $5 increase).</li>
+<li>Important because even small revenue increases are significant in monetary terms.Scenario 2: Click-Through Rate (CTR)</li>
+<li>Metric: CTR for an ad campaign.</li>
+<li>Use Relative Difference:</li>
+<li>Baseline CTR is 1%, and treatment increases it to 1.5%.</li>
+<li>The absolute difference is only 0.5%, which seems small.</li>
+<li>The relative difference is 50%, which better highlights the significant improvement.Scenario 3: Churn Rate</li>
+<li>Metric: Percentage of users who churn.</li>
+<li>Use Relative Difference:</li>
+<li>If churn drops from 0.5% to 0.4%, the absolute difference is just 0.1%, but the relative drop is 20%.</li>
+<li>The relative difference makes it easier to appreciate the improvement.Scenario 4: Conversion Rate</li>
+<li>Metric: Conversion rate in a checkout flow.</li>
+<li>Use Both:</li>
+<li>Absolute difference (e.g., 2% increase in conversions) shows the concrete impact.</li>
+<li>Relative difference (e.g., 20% improvement) highlights the proportional effect.Best Practices</li>
+<li>Know Your Audience:</li>
+<li>Use absolute differences for stakeholders focused on raw numbers (e.g., revenue, cost).</li>
+<li>Use relative differences for stakeholders interested in proportional growth or efficiency (e.g., marketing teams).</li>
+<li>Provide Context:</li>
+<li>Always include the baseline metric value so the audience can interpret both absolute and relative differences appropriately.</li>
+<li>Use Both When Possible:</li>
+<li>Combining both perspectives often provides the clearest picture of the impact.</li>
+<li>Example: &quot;The treatment increased conversion rate by 2 percentage points (from 10% to 12%), which is a 20% improvement.&quot;</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">11</span>
+            <span class="anki-question">Variablity in metircs in ab testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>variability in A/B testing metrics refers to the inherent fluctuations in the observed performance metrics due to randomness, differences in user behavior, or sampling errors. Understanding this variability is crucial for making informed decisions based on the results of an A/B test.Here’s a breakdown of key aspects related to variability in A/B testing metrics:1. Sources of Variability</p>
+<ul>
+<li>User Behavior: Individual user preferences and interactions with your system can vary widely.</li>
+<li>Seasonality: Time-dependent effects such as holidays or day-of-week variations can influence results.</li>
+<li>Random Sampling: Assigning users to control or variant groups randomly introduces natural differences.</li>
+<li>External Factors: Uncontrollable variables like economic conditions or competitor actions can affect user behavior.2. Impact of Variability</li>
+<li>Confidence Intervals: Variability affects the width of confidence intervals for estimated metrics (e.g., click-through rate or conversion rate).</li>
+<li>Significance Levels: High variability can make it harder to detect statistically significant differences.</li>
+<li>False Positives/Negatives: Misinterpreting variability can lead to Type I errors (false positives) or Type II errors (false negatives).3. Key Metrics Affected by Variability</li>
+<li>Conversion Rate: Variability is often high because conversion events are binary and relatively rare.</li>
+<li>Click-Through Rate (CTR): Click behavior varies significantly across users.</li>
+<li>Revenue Metrics: Metrics like average order value can show high variability due to outliers.</li>
+<li>Engagement Metrics: Time spent or pages viewed may be influenced by outliers or user preferences.4. Measuring and Managing Variability</li>
+<li>Sample Size: Larger sample sizes reduce variability and provide more stable estimates.</li>
+<li>Bootstrapping: Resampling techniques can help understand the distribution of metrics and quantify variability.</li>
+<li>Segmentation: Analyzing subsets of data (e.g., by geography or user type) can reveal patterns masked by overall variability.</li>
+<li>Bayesian Methods: Bayesian A/B testing incorporates prior information and can handle variability more robustly than frequentist methods.5. Statistical Techniques to Address Variability</li>
+<li>Confidence Intervals: Provide a range within which the true metric is likely to lie, accounting for variability.</li>
+<li>t-Tests/Z-Tests: Evaluate differences while considering sample variability.</li>
+<li>Variance Reduction Techniques: Use paired testing, covariate adjustment, or stratified randomization to minimize variability.</li>
+<li>Sequential Testing: Reduces the risk of incorrect decisions by dynamically monitoring test results.6. Best Practices</li>
+<li>Pre-Test Power Analysis: Ensure your test has enough statistical power to detect meaningful differences given the expected variability.</li>
+<li>Run Tests Long Enough: Allow tests to capture representative variability across different user segments and time periods.</li>
+<li>Monitor External Factors: Account for changes in traffic sources, marketing campaigns, or external events.</li>
+<li>Use Robust Metrics: Consider metrics less sensitive to outliers, such as median values or trimmed means.7. Visualizing Variability</li>
+<li>Histograms: Display the distribution of observed metrics across samples.</li>
+<li>Box Plots: Show variability and potential outliers in a compact format.</li>
+<li>Time-Series Plots: Identify trends and periodic variability during the test duration.Understanding and accounting for variability is critical for ensuring that A/B testing results are reliable and actionable.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">12</span>
+            <span class="anki-question">Steps to choose and characterize metrics</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>1.</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">13</span>
+            <span class="anki-question">Empirical Variability:Bootstrapping</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Sample with replacementWhen collecting a random sample for bootstrapping, it's important to sample with replacement - meaning it's possible to choose the same event twice within a group. This post(opens in a new tab) has some explanations of why bootstrapping works. The data and calculations for this video can be found in this spreadsheet(opens in a new tab). If you want to make any changes to it, you'll need to sign into Google Drive, then copy it using &quot;File &gt; Make a Copy&quot;.Empirical Variability and BootstrappingEmpirical variability refers to the natural variation observed in data collected from real-world experiments or samples. Bootstrapping is a powerful tool that helps analyze empirical variability by simulating the distribution of a statistic through resampling. Let’s see how the two concepts are related and how bootstrapping addresses empirical variability.Empirical Variability</p>
+<ul>
+<li>Definition:</li>
+<li>The inherent differences or fluctuations in observed data points due to randomness, differences in individual characteristics, or other factors.</li>
+<li>Key Characteristics:</li>
+<li>It reflects the diversity in real-world data.</li>
+<li>Measured using metrics like standard deviation, variance, or range.</li>
+<li>Influences how reliable and consistent your results appear.Bootstrapping and Empirical VariabilityBootstrapping is a resampling method designed to assess and quantify empirical variability in data by simulating repeated samples. It provides a way to:</li>
+<li>Understand Variability: Quantify the spread (variability) of an observed statistic without assuming a specific data distribution.</li>
+<li>Estimate Confidence Intervals: Account for variability to produce robust confidence intervals.</li>
+<li>Analyze Uncertainty: Identify how much variation you might expect in the results if the experiment were repeated.How Bootstrapping Captures Empirical Variability</li>
+<li>Start with your observed dataset.</li>
+<li>Randomly resample (with replacement) multiple bootstrap samples from the dataset, maintaining the same sample size as the original data.</li>
+<li>Compute the desired statistic (e.g., mean, median, or variance) for each bootstrap sample.</li>
+<li>The distribution of these statistics reflects the empirical variability in the data.ExampleScenario: Analyzing Exam ScoresYou collect test scores for a group of students: [60, 70, 75, 80, 85].</li>
+<li>Empirical Variability:</li>
+<li>Observed Mean: 74.</li>
+<li>Observed Standard Deviation (SD): 9.14.</li>
+<li>Bootstrapping Steps:</li>
+<li>Create bootstrap samples:</li>
+<li>Sample 1: [70, 75, 70, 80, 85] → Mean = 76.</li>
+<li>Sample 2: [60, 80, 75, 85, 60] → Mean = 72.</li>
+<li>Repeat many times.</li>
+<li>Compute the distribution of means.</li>
+<li>Use this distribution to estimate the variability and construct confidence intervals for the true population mean.Advantages of Using Bootstrapping for Empirical Variability</li>
+<li>Non-Parametric:</li>
+<li>Makes no assumptions about the underlying data distribution (useful for non-normal or skewed data).</li>
+<li>Flexibility:</li>
+<li>Can analyze complex statistics like medians, proportions, or regression coefficients, which are sensitive to empirical variability.</li>
+<li>Small Samples:</li>
+<li>Works well even with small datasets, where traditional methods might fail.Practical Applications</li>
+<li>A/B Testing:</li>
+<li>Quantify empirical variability in conversion rates or other key metrics to establish confidence intervals.</li>
+<li>Finance:</li>
+<li>Analyze the variability in portfolio returns or risk metrics.</li>
+<li>Machine Learning:</li>
+<li>Estimate variability in model predictions (e.g., bootstrap aggregating or &quot;bagging&quot;).Takeaway</li>
+<li>Empirical Variability: Reflects the real-world differences in data, important for understanding how much results can fluctuate.</li>
+<li>Bootstrapping: Provides a robust way to analyze empirical variability by resampling data, estimating the distribution of statistics, and constructing confidence intervals. It is especially useful in situations with limited data or when assumptions about data distribution are unclear.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">14</span>
+            <span class="anki-question">Bootstrapping vs. Normal Random Sampling</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Bootstrapping and normal random sampling are both methods to work with datasets, but they serve different purposes and operate under distinct principles. Here’s a detailed comparison:1. What is Bootstrapping?Definition:</p>
+<p>Bootstrapping is a resampling technique where you sample with replacement from the original dataset to create multiple &quot;bootstrap samples,&quot; each of the same size as the original dataset. It allows you to estimate the distribution of a statistic without making strong assumptions about the underlying population.</p>
+<ul>
+<li>Key Characteristics:</li>
+<li>Uses the original dataset as a proxy for the population.</li>
+<li>Re-sampling with replacement means that the same data point can appear multiple times in a single sample.</li>
+<li>Focused on estimating variability (e.g., confidence intervals, standard errors) in observed statistics.</li>
+<li>Purpose:</li>
+<li>Quantify uncertainty in estimates (e.g., mean, median, variance) when the population is unknown or hard to sample from directly.</li>
+<li>Handle small sample sizes or non-normal distributions effectively.2. What is Normal Random Sampling?Definition:</li>
+</ul>
+<p>Normal random sampling involves selecting a subset of data points randomly from a population, without replacement (in most cases). The sampled subset is intended to represent the population, assuming the population has a normal distribution (or other known distribution).</p>
+<ul>
+<li>Key Characteristics:</li>
+<li>Typically used to draw samples directly from the population.</li>
+<li>Sampling is without replacement unless explicitly stated otherwise.</li>
+<li>Assumes knowledge of the population distribution (e.g., normal, uniform).</li>
+<li>Purpose:</li>
+<li>Collect data from a population to perform statistical analysis or inference.</li>
+<li>Estimate population parameters (e.g., mean, variance) directly from a well-sampled dataset.Key DifferencesAspectBootstrappingNormal Random SamplingPurposeEstimate variability (e.g., confidence intervals)Draw representative samples from a population.Sampling MethodResampling with replacement from the dataset.Random sampling without replacement from the population.AssumptionNo assumption about the population distribution.Assumes knowledge of population distribution.Population KnowledgeRequires only the observed dataset.Requires access to the entire population.Data SizeWorks well with small datasets.Requires a sufficiently large population to sample from.RepetitionGenerates multiple bootstrap samples (e.g., 1,000+).Typically involves a single random sample.OutputDistribution of a statistic (e.g., mean, median).A single representative sample.When to Use Bootstrapping vs. Normal Random SamplingUse CaseBootstrappingNormal Random SamplingSmall or Limited DatasetYesNo (may not be representative).Unknown Population DistributionYesNo. Assumes a known distribution.Estimating Confidence IntervalsYesRarely (only if population is accessible).Generating Variability for StatisticsYesNo. Single sample is analyzed.Collecting New DataNo (uses existing data).Yes (new data directly from population).Example: Bootstrapping vs. Normal SamplingScenario: Estimating Average Height</li>
+<li>Bootstrapping:</li>
+<li>You collect a small dataset: [160, 165, 170, 175, 180].</li>
+<li>You create bootstrap samples (resampling with replacement):</li>
+<li>Sample 1: [165, 170, 170, 180, 160] → Mean = 169.</li>
+<li>Sample 2: [160, 165, 165, 180, 180] → Mean = 170.</li>
+<li>Repeat 1,000+ times to estimate the variability of the mean.</li>
+<li>Output: A distribution of mean values, confidence intervals, and variability estimates.</li>
+<li>Normal Random Sampling:</li>
+<li>If you know the population has a normal distribution (mean = 170, SD = 10):</li>
+<li>Draw a random sample (e.g., 5 values) from this population: [168, 172, 165, 175, 170].</li>
+<li>Output: A single sample used to calculate statistics (e.g., mean = 170).Key Takeaway</li>
+<li>Bootstrapping is ideal when you have limited data or no access to the entire population. It estimates the variability of a statistic without strong assumptions about the data distribution.</li>
+<li>Normal Random Sampling assumes a well-defined population and is used to draw a single representative sample for analysis.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">15</span>
+            <span class="anki-question">Empirical Confidence Interval vs. Confidence Interval</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Both empirical confidence intervals and traditional confidence intervals aim to quantify the uncertainty of an estimate (e.g., mean, median, or proportion), but they differ in their methods and underlying assumptions. Here's a detailed breakdown:1. Confidence Interval (CI)Definition:A confidence interval is a range of values, derived from sample data, that is likely to contain the true population parameter with a specified level of confidence (e.g., 95%).How It’s Calculated:</p>
+<ul>
+<li>Assumes a specific probability distribution (usually normal) for the population or sample.</li>
+<li>Relies on parametric methods, using formulas based on the sample mean (xˉ\bar{x}xˉ), standard error (SE), and the z-score (or t-score for small samples).</li>
+</ul>
+<p>2. Empirical Confidence IntervalDefinition:An empirical confidence interval is derived from the observed data using non-parametric methods like bootstrapping, without assuming any specific distribution for the population.How It’s Calculated:</p>
+<ul>
+<li>Generate many resampled datasets (bootstrap samples) by sampling with replacement from the original dataset.</li>
+<li>Compute the desired statistic (e.g., mean) for each bootstrap sample.</li>
+<li>Determine the interval that captures the middle X% (e.g., 95%) of the bootstrap statistic distribution.Example:</li>
+<li>You survey the same 100 people, but instead of assuming a normal distribution:</li>
+<li>Resample the data 1,000 times (bootstrapping).</li>
+<li>Compute the mean for each resample.</li>
+<li>Arrange these 1,000 means in order and take the 2.5th percentile and 97.5th percentile as the bounds of the 95% empirical confidence interval.Key DifferencesAspectConfidence Interval (CI)Empirical Confidence IntervalAssumptionsAssumes a specific distribution (e.g., normal).No assumptions about the data distribution.Calculation MethodParametric (formula-based).Non-parametric (bootstrap resampling).Data SizeWorks best with large, normal-like datasets.Works well for small or non-normal datasets.FlexibilityLimited to predefined distributions.Flexible, adapts to the observed data.RobustnessLess robust to non-normal data or outliers.More robust to outliers and skewed data.When to Use Each</li>
+<li>Confidence Interval (Traditional):</li>
+<li>Population is approximately normal, or the sample size is large (n&gt;30n &gt; 30n&gt;30).</li>
+<li>You have access to formulas for standard errors and can make parametric assumptions.</li>
+<li>Example: Estimating mean height from a sample of people assuming normality.</li>
+<li>Empirical Confidence Interval:</li>
+<li>Population distribution is unknown or non-normal.</li>
+<li>Small sample sizes where parametric methods may fail.</li>
+<li>Example: Estimating the median income of a skewed dataset.Visual ExampleDataset: [50, 52, 55, 60, 62, 65, 70]</li>
+<li>Confidence Interval:</li>
+<li>Assumes the data follows a normal distribution and calculates CI based on mean and SE.</li>
+<li>Empirical Confidence Interval:</li>
+<li>Resamples the dataset many times, computes the mean for each resample, and uses the 2.5th and 97.5th percentiles of the resampled means.Takeaway</li>
+<li>Confidence Interval: Best for well-behaved data with known or assumed distributions.</li>
+<li>Empirical Confidence Interval: More flexible and robust for real-world data with unknown or complex distributions. Use it when assumptions about the population distribution are uncertain.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">16</span>
+            <span class="anki-question">what is unit of diversion? Step 1 for design an AB test</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>The unit of diversion refers to the entity or element used to randomly assign users into different experimental groups (e.g., control or treatment). Choosing the right unit of diversion is critical to ensure the test is fair, random, and relevant to the hypothesis being tested.How to Choose the Unit of Diversion</p>
+<ul>
+<li>Align with the Hypothesis: The unit should directly relate to the metric you are measuring.</li>
+<li>Avoid Cross-Talk: Minimize the risk of users in one group being influenced by the other group's experience.</li>
+<li>Operational Feasibility: Consider technical implementation and cost when choosing the unit.Common Types of Units and Examples1. User-Level Diversion</li>
+<li>Description: Each user is independently assigned to either the control or treatment group.</li>
+<li>Use Case: Best for experiments where individual user behavior is the focus.</li>
+<li>Example:</li>
+<li>Testing a new recommendation algorithm in an e-commerce app.</li>
+<li>Metric: Click-through rate or conversion rate per user.</li>
+<li>Advantages:</li>
+<li>Simple and widely applicable.</li>
+<li>No risk of contamination between groups.</li>
+<li>Disadvantages:</li>
+<li>Requires a large user base to achieve statistical significance.2. Session-Level Diversion</li>
+<li>Description: Each session (or visit) is assigned to a group, regardless of the user.</li>
+<li>Use Case: Suitable when the goal is to test session-specific changes.</li>
+<li>Example:</li>
+<li>Testing a new homepage layout for a website.</li>
+<li>Metric: Bounce rate per session.</li>
+<li>Advantages:</li>
+<li>Faster results since the number of sessions is usually higher than users.</li>
+<li>Disadvantages:</li>
+<li>A single user may see both control and treatment, leading to potential bias.3. Page-Level or Request-Level Diversion</li>
+<li>Description: Diversion happens at the level of individual page views or API requests.</li>
+<li>Use Case: Best for backend systems or isolated page-specific changes.</li>
+<li>Example:</li>
+<li>Testing a new caching mechanism for API requests.</li>
+<li>Metric: Latency of API response.</li>
+<li>Advantages:</li>
+<li>Granular control and rapid testing.</li>
+<li>Disadvantages:</li>
+<li>Potential for high cross-talk or duplication effects.4. Device-Level Diversion</li>
+<li>Description: Each unique device is assigned to a group.</li>
+<li>Use Case: Useful for device-specific tests, such as mobile vs. desktop experiences.</li>
+<li>Example:</li>
+<li>Testing a new mobile app feature.</li>
+<li>Metric: Time spent in-app.</li>
+<li>Advantages:</li>
+<li>Captures device-specific behavior.</li>
+<li>Disadvantages:</li>
+<li>Users may access the product from multiple devices.5. Household-Level Diversion</li>
+<li>Description: Groups are assigned at the household level (e.g., IP address).</li>
+<li>Use Case: Useful for multi-user environments like smart TVs or family subscriptions.</li>
+<li>Example:</li>
+<li>Testing a family plan for a streaming service.</li>
+<li>Metric: Total watch time per household.</li>
+<li>Advantages:</li>
+<li>Captures collective behavior within a household.</li>
+<li>Disadvantages:</li>
+<li>May lead to smaller sample sizes.6. Geo-Level Diversion</li>
+<li>Description: Entire geographical areas (e.g., cities, states) are assigned to a group.</li>
+<li>Use Case: Ideal for experiments with network effects or localized features.</li>
+<li>Example:</li>
+<li>Testing a new delivery pricing model.</li>
+<li>Metric: Revenue per region.</li>
+<li>Advantages:</li>
+<li>Avoids user-level contamination.</li>
+<li>Captures regional dynamics.</li>
+<li>Disadvantages:</li>
+<li>Requires large, diverse regions to ensure generalizability.7. Account-Level Diversion</li>
+<li>Description: Diversion occurs at the level of accounts (e.g., corporate, team, or subscription accounts).</li>
+<li>Use Case: Suitable for experiments where account-level metrics are the focus.</li>
+<li>Example:</li>
+<li>Testing new features for corporate email accounts.</li>
+<li>Metric: User adoption rate per account.</li>
+<li>Advantages:</li>
+<li>Ensures fairness within accounts with multiple users.</li>
+<li>Disadvantages:</li>
+<li>May require significant sample sizes.Key Considerations</li>
+<li>Cross-Talk: Avoid scenarios where users in one group influence the other group (e.g., shared devices).</li>
+<li>Granularity vs. Feasibility: Smaller units (e.g., requests) offer more data but risk noise; larger units (e.g., geo) are less noisy but harder to generalize.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">17</span>
+            <span class="anki-question">Consistency of Diversion in A/B Testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Consistency of diversion refers to ensuring that the same unit (user, session, device, etc.) is consistently assigned to the same experimental group (control or treatment) throughout the duration of the test. This is crucial for maintaining the validity of the experiment and preventing cross-contamination between groups.</p>
+<p>Why Consistency Matters</p>
+<ul>
+<li>Avoids Bias: Ensures that users experience only one version of the test, reducing confusion and variability in behavior.</li>
+<li>Accurate Measurement: Guarantees that changes in metrics are attributed to the experiment, not to inconsistencies in group assignment.</li>
+<li>Improves User Experience: Prevents scenarios where users are exposed to multiple variations, which can create a poor experience and affect trust.How to Achieve Consistency</li>
+<li>Deterministic Assignment</li>
+<li>Use a hashing function to consistently assign units based on an immutable identifier (e.g., user ID, session ID, or device ID).</li>
+<li>Example:pythonCopy codegroup = hash(user_id) % 2  # Divides users into two groups deterministically</li>
+</ul>
+<ul>
+<li>This ensures that the same identifier always maps to the same group.</li>
+<li>Sticky Assignments</li>
+<li>For systems where identifiers change (e.g., session-based diversion), store the assigned group persistently (e.g., in cookies or databases).</li>
+<li>Example: Assign a session to a group and use a cookie to remember the assignment across visits.</li>
+<li>Consistent Diversion Across Systems</li>
+<li>Ensure that group assignment logic is consistent across different services or platforms (e.g., website and mobile app).</li>
+<li>Example: Use a centralized assignment service or a shared algorithm across all platforms.Challenges and Solutions1. Missing Identifiers</li>
+<li>Challenge: Some users may not have stable identifiers (e.g., guest users without login).</li>
+<li>Solution: Use fallback identifiers like session IDs, device fingerprints, or temporary cookies.2. Cross-Platform Consistency</li>
+<li>Challenge: Users might interact with the product on multiple platforms (e.g., mobile and desktop).</li>
+<li>Solution: Use a global identifier, such as a user account ID, to ensure the same assignment across platforms.3. Changing Group Definitions</li>
+<li>Challenge: A test’s group definition changes mid-experiment, causing inconsistency.</li>
+<li>Solution: Freeze group assignments at the start of the experiment and enforce backward compatibility if group logic evolves.Examples of Consistent Diversion by Unit1. User-Level Diversion</li>
+<li>Use user IDs to hash and assign groups.</li>
+<li>Example: group = hash(user_id) % 22. Session-Level Diversion</li>
+<li>Assign sessions consistently using session IDs.</li>
+<li>Store the assignment in a cookie to persist it.3. Geo-Level Diversion</li>
+<li>Predefine group assignments for geographical regions (e.g., all users in California belong to the treatment group).</li>
+<li>Ensure consistency through a lookup table.4. Device-Level Diversion</li>
+<li>Use a hashed combination of device-specific identifiers (e.g., MAC address, device ID).</li>
+<li>Example: group = hash(device_id) % 2Key Takeaways</li>
+<li>Always use a deterministic method (e.g., hashing) or persistent storage to ensure consistency.</li>
+<li>Test your diversion logic before launching the experiment to verify that all units are consistently assigned.</li>
+<li>Document the diversion method clearly for reproducibility and transparency.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">18</span>
+            <span class="anki-question">Unit of Analysis vs. Unit of Diversion</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Both the unit of analysis and the unit of diversion are critical concepts in A/B testing, but they serve distinct purposes and focus on different aspects of the experiment.1. Unit of Analysis</p>
+<ul>
+<li>Definition: The entity or element for which outcomes (metrics) are measured and analyzed in the experiment.</li>
+<li>Purpose: To determine the granularity of the data used for statistical analysis.</li>
+<li>Examples:</li>
+<li>User-level Analysis: Measure metrics like user retention or average revenue per user.</li>
+<li>Session-level Analysis: Analyze session duration, bounce rates, or clicks per session.</li>
+<li>Transaction-level Analysis: Assess average transaction value or conversion rate per transaction.2. Unit of Diversion</li>
+<li>Definition: The entity or element used to randomly assign groups (control or treatment) in the experiment.</li>
+<li>Purpose: To define how participants are split into experimental groups to ensure randomness and consistency.</li>
+<li>Examples:</li>
+<li>User-level Diversion: Each user is assigned to a group (e.g., for personalized experiences).</li>
+<li>Session-level Diversion: Each session is assigned independently (e.g., for one-off session experiments).</li>
+<li>Geo-level Diversion: Entire geographical regions are assigned to a group (e.g., for region-specific marketing tests).Key DifferencesAspectUnit of AnalysisUnit of DiversionPurposeDefines what is measured and analyzed.Defines how groups are split.FocusGranularity of the outcome metrics.Randomization process for experiments.ExamplesUser, session, transaction, click.User, session, device, geo.ScopeAffects statistical tests and metrics.Affects randomness and consistency.RelationshipIndependent of group assignment.Determines exposure to test conditions.When Unit of Analysis and Diversion Differ</li>
+<li>Example 1:</li>
+<li>Unit of Diversion: Users are assigned randomly to groups.</li>
+<li>Unit of Analysis: Metrics are analyzed per session (e.g., clicks per session).</li>
+<li>Example 2:</li>
+<li>Unit of Diversion: Geo-level (e.g., cities are split into groups).</li>
+<li>Unit of Analysis: User-level (e.g., average spend per user).When Unit of Analysis and Diversion Are the Same</li>
+<li>Example 1:</li>
+<li>Unit of Diversion: Users are randomly assigned.</li>
+<li>Unit of Analysis: Metrics like retention are also measured at the user level.Why the Distinction Matters</li>
+<li>Statistical Validity:</li>
+<li>The unit of analysis determines how variance is calculated and how tests are powered.</li>
+<li>A mismatch between the unit of diversion and analysis (e.g., user-level diversion but session-level analysis) can lead to inflated variance or incorrect p-values.</li>
+<li>Cross-Talk Mitigation:</li>
+<li>The unit of diversion should minimize contamination between groups.</li>
+<li>Example: Using session-level diversion for a user-level analysis risks exposing the same user to both groups.</li>
+<li>Practical Implementation:</li>
+<li>Choosing the wrong unit of diversion can introduce noise or bias.</li>
+<li>Example: Diverting at a session level while analyzing at the user level could under-represent frequent users.Best Practices</li>
+<li>Align with Experiment Goals:</li>
+<li>Match the unit of diversion to the granularity of the test’s hypothesis.</li>
+<li>Example: For personalized features, use user-level diversion.</li>
+<li>Be Aware of Cross-Talk:</li>
+<li>Ensure the unit of diversion prevents exposure to multiple conditions.</li>
+<li>Example: Use geo-level diversion for network-effect experiments.</li>
+<li>Account for Dependencies:</li>
+<li>Avoid statistical dependencies between units of analysis (e.g., multiple sessions per user).</li>
+<li>Adjust for this using statistical techniques (e.g., hierarchical modeling or bootstrapping).</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">19</span>
+            <span class="anki-question">Inter- vs. Intra-User Experiments</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Inter-User vs. Intra-User ExperimentsIn the context of A/B testing, inter-user and intra-user experiments refer to different approaches to assigning experimental conditions and measuring outcomes. Both have unique use cases, advantages, and challenges.Inter-User ExperimentsDefinition:</p>
+<ul>
+<li>Different users are assigned to different experimental conditions (e.g., control or treatment).</li>
+<li>A single user experiences only one variation during the experiment.Use Cases:</li>
+<li>Testing features or experiences that persist over time (e.g., a new recommendation algorithm or homepage design).</li>
+<li>Situations where switching between variations would confuse or annoy users.</li>
+<li>Experiments where user-level independence is critical.Example:</li>
+<li>Testing a new search algorithm for a shopping app:</li>
+<li>Control Group: Users see the current search results ranking.</li>
+<li>Treatment Group: Users see results ranked by the new algorithm.Advantages:</li>
+<li>No Cross-Talk: Users don't interact with both versions, reducing bias or contamination.</li>
+<li>Simpler Analysis: Metrics like user retention or conversion rate can be directly compared between groups.</li>
+<li>Scalable: Works well for large-scale user bases.Challenges:</li>
+<li>Requires Large Sample Sizes: To detect small effects, a large number of users may be needed.</li>
+<li>User Variability: Natural differences between users (e.g., preferences, behaviors) can add noise to results.Intra-User ExperimentsDefinition:</li>
+<li>The same user is exposed to both variations, either sequentially (over time) or simultaneously (in different contexts).</li>
+<li>Outcomes are measured for each variation within the same user.Use Cases:</li>
+<li>Testing short-lived or session-specific features (e.g., a new button design or notification style).</li>
+<li>Situations where individual differences (e.g., demographics, preferences) need to be controlled.</li>
+<li>Experiments where switching between variations doesn’t disrupt the user experience.Example:</li>
+<li>Testing two notification styles in a messaging app:</li>
+<li>Control Group: Style A notifications are shown for the first session.</li>
+<li>Treatment Group: Style B notifications are shown for the second session.Advantages:</li>
+<li>Controls for User Variability: By comparing metrics within the same user, differences in behavior or preferences are eliminated as confounding factors.</li>
+<li>Smaller Sample Size: Fewer users are needed to detect significant effects since variability is reduced.</li>
+<li>Granular Insights: Allows testing of subtle differences in behavior or preference.Challenges:</li>
+<li>Risk of Carryover Effects: Exposure to one variation may influence the user’s reaction to the other (e.g., familiarity with one design might bias their response to another).</li>
+<li>Implementation Complexity: Requires systems that can consistently and dynamically switch experiences for individual users.</li>
+<li>Cross-Talk Potential: In simultaneous experiments, users may see both variations at the same time, leading to confusion or bias.Key DifferencesAspectInter-User ExperimentsIntra-User ExperimentsExposureOne variation per userMultiple variations per userUse CasePersistent features, long-term changesShort-term features, preference testingSample SizeLarger neededSmaller sufficientUser VariabilityCan add noise to resultsControlled by within-user comparisonCarryover EffectsNot a concernPossible (e.g., sequential experiments)Choosing Between Inter-User and Intra-User</li>
+<li>Nature of the Experiment:</li>
+<li>If the feature is persistent and part of the user's long-term experience (e.g., algorithm changes), choose inter-user.</li>
+<li>If the feature is temporary or session-based (e.g., design tweaks), choose intra-user.</li>
+<li>Risk of Carryover Effects:</li>
+<li>Avoid intra-user for features where the experience of one variation might influence the perception of another.</li>
+<li>Sample Size and Variability:</li>
+<li>If sample size is a concern and user variability is significant, intra-user is better.</li>
+<li>For larger-scale tests where variability is less critical, inter-user is sufficient.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">20</span>
+            <span class="anki-question">is p-value and alpha the same thing? they are all 0.05</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>No, the p-value and alpha (α) are not the same, even though they are often compared and the threshold for significance is commonly set at α=0.05. They serve different purposes in hypothesis testing.</p>
+<p>Let’s simplify p-value and alpha (α) with a real-life analogy.The Jury AnalogyImagine you're in a courtroom where a defendant is on trial. The null hypothesis (H0H_0H0​) in this case is:&quot;The defendant is innocent.&quot;Your job as the jury is to decide whether the evidence is strong enough to reject this assumption and declare the defendant guilty.What is Alpha (α)?Before the trial starts, the judge sets a rule:&quot;We will only declare the defendant guilty if the evidence is really strong and the chance of mistakenly convicting an innocent person is less than 5%.&quot;This 5% rule is your alpha (α). It’s a safety threshold to minimize wrongful convictions (Type I errors).</p>
+<ul>
+<li>If you want to be extra cautious, you might lower α to 1% (harder to convict).</li>
+<li>If you’re okay with taking more risks, you might raise α to 10% (easier to convict).What is the p-value?The p-value is like the strength of the evidence presented in court. It tells you:&quot;If the defendant is actually innocent, what’s the chance we would see evidence this strong (or stronger) by random chance?&quot;</li>
+<li>A small p-value (e.g., 0.02 or 2%) means the evidence is unlikely to happen by chance if the defendant is truly innocent.</li>
+<li>A large p-value (e.g., 0.30 or 30%) means the evidence could easily happen by random chance, so it’s not strong enough to doubt the defendant’s innocence.Making the DecisionAt the end of the trial:</li>
+<li>Compare the p-value (strength of the evidence) to the alpha (threshold for conviction).</li>
+<li>If p-value≤α:</li>
+<li>The evidence is strong enough to reject the null hypothesis.</li>
+<li>You declare the defendant guilty.</li>
+<li>If p-value&gt;α:</li>
+<li>The evidence isn’t strong enough to reject the null hypothesis.</li>
+<li>You declare the defendant not guilty (but this doesn’t mean they’re innocent—it just means there’s not enough evidence).Example in ActionLet’s say the judge sets α=0.05 (5% threshold), and you get the following cases:Case 1: Small p-value</li>
+<li>p-value = 0.02 (2%)</li>
+<li>Interpretation: If the defendant were innocent, there’s only a 2% chance we’d see this much evidence by random chance.</li>
+<li>Decision: 2% is less than the 5% threshold. The evidence is strong enough to reject H0, so you declare the defendant guilty.Case 2: Large p-value</li>
+<li>p-value = 0.20 (20%)</li>
+<li>Interpretation: If the defendant were innocent, there’s a 20% chance we’d see this evidence. That’s pretty common, so the evidence isn’t strong enough to doubt their innocence.</li>
+<li>Decision: 20% is greater than the 5% threshold. You fail to reject H0H_0H0​, and the defendant is declared not guilty.Real-Life Example Outside CourtScenario: Testing a New Cake Recipe</li>
+<li>You’re trying a new recipe and want to know if it tastes better than the original.</li>
+<li>Null Hypothesis (H0H_0H0​): The new cake tastes the same as the old one (no difference).</li>
+<li>Alpha (α\alphaα): You decide on a 5% threshold for being convinced it’s better.</li>
+<li>p-value: After taste tests, the p-value comes out to 0.03 (3%).Decision:</li>
+<li>Since 0.03 is less than 0.05, you conclude, &quot;The new cake is better!&quot; (Reject H0H_0H0​).</li>
+<li>If the p-value had been 0.10 (10%), you’d say, &quot;There’s not enough evidence that the new cake is better.&quot; (Fail to reject H0H_0H0​).Key Takeaways</li>
+<li>Alpha (α\alphaα): The rule you set in advance for how much risk of being wrong you’re willing to accept.</li>
+<li>p-value: The actual measurement of how strong the evidence is against the assumption of &quot;no difference.&quot;</li>
+<li>They’re not the same but work together: you use the p-value to decide whether it’s strong enough to pass the alpha threshold.</li>
+</ul>
+<p>Key Differences Between p-value and AlphaAspectp-valueAlpha (α)DefinitionThe probability of observing the test statistic, or something more extreme, under the null hypothesis.The pre-set threshold for deciding whether to reject the null hypothesis.RoleCalculated from the data as part of the test.Chosen before the test as a decision-making threshold.PurposeIndicates how extreme the observed data is compared to what is expected under H0H_0H0​.Defines the maximum allowable probability of making a Type I error.ValueDepends on the data.Fixed by the experimenter (commonly 0.05).InterpretationA small p-value (&lt; α\alphaα) provides evidence against H0​.Sets the cutoff for determining statistical significance.How They Relate</p>
+<ul>
+<li>Comparison for Decision-Making:</li>
+<li>If p-value≤α\:</li>
+<li>Reject H (statistically significant result).</li>
+<li>The observed data is considered unlikely under the null hypothesis.</li>
+<li>If p-value&gt;α\text{p-value} &gt; \alphap-value&gt;α:</li>
+<li>Fail to reject H0​.</li>
+<li>There isn’t sufficient evidence to conclude a significant difference.</li>
+<li>Typical α\alphaα Value:</li>
+<li>α=0.05\alpha = 0.05α=0.05 is common, meaning a 5% chance of rejecting H0H_0H0​ when it is true (Type I error).</li>
+<li>The &quot;0.05&quot; Coincidence:</li>
+<li>People often set α=0.05\alpha = 0.05α=0.05, so if the p-value is also around 0.05, it may appear as if they are the same. However, they are distinct: one is a pre-determined threshold (α\alphaα), and the other is derived from the data (p-value).Examples to IllustrateExample 1: A/B Test</li>
+<li>Hypothesis: A new button increases the click-through rate.</li>
+<li>Data Analysis:</li>
+<li>p-value=0.03\text{p-value} = 0.03p-value=0.03</li>
+<li>α=0.05\alpha = 0.05α=0.05</li>
+<li>Decision:</li>
+<li>p-value&lt;α\text{p-value} &lt; \alphap-value&lt;α: Reject H0H_0H0​. The new button likely impacts click-through rates.Example 2: Drug Trial</li>
+<li>Hypothesis: A drug is more effective than a placebo.</li>
+<li>Data Analysis:</li>
+<li>p-value=0.08\text{p-value} = 0.08p-value=0.08</li>
+<li>α=0.05\alpha = 0.05α=0.05</li>
+<li>Decision:</li>
+<li>p-value&gt;α\text{p-value} &gt; \alphap-value&gt;α: Fail to reject H0H_0H0​. There isn’t enough evidence to claim the drug is more effective.Summary</li>
+<li>p-value: The actual result of the statistical test (how extreme the data is under H0H_0H0​).</li>
+<li>Alpha (α\alphaα): The pre-set threshold for rejecting H0H_0H0​.</li>
+<li>They work together: α\alphaα is used to interpret the p-value and decide whether the result is statistically significant.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">21</span>
+            <span class="anki-question">P value and 95% confidence interval</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>The p-value and 95% confidence interval (CI) are closely related concepts in statistical hypothesis testing and estimation, but they serve different purposes. Let’s explore them with simple explanations and examples.1. What is a p-value?In null-hypothesis significance testing, the p-value[note 1] is the probability of obtaining test results at least as extreme as the result actually observed, under the assumption that the null hypothesis is correct.[2][3] A very small p-value means that such an extreme observed outcome would be very unlikely under the null hypothesis. Even though reporting p-values of statistical tests is common practice in academic publications of many quantitative fields, misinterpretation and misuse of p-values is widespread and has been a major topic in mathematics and metascience.[4][5]</p>
+<ul>
+<li>The p-value is the probability of observing results as extreme as (or more extreme than) the current data, assuming the null hypothesis (H​) is true.</li>
+<li>Key Question: &quot;How likely is this result, if there is no real effect?&quot;Example:</li>
+<li>You’re testing whether a new drug reduces blood pressure compared to a placebo.</li>
+<li>H0​: The drug has no effect (mean difference = 0).</li>
+<li>A p-value of 0.03 means there’s only a 3% chance of observing the results (or more extreme results) if the drug truly had no effect.2. What is a 95% Confidence Interval (CI)?</li>
+<li>A 95% confidence interval provides a range of values within which we are 95% confident the true population parameter lies, based on the sample data.</li>
+<li>Key Question: &quot;What is the likely range of the true effect?&quot;Example:</li>
+<li>For the same drug test, a 95% confidence interval of [5, 10] mmHg means:</li>
+<li>You are 95% confident that the true reduction in blood pressure lies between 5 and 10 mmHg.How Are They Related?1. Decision Making</li>
+<li>If the 95% CI does NOT include the null hypothesis value (e.g., 0 for no effect):</li>
+<li>The result is statistically significant.</li>
+<li>The p-value will be less than 0.05.</li>
+<li>If the 95% CI includes the null hypothesis value (e.g., 0):</li>
+<li>The result is not statistically significant.</li>
+<li>The p-value will be greater than 0.05.Example:</li>
+<li>CI = [5, 10]</li>
+<li>Null hypothesis value (0) is NOT in the interval → Significant → p-value &lt; 0.05.</li>
+<li>CI = [-2, 8]</li>
+<li>Null hypothesis value (0) IS in the interval → Not significant → p-value &gt; 0.05.2. Complementary Interpretations</li>
+<li>The p-value tells you the probability of seeing the observed data (or more extreme) under the null hypothesis.</li>
+<li>The confidence interval gives you a range of plausible values for the true effect size.Both provide evidence about the relationship being tested:</li>
+<li>A small p-value suggests the null hypothesis is unlikely.</li>
+<li>A narrow confidence interval gives more precision about the size of the effect.Key DifferencesAspectp-valueConfidence Interval (CI)What It MeasuresHow likely the observed data is under H0H_0H0​.The range of plausible values for the true effect.FocusStatistical significance.Estimation of the effect size.Null HypothesisUsed directly to test H0H_0H0​.Used indirectly (if H0H_0H0​ value is in the CI).PresentationA single probability value.A range of values (e.g., [5, 10]).Real-Life AnalogyTesting a Cake Recipe</li>
+<li>p-value:</li>
+<li>If p=0.02p = 0.02p=0.02, you conclude: &quot;The new recipe is unlikely to taste the same as the old one (statistically significant).&quot;</li>
+<li>Confidence Interval:</li>
+<li>If the CI for taste difference is [3, 7 points on a 10-point scale], you can say: &quot;I’m 95% confident the new recipe is between 3 to 7 points better.&quot;Key Takeaways</li>
+<li>p-value tells you if there’s evidence of an effect.</li>
+<li>95% confidence interval tells you how big the effect might be.</li>
+<li>Together, they provide a fuller picture:</li>
+<li>Is the result significant? (p-value)</li>
+<li>What is the likely magnitude of the effect? (CI)</li>
+</ul>
+<p>Why 95% Confidence Interval ≠ 1−p-valueA confidence interval (CI) is a range of values that is likely to contain the true parameter (e.g., mean, proportion) with a certain level of confidence (e.g., 95%).</p>
+<ul>
+<li>A p-value is the probability of obtaining results as extreme as (or more extreme than) the observed data, assuming the null hypothesis is true.Key DifferencesAspectConfidence Interval (CI)p-valueDefinitionA range where the true parameter is likely to lie.Probability of observing the data if H0H_0H0​ is true.FocusEstimation of effect size.Statistical significance.Range vs. ProbabilityProduces a range (e.g., [3, 7]).Produces a single probability value (e.g., 0.03).Does It Depend on H0H_0H0​?Yes, indirectly (null value must be checked).Yes, directly (measures evidence against H0H_0H0​).How They Are RelatedWhile 1−p-value does not equal the confidence level (e.g., 95%), they interact in hypothesis testing as follows:1. Null Hypothesis in CI</li>
+<li>If the null hypothesis value (e.g., H0:) lies inside the confidence interval, the p-value will be greater than α (not statistically significant).</li>
+<li>If the null hypothesis value lies outside the confidence interval, the p-value will be less than α (statistically significant).2. Connection in Two-Tailed TestsFor a two-tailed test:</li>
+<li>A 95% CI corresponds to a significance level of α=0.05</li>
+<li>If the p-value ≤0.05, the result is significant, and the null hypothesis value will not be in the 95% CI.ExamplesCase 1: p-value = 0.03 (Significant)</li>
+<li>A 95% CI for the mean difference is [3, 7].</li>
+<li>The null hypothesis value (e.g., 0) is not in the CI.</li>
+<li>Interpretation: The result is significant at α=0.05, and the p-value is 0.03.Case 2: p-value = 0.20 (Not Significant)</li>
+<li>A 95% CI for the mean difference is [-2, 8].</li>
+<li>The null hypothesis value (e.g., 0) is inside the CI.</li>
+<li>Interpretation: The result is not significant, and the p-value is 0.200.200.20.Why Confidence Level ≠ 1−p-value1 - \text{p-value}1−p-value</li>
+<li>The confidence level (e.g., 95%) reflects the percentage of times the confidence interval will contain the true parameter if we repeat the experiment multiple times.</li>
+<li>The p-value reflects the probability of observing the data (or more extreme results) assuming H0 is true.They measure different things:</li>
+<li>Confidence intervals estimate the range of plausible values for the parameter.</li>
+<li>P-values test whether the data are consistent with the null hypothesis.Intuitive AnalogyImagine shooting arrows at a target:</li>
+<li>Confidence Interval: Represents a range (the bullseye and surrounding area) where the true target is likely to be. It tells you the likely region where the truth lies.</li>
+<li>p-value: Represents the likelihood that your arrow hit the target just by chance if the null hypothesis were true (e.g., you're blindfolded).</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">22</span>
+            <span class="anki-question">explain p-value to me if I dont know statistics</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Let’s simplify p-value using a real-world analogy. Think of it as a measure of surprise—how surprising your results are, assuming nothing unusual is going on.What is a p-value in Simple Terms?The p-value answers this question:&quot;If there really is no effect (no difference, no change, no relationship), how likely is it that I would see results like this—or more extreme—just by random chance?&quot;</p>
+<ul>
+<li>A small p-value (e.g., 0.01 or 1%) means your result is very unlikely to happen by chance.</li>
+<li>A large p-value (e.g., 0.30 or 30%) means your result is not surprising and could easily happen by chance.Real-Life Analogy: Flipping a CoinScenario:</li>
+<li>Imagine you have a coin, and someone claims it’s a fair coin (50% heads, 50% tails).</li>
+<li>You flip the coin 10 times and get 8 heads.</li>
+<li>You wonder, &quot;Is this coin actually unfair, or could this just happen by chance?&quot;Step-by-Step Explanation:</li>
+<li>Null Hypothesis:</li>
+<li>Start by assuming the coin is fair (H0H_0H0​: 50% heads, 50% tails).</li>
+<li>Observe the Data:</li>
+<li>You got 8 heads out of 10 flips.</li>
+<li>Calculate the p-value:</li>
+<li>The p-value tells you: If the coin is fair, what’s the probability of getting 8 heads—or more—out of 10 flips?</li>
+<li>In this case, the p-value is about 0.054 (5.4%).</li>
+<li>Interpretation:</li>
+<li>Small p-value (e.g., &lt; 0.05): It’s very unlikely to get 8 heads by chance if the coin is fair, so you might conclude the coin is biased.</li>
+<li>Large p-value (e.g., &gt; 0.05): Getting 8 heads isn’t that surprising, so you stick with the idea that the coin is fair.Think of It Like This:</li>
+<li>p-value = 0.01 (1%): &quot;Whoa! This result is super rare if the coin is fair. Maybe it’s rigged!&quot;</li>
+<li>p-value = 0.30 (30%): &quot;Hmm, this result isn’t surprising. The coin is probably fair.&quot;Key Points to Remember</li>
+<li>Small p-value = Surprising:</li>
+<li>If the p-value is small (e.g., &lt; 0.05), your results are unlikely under the assumption of no effect. This might mean something interesting is going on.</li>
+<li>Large p-value = Not Surprising:</li>
+<li>If the p-value is large, your results could easily happen by chance, so there’s no strong reason to doubt the null hypothesis.</li>
+<li>It’s Not Proof:</li>
+<li>A small p-value doesn’t prove the null hypothesis is wrong—it just suggests your data doesn’t fit well with it.</li>
+<li>Similarly, a large p-value doesn’t prove the null hypothesis is true—it just means there’s no strong evidence against it.Real-Life Example: Testing a New App FeatureScenario:You add a new feature to your app and want to know if it increases user engagement.</li>
+<li>Null Hypothesis:</li>
+<li>The new feature has no effect on engagement (same as before).</li>
+<li>Data:</li>
+<li>You test 1,000 users. Engagement increases for 60% of them.</li>
+<li>Calculate p-value:</li>
+<li>The p-value tells you: If the feature truly had no effect, what’s the chance of seeing 60% or more users engaged just by luck?</li>
+<li>Interpretation:</li>
+<li>If p=0.02: &quot;This is surprising if the feature has no effect. Let’s consider the feature works.&quot;</li>
+<li>If p=0.30: &quot;This isn’t surprising. There’s no strong evidence the feature works.&quot;Takeaways</li>
+<li>p-value = Probability of your result happening by chance, assuming nothing unusual is going on.</li>
+<li>Small p-value = Unlikely by chance → Evidence against the status quo.</li>
+<li>Large p-value = Likely by chance → Stick with the status quo.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">23</span>
+            <span class="anki-question">what is pool standard error in ab testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Pooled Standard Error in A/B TestingIn A/B testing, the pooled standard error is used to estimate the standard error of the difference between the means of two groups (A and B). It assumes that both groups have the same population variance, which is often a reasonable assumption when the sample sizes of both groups are similar and when we expect the two populations to have similar variabilities.Why We Use Pooled Standard ErrorWe use the pooled standard error to calculate the t-statistic for a two-sample t-test when we assume equal variances. This is especially useful when the two groups being compared have roughly the same sample size and we believe their variability is similar.The pooled standard error allows us to estimate how much variability we can expect in the difference between the two group means. It is an important part of determining whether the observed difference between the groups is statistically significant.Formula for Pooled Standard ErrorWhen we assume equal variances in both groups, the pooled standard error is calculated as follows:</p>
+<p>Difference Between Pooled Standard Error and Standard Error of the t-testThe standard error of the t-test typically refers to the standard error used to test the difference between two sample means, but it varies depending on whether we assume equal or unequal variances between the two groups.</p>
+<ul>
+<li>Pooled Standard Error: This is used when we assume the variances in the two groups are equal. It combines the variances from both groups to get a more reliable estimate of the standard error.</li>
+<li>Unpooled Standard Error: When we do not assume equal variances between the two groups, we use the unpooled standard error. The formula for the unpooled standard error is:</li>
+</ul>
+<ul>
+<li>Standard Error of the t-test: The standard error in a t-test is essentially the denominator of the t-statistic formula, and it varies depending on whether we use the pooled or unpooled version.Key Differences</li>
+<li>Assumption of Equal Variances:</li>
+<li>The pooled standard error assumes equal variances between the two groups, while the unpooled standard error does not.</li>
+<li>Sample Size Sensitivity:</li>
+<li>The pooled standard error tends to be more stable when the sample sizes of the two groups are similar, as the variance is averaged across both groups.</li>
+<li>The unpooled standard error can be more appropriate when there is a substantial difference in variances between the two groups.</li>
+<li>T-Test Calculation:</li>
+<li>The pooled t-test uses the pooled standard error to calculate the t-statistic.</li>
+<li>The unpooled t-test (also called Welch’s t-test) uses the unpooled standard error and is typically more robust when the assumption of equal variances is questionable.In Summary:</li>
+<li>Use the pooled standard error in A/B testing when you assume equal variances for the two groups. It gives a more stable estimate when the groups have similar variances and sample sizes.</li>
+<li>Use the unpooled standard error when the assumption of equal variances is questionable or when the sample sizes are very different. It is more robust to situations where the variances are not equal.</li>
+</ul>
+<p>Pool standard error for propotion</p>
+<p>Formula in the ImageIn the image, the pooled standard error (SEpool) is given by the formula:</p>
+<p>Difference in Formulas</p>
+<ul>
+<li></li>
+<li>General Formula for Pooled Standard Error (For Means):</li>
+</ul>
+<ul>
+<li></li>
+<li>The formula I originally shared applies to means, assuming equal variances. It's used when you are comparing continuous outcomes (e.g., average revenue, test scores) between two groups.Summary of Key Differences:</li>
+<li>The image uses proportions (for categorical data like conversions), while the original formula I provided is for means (for continuous data).</li>
+<li>The pooled proportion formula adjusts for the total number of successes and total sample size across both groups, while the pooled mean formula assumes you're comparing the average values between groups.This distinction clarifies why the formulas look different; they are designed for different types of data (categorical vs. continuous).</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">24</span>
+            <span class="anki-question">What is a Cohort? Cohort vs population?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>A cohort refers to a specific subset of a population that shares a common characteristic or experiences a common event during a defined period. This group is often followed or studied over time to observe how specific factors or treatments affect their outcomes. Cohorts are typically used in longitudinal studies, where the focus is on tracking changes over time within a particular group.Examples of Cohorts:</p>
+<ul>
+<li>Age cohort: A group of people born in the same year or range of years (e.g., millennials, Baby Boomers).</li>
+<li>Treatment cohort: A group of patients receiving the same treatment in a medical study.</li>
+<li>Cohort based on behavior: A group of users who signed up for a product in the same month.</li>
+<li>Cohort based on location: A group of users from the same country or region.When to Use a Cohort?You use a cohort when you want to:</li>
+<li>Track the impact of an intervention or treatment over time within a group. For example, if you're studying the effectiveness of a new drug, you might track a cohort of patients who receive that drug.</li>
+<li>Examine the behaviors or characteristics of a specific group. For example, in marketing, you might study the cohort of customers who made a purchase during a certain period to understand their lifetime value.</li>
+<li>Study the progression of an event or phenomenon over time. For example, studying a cohort of students who started a course in the same year to see how their success rate changes over the term or years.</li>
+<li>Investigate causal relationships within a specific group. For example, examining how the behavior of a cohort of users changes when exposed to a particular feature on a website.Cohorts are particularly useful in time-based or longitudinal studies, where you are interested in changes or trends over time within a defined group.When to Use a Population?A population refers to the entire group from which a sample can be drawn, or the entire group you're studying. It represents a broader set of individuals or observations. In contrast to a cohort, which is a subset of the population, a population can be large and not necessarily have a time-based or specific characteristic.Examples of Populations:</li>
+<li>General population: All individuals living in a country or region.</li>
+<li>Population of customers: All customers who have purchased from your store.</li>
+<li>Population of patients: All patients diagnosed with a certain condition in a given year.When to Use a Population?You use a population when you want to:</li>
+<li>Study the general characteristics or behaviors of an entire group. For example, to assess the average income or general health of a country’s population.</li>
+<li>Ensure broader representativeness. If you want results that can be generalized to everyone, you need to study the whole population or use a representative sample.</li>
+<li>Understand overall trends or distributions without focusing on specific subgroups.</li>
+<li>Conduct cross-sectional studies. Unlike cohort studies, cross-sectional studies capture a snapshot of a population at a single point in time rather than following a specific group over time.Key Differences Between Cohorts and PopulationsAspectCohortPopulationDefinitionA subgroup with shared characteristics or experiencesThe entire group from which samples can be drawnFocusSpecific groups of interest over timeEntire group of people or entitiesUsageLongitudinal studies, intervention studiesGeneral studies, broad surveys, representative studiesTime-BasedYes, often involves tracking over timeNo, often a snapshot at a specific pointStudy ObjectiveTo understand changes over time in a specific groupTo understand trends or characteristics of the entire groupExamplesCohort of students, cohort of patients with a diseasePopulation of all adults in a country, population of all customersWhen to Choose Cohort vs Population:</li>
+<li>If you are interested in change over time within a specific group, use a cohort. For example, if you're tracking the conversion rates of users who signed up in January, you'd study a cohort.</li>
+<li>If you want general insights or trends about a broader group, use the population. For example, if you're assessing the overall purchasing behavior of all customers across different time periods, you'd study the population.Example of Using Cohort vs. Population:</li>
+<li>Cohort Study: You want to study the impact of a new feature in an app on user retention. You follow a cohort of users who signed up in January and track their activity over several months.</li>
+<li>Population Study: You want to assess the average age of all app users, regardless of when they signed up. You would look at the entire population of users to determine this.Conclusion:</li>
+<li>Use a cohort when you need to study a specific group with shared characteristics or behaviors over time.</li>
+<li>Use a population when you want to understand the overall characteristics of a larger group, often in a cross-sectional manner.Let me know if you'd like to dive deeper into examples or calculations for cohort analysis!</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">25</span>
+            <span class="anki-question">what is guardrail metrics in ab testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>In A/B testing, guardrail metrics are secondary metrics that are monitored to ensure that the changes made in the experiment do not negatively impact other important aspects of the business or product. While primary metrics (such as conversion rate, user engagement, or revenue) are directly related to the hypothesis being tested, guardrail metrics help ensure that other critical aspects remain stable or do not deteriorate unexpectedly.</p>
+<p>For example:</p>
+<ul>
+<li>If you are testing a new feature to increase user sign-ups (primary metric), a guardrail metric might be the bounce rate or user experience score, to ensure that the new feature doesn’t negatively affect the quality of user interactions or cause unexpected issues.</li>
+<li>In a financial context, while testing a feature aimed at increasing revenue, guardrail metrics might include customer churn rate or support ticket volume, ensuring the new change doesn’t result in customer dissatisfaction or higher costs.Guardrail metrics provide an additional layer of safety in A/B testing, ensuring that any improvements in the primary metrics are not achieved at the expense of other key business objectives.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">26</span>
+            <span class="anki-question">difference between guardraill metrics and secondary metrics</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>The key difference between guardrail metrics and secondary metrics lies in their purpose and how they are used in A/B testing:</p>
+<ul>
+<li>Guardrail Metrics:</li>
+<li>Purpose: Guardrail metrics are specifically used to ensure that the experiment does not cause any unintended negative effects on important business outcomes or user experience. They act as a &quot;safety net.&quot;</li>
+<li>Focus: They are often chosen because they monitor critical aspects of the business or product that should remain stable, even when the primary metric is being tested. If a guardrail metric shows a significant negative change, the test may be paused or reconsidered.</li>
+<li>Example: In an A/B test aimed at increasing sales, a guardrail metric might be customer satisfaction or churn rate. If these metrics drop significantly, it could indicate that the test has unintended negative effects.</li>
+<li>Secondary Metrics:</li>
+<li>Purpose: Secondary metrics are additional metrics used to gather more insights into the effect of the experiment, but they are not directly tied to the core hypothesis or primary objective of the test.</li>
+<li>Focus: Secondary metrics provide additional context or help in understanding other effects of the change, but they are not critical enough to stop the test if they show a negative trend.</li>
+<li>Example: In an A/B test for improving conversion rate, a secondary metric could be the average time spent on the site. It helps understand user engagement but is not as critical as the primary metric (conversion rate).Summary:</li>
+<li>Guardrail metrics are meant to protect the business from unintended negative impacts.</li>
+<li>Secondary metrics are additional measures of success or failure but are not used as safeguards.Guardrail metrics have more weight in determining whether an A/B test should continue or be halted, while secondary metrics help in understanding the broader impact of the changes being tested.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">27</span>
+            <span class="anki-question">what are the segmentation metrics</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Segmentation metrics refer to metrics that are used to analyze the performance of an A/B test or experiment across different segments or subgroups of the population. These segments can be based on various characteristics, such as user demographics, behavior, or other relevant factors. Segmentation metrics allow you to understand how different groups of users respond to changes in the test, providing deeper insights into the impact of the experiment.Examples of Segmentation Metrics:</p>
+<ul>
+<li>Demographic Segmentation:</li>
+<li>Age, gender, location, device type, etc.</li>
+<li>For example, you might want to see if a new feature performs better with younger users compared to older users.</li>
+<li>Behavioral Segmentation:</li>
+<li>Previous purchase history, frequency of use, or interaction with specific features.</li>
+<li>For example, you could check if users who engage with your site more often respond differently to an experiment compared to those who visit less frequently.</li>
+<li>Customer Type:</li>
+<li>New vs. returning customers, premium vs. basic users, etc.</li>
+<li>For example, a new feature may have different results for new users compared to returning customers who are already familiar with your platform.</li>
+<li>Geographical Segmentation:</li>
+<li>Country, city, or region.</li>
+<li>For example, you might want to know if the effect of an experiment is stronger in one geographic region compared to others.</li>
+<li>Platform/Device Segmentation:</li>
+<li>Desktop vs. mobile, or app vs. web.</li>
+<li>For example, you may find that changes in the user interface work better on mobile devices than on desktop computers.Why Segmentation Metrics Are Important:</li>
+<li>Uncover Heterogeneous Effects: Segmentation can reveal that the overall effect of the test varies across different subgroups. For example, a change might increase engagement for one demographic but decrease it for another.</li>
+<li>Tailor Strategies: Understanding how different segments behave can help tailor future strategies or product features to the most responsive groups.</li>
+<li>Identify Unexpected Patterns: Segmentation can help discover unexpected patterns or issues within specific user groups that might be masked by the overall data.In summary, segmentation metrics provide valuable insights into how different types of users or behaviors react to changes during A/B testing, helping you understand the nuances and refine decisions for different user groups.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">28</span>
+            <span class="anki-question">Launch criteria for ab testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>1. Statistical Significance</p>
+<ul>
+<li>P-value: Check if the p-value is below the threshold (commonly 0.05). This indicates that the observed difference in results is statistically significant and unlikely due to chance.</li>
+<li>Confidence Interval: Review the confidence intervals for key metrics. If the intervals do not overlap significantly between A and B, this suggests a real difference.</li>
+<li>Effect Size: Measure how large the difference is between the variations. A small but statistically significant result may still not justify the launch if the effect size is negligible in practical terms.2. Impact on Key Metrics</li>
+<li>Primary Metric: Assess whether the primary metric (e.g., conversion rate, retention) improved as hypothesized. If the test variant performs better than the control group and meets the success criteria, it could justify a launch.</li>
+<li>Secondary Metrics: Consider the impact on secondary metrics (e.g., bounce rate, engagement, customer satisfaction). Even if the primary metric shows improvement, negative side effects on secondary metrics (such as user churn or customer complaints) should be factored in.3. Consistency Across Segments</li>
+<li>Segment Analysis: Evaluate whether the test results are consistent across different segments (e.g., demographics, behavior, device type). A positive result overall may still have mixed or negative results in some segments, which could affect your decision to launch.</li>
+<li>Cohort Analysis: Look at how the feature performs over time, including at different times of day or in different user cohorts, to see if the improvements are sustained and not just temporary spikes.4. Statistical Power and Sample Size</li>
+<li>Power of the Test: Ensure that the test had enough power to detect the effect size you're interested in. If the sample size was too small, even a potentially useful feature could go unnoticed.</li>
+<li>Underpowered Test: If the test was underpowered (too small a sample size), and the results are inconclusive, you may need to run a larger or longer test before making a final decision.5. Business Impact</li>
+<li>Cost-Benefit Analysis: Evaluate whether the improvement in the metrics justifies the cost and effort of launching the feature. Even if a change improves key metrics, consider whether the overall business impact (e.g., revenue, user acquisition, brand reputation) supports the feature’s roll-out.</li>
+<li>Return on Investment (ROI): Analyze whether the potential ROI, based on predicted improvements from the feature, aligns with the organization’s strategic goals.6. Risk Assessment</li>
+<li>Potential Negative Impact: Consider any unintended consequences or risks associated with launching the feature. Could there be a significant negative impact on user experience, customer loyalty, or operational efficiency?</li>
+<li>Safety Margin: If the test results are close to the threshold for statistical significance or the effect size is small, you may want to weigh the risks of a possible false positive before rolling out the feature.7. Alignment with Business Goals</li>
+<li>Ensure that the results align with the broader objectives of the product or company. For instance, if the feature improves a key performance metric but doesn’t align with long-term user engagement or business goals, it may not be worth launching.8. Feedback from Stakeholders</li>
+<li>Gather feedback from key stakeholders (e.g., product managers, designers, marketers). Sometimes, even statistically significant results may require alignment with broader organizational goals, user needs, or brand strategy before being approved for launch.9. Testing Over Time</li>
+<li>Sustainability: Consider whether the test results hold up over a longer period. Sometimes, initial positive results can be the result of temporary factors (e.g., novelty), and further testing may be needed before a full-scale launch.</li>
+<li>Re-running the Test: If there’s ambiguity or uncertainty about the results, it’s often better to run additional tests, refine hypotheses, or test with more variants before deciding.Decision Criteria for Launching:</li>
+<li>Launch: If the results show statistically significant and substantial positive changes in key metrics with minimal or manageable negative effects, and the business impact is favorable, it’s a strong case for launching the feature.</li>
+<li>Iterate and Retest: If the results are inconclusive or show only marginal improvements, consider making adjustments to the feature or the test design and running a follow-up test.</li>
+<li>Hold Off: If the results are negative or suggest that the feature will hurt the user experience or business metrics, then it's advisable to hold off on launching the feature.In summary, the decision to launch after an A/B test depends not only on statistical significance but also on the practical impact of the feature on the user experience, business goals, and potential risks.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">29</span>
+            <span class="anki-question">AB testing templatE</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Metrics choosing:</p>
+<p>2. decide lauch critieria</p>
+<p>in pretest, we can conduct some descriptive data exploration on metrics to check the variablity and set the baseline performace/</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">30</span>
+            <span class="anki-question">Sanity check after the test(binominal test if we split 0.5 in each)</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>1. choosing invariant invarant consistancy check)2. checking invarant</p>
+<p>The formula used in the image is for computing the standard deviation of a binomial distribution. Specifically, the formula shown appears to be for calculating the standard deviation (SD) when the probability of success is given (0.5) and the sample sizes for the control and experimental groups are provided.Here’s the breakdown of what is being calculated and why:</p>
+<ul>
+<li>Binomial Distribution Standard Deviation:</li>
+</ul>
+<p>For a binomial distribution, the standard deviation is given by the formula:</p>
+<p>Where:</p>
+<ul>
+<li>n is the sample size.</li>
+<li>p is the probability of success (which is 0.5 in this case, representing a 50% success rate).</li>
+<li></li>
+</ul>
+<p>However, in the formula in the image, it seems like they used the combined sample sizes for both the control and experimental groups. Therefore, the formula is written as:</p>
+<ul>
+<li>Purpose of the Pooled Standard Deviation:</li>
+</ul>
+<p>The formula is combining both sample sizes because it's estimating the standard error of the difference between the two binomial proportions. This is typical in hypothesis testing when comparing proportions between two groups (e.g., control vs. experimental). The standard error is used to calculate the margin of error and ultimately a confidence interval around the expected probability (0.5 here), and then assess whether the observed difference in proportions is within expectations (i.e., within the confidence interval).</p>
+<ul>
+<li>Margin of Error:</li>
+</ul>
+<p>Once the standard deviation is calculated, it’s multiplied by the z-score for the desired confidence level (here, it’s 1.96 for a 95% confidence level) to compute the margin of error.</p>
+<ul>
+<li>Confidence Interval:</li>
+</ul>
+<p>After calculating the margin of error, you can construct a confidence interval around the expected proportion (0.5) and check if the observed fraction (from the experiment) lies within that interval.The reason this formula is used rather than the one for a single binomial distribution is because it's addressing a hypothesis test comparing two binomial proportions (control vs. experimental).</p>
+<p>Upon a closer look, it seems the formula provided in the image uses:</p>
+<p>Why the Difference?The formula you're seeing in the image is slightly simplified. Here's a breakdown:</p>
+<ul>
+<li>Usual Binomial Standard Error:</li>
+<li>The typical formula for the standard error of the difference between two proportions (control and experiment) accounts for each sample size separately:</li>
+</ul>
+<p>This method combines the different sample sizes directly.</p>
+<ul>
+<li>Simplified Approach:</li>
+<li>The approach in the image is a simplified approximation of the above standard error formula. Instead of considering the inverse of each sample size separately, the formula combines the total sample sizes (n control+nexperiment) into one term. This is sometimes used for an easier approximation when dealing with very large sample sizes, assuming the two sample sizes are relatively similar in magnitude and do not heavily skew the results.Why This Works:</li>
+<li>For large sample sizes: When sample sizes are large, this simplification is often close enough to the true standard error, and the resulting margin of error will not differ significantly from the more exact formula. It's a computationally simpler approach, and for large nnn, the error introduced by this approximation is often negligible.</li>
+<li>Pooled Proportion: Since the formula is using a pooled proportion of 0.5 (indicating a 50% success rate) for simplicity, the approximation assumes that this is the best estimate of the success probability for both groups.Summary:The formula in the image uses a simplified version of the standard error calculation, assuming large sample sizes and that the control and experiment groups have approximately equal importance in the calculation. This makes the calculation easier without significantly affecting the result.</li>
+</ul>
+<p>This is Bayes' Theorem, a fundamental rule in probability and statistics. It describes the relationship between conditional probabilities and is used to update the probability of a hypothesis based on new evidence.Formula:</p>
+<p>Use Case:Bayes' Theorem is widely used in:</p>
+<ul>
+<li>Machine learning (e.g., Naive Bayes classifiers)</li>
+<li>Medical testing (e.g., calculating the probability of a disease given a positive test result)</li>
+<li>Decision-making under uncertainty</li>
+<li>Statistical inference</li>
+</ul>
+<p>Scenario:</p>
+<p>Final Answer:The probability that the person actually has the disease given a positive test result is 9%.Key Takeaway:Even with a highly accurate test, the probability of having the disease is low because the disease is rare. This highlights the importance of considering prior probabilities in such analyses.</p>
+<p>The standard deviation (SD) for a binomial distribution is calculated using the formula:</p>
+<p>Example:Suppose a factory produces light bulbs, and 80% of them are good (p=0.8p = 0.8p=0.8). If you test 50 bulbs (n=50):</p>
+<ul>
+<li>p=0.8 1−p=0.2</li>
+<li>Substitute into the formula:</li>
+<li>'Interpretation:The standard deviation is about 2.83 bulbs. This measures the variability in the number of successful outcomes (good bulbs) in 50 trials.</li>
+</ul>
+<p>why when np(1-p) &gt; 5, it fits normal distribution. let's say I tested 200 bulbs instead of 50, will the sd formula changed?\Why Does np(1−p)&gt;5 Approximate a Normal Distribution?The binomial distribution models discrete events (success/failure), but as the sample size (nnn) increases, the Central Limit Theorem (CLT) suggests that the distribution of the sample mean approaches a normal distribution.The condition np(1−p)&gt;5 ensures that:</p>
+<ul>
+<li>Sufficient trials (n): Large enough sample size for meaningful variability.</li>
+<li>Non-extreme probabilities (p): Prevents outcomes being clustered too heavily at one end (e.g., p≈0 or p≈1).This threshold allows the binomial probability mass function to resemble the smooth, continuous bell curve of a normal distribution.Will the Formula for Standard Deviation Change if n=200?No, the formula for the standard deviation remains the same:</li>
+</ul>
+<p>What changes is the value of SD because n is now different.Example:Summary:</p>
+<ul>
+<li>The condition np(1−p)&gt;5 ensures the binomial distribution is well-approximated by a normal distribution.</li>
+<li>The formula for SD does not change; only the value of SD increases as nnn grows.</li>
+</ul>
+<p>what is sample mean in binomial distribution, isn't it the probability?</p>
+<p>In a binomial distribution, the sample mean is not the same as the probability p, but it is directly related to it.Sample Mean in Binomial Distribution:The mean (or expected value) of a binomial distribution is given by:μ=n⋅pWhere:</p>
+<ul>
+<li>n: Number of trials</li>
+<li>p: Probability of success on a single trialThis represents the expected number of successes in nnn trials.Sample Mean vs. Probability:</li>
+<li>The probability ppp refers to the chance of success in a single trial.</li>
+<li>The mean (μ=n⋅p) represents the average number of successes in nnn trials.Example:Suppose:</li>
+<li>You test n=50 light bulbs.</li>
+<li>Each bulb has an 80% chance of being good (p=0.8).</li>
+<li>Probability ppp:</li>
+<li>The chance a single bulb is good: p=0.8.</li>
+<li>Mean (μ\muμ):</li>
+<li>The expected number of good bulbs in 50 tests:</li>
+</ul>
+<p>μ=n⋅p=50⋅0.8=40Sample Mean in Practice:</p>
+<p>pythonAlways show detailsCopy codeimport numpy as np</p>
+<p>import matplotlib.pyplot as plt</p>
+<p>from scipy.stats import binom</p>
+<p># Parameters for the binomial distribution</p>
+<p>n = 300  # Number of trials</p>
+<p>p = 0.8  # Probability of success</p>
+<p># Generate the range of possible successes (0 to n)</p>
+<p>x = np.arange(0, n + 1)</p>
+<p># Calculate the probability mass function (PMF)</p>
+<p>pmf = binom.pmf(x, n, p)</p>
+<p># Plot the binomial distribution</p>
+<p>plt.figure(figsize=(10, 6))</p>
+<p>plt.bar(x, pmf, color='blue', alpha=0.7, label='Binomial Distribution PMF')</p>
+<p>plt.title(f&quot;Binomial Distribution (n={n}, p={p})&quot;, fontsize=14)</p>
+<p>plt.xlabel(&quot;Number of Successes&quot;, fontsize=12)</p>
+<p>plt.ylabel(&quot;Probability&quot;, fontsize=12)</p>
+<p>plt.xlim([200, 300])  # Focus on the meaningful range for better visibility</p>
+<p>plt.legend()</p>
+<p>plt.grid(axis='y', linestyle='--', alpha=0.7)</p>
+<p>plt.show()</p>
+<p>Binomial Distribution (n=300, p=0.8)</p>
+<p>This means that, with 95% confidence, the number of successes will fall within this range. ​​it is a normal distribution in plot, why didn't you use sqrt((x-x-)^2/ n)</p>
+<p>Great question! The reason I didn't use the formula to calculate the standard deviation in this case is because we are working with a theoretical distribution (binomial), not with actual observed data.Why Use the Binomial Formula?</p>
+<ul>
+<li></li>
+</ul>
+<ul>
+<li>4o</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">31</span>
+            <span class="anki-question">what is learning effect</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>The learning effect refers to the phenomenon where individuals or systems improve their performance on a task as they gain experience or familiarity with it. This concept applies broadly in psychology, education, economics, and various fields where repeated exposure leads to better efficiency, accuracy, or understanding.Key Characteristics:</p>
+<ul>
+<li>Improvement Over Time:</li>
+<li>Performance increases (e.g., faster task completion, fewer errors).</li>
+<li>The rate of improvement typically follows a learning curve.</li>
+<li>Learning Curve:</li>
+<li>Often represented as a graph where performance (e.g., speed or accuracy) improves with practice.</li>
+<li>Can be steep initially (rapid improvement) and plateau later.</li>
+<li>Applications:</li>
+<li>Individual Level: Skills like typing, driving, or solving puzzles improve with practice.</li>
+<li>Organizational Level: Manufacturing processes become more efficient over time.</li>
+<li>Factors Influencing Learning Effect:</li>
+<li>Experience: More repetitions or practice lead to greater improvement.</li>
+<li>Feedback: Timely and relevant feedback accelerates learning.</li>
+<li>Motivation: Individuals motivated to improve learn faster.</li>
+<li>Complexity of Task: Simpler tasks show faster learning effects than complex ones.Examples of Learning Effect:</li>
+<li>Psychology:</li>
+<li>A person solving a puzzle repeatedly may solve it faster each time.</li>
+<li>Education:</li>
+<li>Students learning math problems get better as they practice more.</li>
+<li>Economics:</li>
+<li>Companies manufacturing a product reduce costs over time as they optimize production.Mathematical Representation (Learning Curve):The learning effect in production is often modeled as:Y=A⋅XbY = A \cdot X^bY=A⋅XbWhere:</li>
+<li>YYY: Time or cost per unit</li>
+<li>AAA: Time or cost for the first unit</li>
+<li>XXX: Cumulative number of units produced</li>
+<li>bbb: Learning rate coefficientThis equation reflects how each additional unit takes less time or cost than the previous one.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">32</span>
+            <span class="anki-question">What is Simpson's Paradox?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>What is Simpson's Paradox?Simpson's Paradox is a phenomenon in statistics where a trend or difference observed in separate groups reverses when the groups are combined. This paradox highlights how relationships between variables can change when data is aggregated or disaggregated.</p>
+<p>Simpson's Paradox in A/B testing occurs when a version appears better overall but performs worse in each individual segment due to uneven group sizes or confounding variables distorting the aggregated results.</p>
+<p>Real-Life ExampleScenario: Treatment Effectiveness</p>
+<ul>
+<li>You’re comparing the success rate of two treatments (A and B) for a medical condition.Group-Level Data:GroupTreatment A SuccessTreatment A TotalTreatment A RateTreatment B SuccessTreatment B TotalTreatment B RateGroup 1305060%205040%Group 2155030%405080%</li>
+<li>In Group 1, Treatment A is better (60% vs. 40% success).</li>
+<li>In Group 2, Treatment B is better (80% vs. 30% success).Combined Data:TreatmentTotal SuccessTotal TrialsOverall RateTreatment A4510045%Treatment B6010060%</li>
+<li>When you combine the groups, Treatment B appears better overall, reversing the trend from each group.Underlying Reason: Confounding VariablesThe paradox occurs because of a confounding variable—a variable that affects the relationship between the variables of interest. In this case:</li>
+<li>The group (Group 1 vs. Group 2) acts as a confounder.</li>
+<li>The distribution of patients across the groups (e.g., more challenging cases in Treatment A for Group 2) affects the combined results.Key Points About Simpson's Paradox</li>
+<li>Aggregation Hides Differences:</li>
+<li>Combining data can obscure relationships that are clear at the group level.</li>
+<li>Direction of Trends:</li>
+<li>Trends can reverse when groups are combined due to unequal group sizes or differing characteristics.</li>
+<li>Confounding Variables:</li>
+<li>The paradox arises because a lurking variable (e.g., group, gender, age) is unevenly distributed across categories being compared.</li>
+<li>Interpretation Challenge:</li>
+<li>Aggregated data might lead to misleading conclusions if confounding variables aren’t accounted for.Underlying Statistical Reason</li>
+<li>Weighted Averages:</li>
+<li>When combining groups, the overall rates are weighted by group sizes. This can amplify the influence of one group over another.</li>
+<li>Conditional vs. Marginal Relationships:</li>
+<li>Conditional Relationship: The relationship observed within each group.</li>
+<li>Marginal Relationship: The relationship observed in the combined data.</li>
+<li>Simpson’s Paradox occurs when the conditional and marginal relationships differ.Preventing Simpson’s Paradox</li>
+<li>Always Check Subgroups:</li>
+<li>Analyze data at the subgroup level to identify potential confounders.</li>
+<li>Control for Confounders:</li>
+<li>Use statistical techniques like stratification, regression, or adjustment to account for confounding variables.</li>
+<li>Understand Context:</li>
+<li>Domain knowledge helps identify which variables might confound the results.Real-Life Implications</li>
+<li>Medicine: Treatment effectiveness can appear misleading without controlling for demographics.</li>
+<li>Sports: Player performance stats may reverse when comparing across seasons or teams.</li>
+<li>Business: Sales trends can change when combining data from different regions or product categories.Would you like to see another example or discuss specific applications of this paradox?</li>
+</ul>
+<p>Simpson's Paradox can also appear in A/B testing, where you test two versions of a product or feature (e.g., a webpage or app) to determine which performs better. If you analyze the results incorrectly, you might draw misleading conclusions about which version is better.Example of Simpson's Paradox in A/B Testing:Imagine you're testing two versions of a webpage, A and B, to see which drives more user signups. You run the test across two user segments: Desktop and Mobile.SegmentVersion A Conversion RateVersion B Conversion RateDesktop20% (200/1,000)30% (300/1,000)Mobile10% (100/1,000)5% (50/1,000)</p>
+<ul>
+<li>Desktop Users: Version B performs better.</li>
+<li>Mobile Users: Version A performs better.Aggregated Results:OverallVersion A Conversion RateVersion B Conversion RateTotal15% (300/2,000)17.5% (350/2,000)At the overall level, Version B seems better (17.5% vs. 15%). However:</li>
+<li>On Desktop, Version B is clearly better.</li>
+<li>On Mobile, Version A is better.Why Does the Paradox Occur?</li>
+<li>Imbalance in User Distribution:</li>
+<li>There are unequal proportions of users on Desktop and Mobile.</li>
+<li>For example, if Mobile has far more users than Desktop, its lower performance affects the overall results more.</li>
+<li>Confounding Variable:</li>
+<li>The device type (Desktop/Mobile) acts as a confounding variable influencing the performance of Versions A and B.</li>
+<li>Aggregation Bias:</li>
+<li>Combining results across segments without accounting for the underlying differences leads to a misleading conclusion.How to Avoid Simpson's Paradox in A/B Testing</li>
+<li>Segmented Analysis:</li>
+<li>Always analyze conversion rates separately for key subgroups (e.g., device types, regions, demographics).</li>
+<li>Weighted Averages:</li>
+<li>Use weights to account for differences in subgroup sizes. For example, calculate conversion rates for each segment and then combine them in a way that reflects their relative importance.</li>
+<li>Multivariate Analysis:</li>
+<li>Use statistical techniques (e.g., logistic regression) to account for confounding variables when analyzing results.</li>
+<li>Understand Context:</li>
+<li>Consider external factors (e.g., user behavior on Mobile vs. Desktop) that might influence the outcomes.By being aware of Simpson's Paradox and carefully analyzing data in segments, you can make better decisions in A/B testing and avoid drawing incorrect conclusions from aggregated data.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">33</span>
+            <span class="anki-question">sd and se</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Standard Deviation (SD):The standard deviation measures the spread or variability of a dataset. It tells us how much individual data points deviate, on average, from the mean of the dataset.Formula:</p>
+<p>Standard Error (SE):The standard error measures the precision of a sample mean (xˉ\bar{x}xˉ) as an estimate of the population mean (μ\muμ). It quantifies how much the sample mean is likely to vary from sample to sample.Formula:</p>
+<p>Key Differences:AspectStandard Deviation (SD)Standard Error (SE)What it MeasuresVariability of data points in a datasetPrecision of the sample meanUse CaseDescribes spread in a datasetAssesses reliability of a sample mean estimateDepends OnData variabilitySample size and standard deviationFormula∑(xi−xˉ)2n\sqrt{\frac{\sum (x_i - \bar{x})^2}{n}}n∑(xi​−xˉ)2​​SDn\frac{SD}{\sqrt{n}}n​SD​Changes with nnnDoes not depend on sample sizeDecreases as sample size increasesExample:Suppose you measure the heights of 10 students:</p>
+<ul>
+<li>Heights (in cm): 160, 162, 161, 159, 165, 163, 164, 160, 162, 161.</li>
+<li>Mean (xˉ) = 161.7 cm</li>
+<li>Standard deviation (SD) = 1.9 cmIf you calculate the standard error:Summary:</li>
+<li>SD: Describes variability within a single dataset.</li>
+<li>SE: Describes how much the sample mean varies across samples.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">34</span>
+            <span class="anki-question">SE in hypothesis testing and SE in CI</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>The difference between the Standard Error (SE) for Confidence Interval (CI) and the SE for hypothesis testing arises due to the way uncertainty is handled in the two contexts:</p>
+<ul>
+<li>SE for Confidence Interval (CI):</li>
+<li>It is computed using the actual sample proportions for both groups (p1​ and p2).</li>
+<li></li>
+</ul>
+<ul>
+<li>This SE accounts for the variability specific to each group's observed data, making it more precise for constructing the CI of the difference between proportions.</li>
+<li>SE for Hypothesis Testing:</li>
+<li>It assumes a pooled proportion (p^\hat{p}p^​) under the null hypothesis, which combines the data from both groups. This is because hypothesis testing assumes no difference between the groups (p1=p2).</li>
+<li></li>
+</ul>
+<p>Key Reason for the Difference:</p>
+<ul>
+<li>Confidence Interval: SE uses the actual data (p1​ and p2​) to reflect the observed proportions.</li>
+<li>Hypothesis Testing: SE pools data (p^​) to assume a common proportion under the null hypothesis, which simplifies calculations when testing the significance of differences.Practical Impact:</li>
+<li>The SE for CI is generally larger than for hypothesis testing because it incorporates separate variability for each group rather than assuming they share the same distribution.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">35</span>
+            <span class="anki-question">When to Use Pooled Standard Deviation</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>The choice between using a pooled standard deviation (pooled SD) and a normal (individual sample) standard deviation depends on the context of your statistical analysis and the characteristics of your data. Here's a breakdown of when to use each:When to Use Pooled Standard Deviation</p>
+<ul>
+<li>Comparing Groups (e.g., t-tests or ANOVA):</li>
+<li>Use pooled SD when comparing two or more groups, assuming the variance across the groups is equal (homogeneity of variance).</li>
+<li>It provides a single estimate of variability by combining the standard deviations of multiple groups.</li>
+<li>Formula Context:</li>
+<li>Pooled SD is often used in situations like independent samples t-tests, where the groups have different sample sizes.</li>
+<li>It's calculated as a weighted average of the variances of the groups:</li>
+</ul>
+<p>sp=(n1−1)s12+(n2−1)s22n1+n2−2s_p = \sqrt{\frac{(n_1-1)s_1^2 + (n_2-1)s_2^2}{n_1 + n_2 - 2}}sp​=n1​+n2​−2(n1​−1)s12​+(n2​−1)s22​​​</p>
+<ul>
+<li>Here, s12s_1^2s12​ and s22s_2^2s22​ are the sample variances, and n1n_1n1​ and n2n_2n2​ are the sample sizes.</li>
+<li>Example Use Case:</li>
+<li>Comparing the means of test scores from two classrooms, assuming similar variability in both classrooms.When to Use Normal Standard Deviation</li>
+<li>Descriptive Statistics:</li>
+<li>Use normal SD when you want to describe the variability within a single dataset or group.</li>
+<li>It's calculated as:</li>
+</ul>
+<p>s=∑(xi−xˉ)2n−1s = \sqrt{\frac{\sum (x_i - \bar{x})^2}{n-1}}s=n−1∑(xi​−xˉ)2​​</p>
+<p>where xix_ixi​ are data points, xˉ\bar{x}xˉ is the mean, and nnn is the sample size.</p>
+<ul>
+<li>Single Group Analysis:</li>
+<li>Use when analyzing the spread or dispersion of data for a single group without comparing it to others.</li>
+<li>Examples: variability of heights in a class, weights of apples in a basket.</li>
+<li>Assumptions:</li>
+<li>No assumption of equal variance is required, as you're dealing with a single dataset.Summary Decision TableScenarioUse Pooled SDUse Normal SDComparing two or more groups (equal variances)✅❌Comparing two or more groups (unequal variances)❌✅ (individual SDs used in Welch's t-test)Describing variability within a single group❌✅Calculating confidence intervals for one group❌✅If you're unsure, always test for homogeneity of variance (e.g., using Levene's test) before deciding to use a pooled SD in group comparisons.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">36</span>
+            <span class="anki-question">Standard Error (SE) for Confidence Interval (CI) and the SE for hypothesis testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>The difference between the Standard Error (SE) for Confidence Interval (CI) and the SE for hypothesis testing arises due to the way uncertainty is handled in the two contexts:</p>
+<ul>
+<li>SE for Confidence Interval (CI):</li>
+<li>It is computed using the actual sample proportions for both groups (p1p_1p1​ and p2p_2p2​).</li>
+<li>Formula:</li>
+</ul>
+<p>SECI=p1(1−p1)n1+p2(1−p2)n2SE_{CI} = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}SECI​=n1​p1​(1−p1​)​+n2​p2​(1−p2​)​​</p>
+<ul>
+<li>This SE accounts for the variability specific to each group's observed data, making it more precise for constructing the CI of the difference between proportions.</li>
+<li>SE for Hypothesis Testing:</li>
+<li>It assumes a pooled proportion (p^\hat{p}p^​) under the null hypothesis, which combines the data from both groups. This is because hypothesis testing assumes no difference between the groups (p1=p2p_1 = p_2p1​=p2​).</li>
+<li>Formula:</li>
+</ul>
+<p>SEhypothesis testing=p^(1−p^)(1n1+1n2)SE_{hypothesis\ testing} = \sqrt{\hat{p}(1-\hat{p})\left(\frac{1}{n_1} + \frac{1}{n_2}\right)}SEhypothesis testing​=p^​(1−p^​)(n1​1​+n2​1​)​</p>
+<ul>
+<li>p^=x1+x2n1+n2\hat{p} = \frac{x_1 + x_2}{n_1 + n_2}p^​=n1​+n2​x1​+x2​​, where x1x_1x1​ and x2x_2x2​ are the number of successes in the two samples.Key Reason for the Difference:</li>
+<li>Confidence Interval: SE uses the actual data (p1p_1p1​ and p2p_2p2​) to reflect the observed proportions.</li>
+<li>Hypothesis Testing: SE pools data (p^\hat{p}p^​) to assume a common proportion under the null hypothesis, which simplifies calculations when testing the significance of differences.Practical Impact:</li>
+<li>The SE for CI is generally larger than for hypothesis testing because it incorporates separate variability for each group rather than assuming they share the same distribution.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">37</span>
+            <span class="anki-question">. Standard Error of the Difference in Proportions and Mean</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>. Standard Error of the Difference in ProportionsThe standard error (SE) of the difference in proportions is used to assess the variability when comparing two proportions (e.g., in A/B testing). The formula is:</p>
+<p>2. Standard Error of the Difference in MeansThe standard error (SE) of the difference in means is used when comparing the means of two independent groups. The formula is:</p>
+<p>Key Differences:</p>
+<ul>
+<li>Proportions: Focuses on variability of rates or percentages (e.g., sign-up rates, click-through rates).</li>
+<li>Means: Focuses on variability of averages in continuous data (e.g., time spent on a website, test scores).</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">38</span>
+            <span class="anki-question">low sample size will have type 1 or type 2 error?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>A low sample size can lead to both Type I and Type II errors, but it primarily increases the risk of Type II errors. Here’s a breakdown:1. Type I Error (False Positive):</p>
+<ul>
+<li>This occurs when you reject the null hypothesis (H₀) when it is actually true.</li>
+<li>Impact of low sample size:</li>
+<li>A smaller sample size does not inherently increase the probability of a Type I error because the significance level (α\alphaα) is typically set in advance (e.g., 0.05).</li>
+<li>However, low sample sizes can lead to higher variability in data, which might lead to an unusual outcome being falsely interpreted as significant.2. Type II Error (False Negative):</li>
+<li>This occurs when you fail to reject the null hypothesis (H₀) when it is actually false.</li>
+<li>Impact of low sample size:</li>
+<li>Low sample size reduces the statistical power of the test (the ability to detect an effect when one truly exists).</li>
+<li>This increases the likelihood of failing to detect a true effect (i.e., committing a Type II error).Summary:</li>
+<li>Primary Concern with Low Sample Size: Higher Type II error rate due to insufficient statistical power.</li>
+<li>Secondary Concern: Increased variability can indirectly affect Type I error, but this is less common if you stick to a predefined α\alphaα.Solution:</li>
+<li>Increase the sample size to improve power and reduce Type II errors.</li>
+<li>Perform a power analysis before the experiment to determine the required sample size based on the desired significance level (α\alphaα), power (1 - β\betaβ), and effect size.Let me know if you'd like an example or explanation of how to conduct a power analysis!</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">39</span>
+            <span class="anki-question">When to Use Z-test vs. T-test</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <ul>
+<li>Z-test:</li>
+<li>Use when:</li>
+<li>Population standard deviation (σ\sigmaσ) is known.</li>
+<li>Sample size n&gt;30n &gt; 30n&gt;30 (large samples approximate normality via the Central Limit Theorem).</li>
+<li>For proportion comparisons.</li>
+<li>Example: Comparing the average height of a group to the national average when σ\sigmaσ is known.</li>
+<li>T-test:</li>
+<li>Use when:</li>
+<li>Population standard deviation (σ\sigmaσ) is unknown.</li>
+<li>Sample size n≤30n \leq 30n≤30 (small samples where the t-distribution applies).</li>
+<li>For comparing means.</li>
+<li>Example: Comparing average customer spend for two marketing strategies.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">40</span>
+            <span class="anki-question">2 sample or on sample?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Let’s break this down into concise explanations for each topic with relevant examples and formulas.</p>
+<ul>
+<li></li>
+<li></li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">41</span>
+            <span class="anki-question">when you are running a t- test or z-test. how would you know the result is signigicant? looking at t statis? p value? or confidenct interval</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>When running a t-test or z-test, you can determine if the result is statistically significant by considering the following:1. P-Value</p>
+<ul>
+<li>The p-value is the most commonly used criterion for determining significance.</li>
+<li>Compare the p-value to your chosen significance level (α\alphaα, typically 0.05):</li>
+<li>p&lt;α: Reject the null hypothesis (H0), the result is significant.</li>
+<li>p≥α\: Fail to reject H0, the result is not significant.How to Interpret:</li>
+<li>Example: If α=0.05 and the p-value is 0.03:</li>
+<li>Since p&lt;0.05, the result is significant.</li>
+<li>You conclude that there is evidence to reject the null hypothesis.2. Test Statistic (t or z)</li>
+<li>The t-statistic or z-statistic measures the difference between the observed data and the null hypothesis in terms of standard errors.</li>
+<li>Compare the calculated t or z-statistic to the critical value from the respective distribution for a given significance level (α\alphaα):</li>
+<li>If the absolute value of the test statistic exceeds the critical value, the result is significant.</li>
+<li>Critical values depend on the significance level (α\alphaα) and degrees of freedom (for t-tests).How to Interpret:</li>
+<li>Example: For a two-tailed test with α=0.05</li>
+<li>Critical value for ttt-test with 10 degrees of freedom is approximately ±2.228\pm 2.228±2.228.</li>
+<li>If t=2.5, then ∣t∣&gt;2.228, so the result is significant.3. Confidence Interval</li>
+<li>A confidence interval (CI) provides a range of values for the population parameter (e.g., mean difference) and helps assess significance.</li>
+<li>If the null hypothesis value (e.g., 0) is outside the confidence interval, the result is significant.</li>
+<li>For a 95% confidence interval:</li>
+<li>If 0 (for mean difference) is not within the interval, p&lt;0.05</li>
+<li>If 0 is inside the interval, p≥0.0How to Interpret:</li>
+<li>Example: CI = [2.1, 4.5]:</li>
+<li>If testing whether the mean difference = 0, the result is significant because 000 is not within the CI.</li>
+<li>Example: CI = [-0.5, 3.2]:</li>
+<li>The result is not significant because 000 lies within the CI.Which Criterion to Use?</li>
+<li>P-Value: Most straightforward and widely used. It directly tells you the probability of observing the data under the null hypothesis.</li>
+<li>Test Statistic: Use when comparing to critical values or when p-values are not provided (e.g., during manual calculations).</li>
+<li>Confidence Interval: Useful for estimating the size of the effect and determining significance.Best Practice</li>
+<li>Report all three:</li>
+<li>Include the p-value, test statistic, and confidence interval for a complete interpretation.</li>
+<li>Focus on the context:</li>
+<li>If you're testing only for significance, the p-value or test statistic is sufficient.</li>
+<li>If you're interested in both significance and effect size, the confidence interval is crucial.ExampleScenario: Testing if a new teaching method improves test scores compared to the standard method.</li>
+<li>Null Hypothesis: Mean improvement = 0.</li>
+<li>Results:</li>
+<li>t=2.8, p-value = 0.02, CI = [1.2, 5.6].Interpretation:</li>
+<li>P-Value: Since p=0.02&lt;0.05, the result is significant.</li>
+<li>Test Statistic: For t=2.8, if the critical value is 2.1, ∣t∣&gt;2.1, so the result is significant.</li>
+<li>Confidence Interval: The CI ([1.2, 5.6]) does not contain 000, so the result is significant.Let me know if you'd like further clarification or help interpreting test results!4oYou said:Confidence Interval</li>
+</ul>
+<p>A confidence interval (CI) provides a range of values for the population parameter (e.g., mean difference) and helps assess significance. for this, isn;t there 2 CI?</p>
+<p>You're absolutely correct! When discussing confidence intervals (CIs), there are indeed two potential types of confidence intervals that could come into play in a hypothesis test scenario, depending on the test being conducted and the parameter of interest.Let's break this down:1. Confidence Interval for Each Group MeanIn a comparison involving two groups (e.g., using a t-test), you can calculate a confidence interval for the mean of each group individually. These intervals estimate the population mean for each group and provide a range of plausible values for those means.</p>
+<ul>
+<li>Example:</li>
+<li>Group A: CI = [50, 60]</li>
+<li>Group B: CI = [65, 75]These intervals are helpful for understanding where the population means for each group might lie, but they don’t directly tell you if the groups differ significantly.Why the Two CIs Matter</li>
+</ul>
+<ul>
+<li>CI for Each Group Mean: Useful for describing the range of plausible values for each group's population mean. They don’t directly assess the hypothesis about the difference.</li>
+<li>CI for the Difference Between Means: Directly tests the hypothesis and assesses whether the groups are significantly different.In hypothesis testing, the confidence interval for the difference between means is typically the one of interest because it aligns with the purpose of determining significance.Connection Between the Two CIs</li>
+<li>The CI for the difference between means is related to the individual group CIs but accounts for the variability in both groups and combines it.</li>
+<li>For instance:</li>
+<li>If the CIs for two groups overlap, it doesn't always mean the difference is not significant. The CI for the difference might still exclude 0, so further calculations are necessary.</li>
+<li>If the CIs for two groups don’t overlap, the difference is almost always significant.Visual ExampleLet’s say you’re comparing the mean test scores of Group A and Group B:Group-Level CIs:</li>
+<li>Group A Mean = 55, CI = [50, 60]</li>
+<li>Group B Mean = 70, CI = [65, 75]Difference CI:</li>
+<li>μ1−μ2​: Difference = 55 - 70 = -15</li>
+<li>CI for the Difference: [-20, -10]</li>
+<li>Interpretation:</li>
+<li>Since 0 is not in the CI for the difference, the difference is significant.</li>
+<li>The individual group CIs overlap the same logic but indirectly relate to significance.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">42</span>
+            <span class="anki-question">What is RCT</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>RCT (Randomized Controlled Trial)A Randomized Controlled Trial (RCT) is a scientific experiment used to measure the causal impact of an intervention or treatment by randomly assigning participants to different groups. It is widely used in clinical research, A/B testing, and policy evaluation.1. Key Components of an RCT</p>
+<ul>
+<li>Randomization 🌀</li>
+<li>Participants (or units) are randomly assigned to either the treatment group (receives intervention) or the control group (no intervention or placebo).</li>
+<li>Ensures that differences in outcomes are due to the treatment, not pre-existing biases.</li>
+<li>Control Group 🎛</li>
+<li>A baseline group that does not receive the treatment.</li>
+<li>Helps in comparing the effect of the treatment group against those who did not receive it.</li>
+<li>Treatment Group 💊</li>
+<li>The group that receives the intervention or experiment.</li>
+<li>Blinding (Optional) 👁‍🗨</li>
+<li>Single-blind: Participants don’t know which group they are in.</li>
+<li>Double-blind: Both participants and researchers don’t know the group assignments to prevent bias.</li>
+<li>Outcome Measurement 📊</li>
+<li>The variable(s) used to measure the effect of the treatment (e.g., recovery rate, conversion rate, engagement level).2. Why Use RCTs?✅ Causal Inference – Helps determine cause-and-effect relationships.</li>
+</ul>
+<p>✅ Removes Confounders – Randomization ensures external factors don’t bias results.</p>
+<p>✅ Gold Standard in Experiments – Used in medicine, tech (A/B testing), and social sciences.3. Example: RCT in MedicineA pharmaceutical company tests a new drug for reducing blood pressure.</p>
+<ul>
+<li>Treatment group: 100 patients receive the new drug.</li>
+<li>Control group: 100 patients receive a placebo (sugar pill).</li>
+<li>Outcome: Measure average blood pressure after 3 months.</li>
+<li>Analysis: Compare the difference between the two groups.If the treatment group significantly lowers blood pressure compared to the control group, the drug is effective.4. Example: RCT in A/B TestingA company wants to test a new website design.</li>
+<li>Treatment group: 50% of users see the new design.</li>
+<li>Control group: 50% of users see the current design.</li>
+<li>Outcome: Compare click-through rate (CTR) and conversion rate.If the new design significantly increases conversions, the company adopts it.5. Statistical Analysis of RCTsThe effectiveness of a treatment is often tested using:</li>
+<li>t-tests (for comparing means)</li>
+<li>ANOVA (if multiple groups)</li>
+<li>Chi-square tests (for categorical data)</li>
+<li>Regression models (to adjust for small variations)A significant p-value (p &lt; 0.05) suggests the treatment had a real effect.6. Common Issues in RCTs🚧 Selection Bias – If randomization fails, groups may not be comparable.</li>
+</ul>
+<p>🚧 Attrition Bias – If too many people drop out, results may be skewed.</p>
+<p>🚧 Placebo Effect – Participants may show improvement simply because they believe they are receiving treatment.</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">43</span>
+            <span class="anki-question">Properties of derivative</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Ps : f(t) here is area</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">44</span>
+            <span class="anki-question">t test vs z test</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>You said:t test和z test区别？</p>
+<p>ChatGPT said:t 检验（t-test）和 z 检验（z-test）都是用来做均值假设检验的统计方法，但它们的适用条件不同。核心区别主要在于：是否已知总体标准差，以及样本量大小。下面给你系统讲清楚。一句话核心区别</p>
+<ul>
+<li>z test：已知总体标准差 σ，或者样本量很大（n ≥ 30）</li>
+<li>t test：未知总体标准差，用样本标准差 s 代替（更常见）一、什么时候用 z test？适用条件：</li>
+<li>总体标准差 σ 已知（现实中很少）</li>
+<li>或样本量很大（通常 n ≥ 30，中心极限定理生效）使用的分布：👉 标准正态分布（Z 分布）公式：Z=xˉ−μσ/nZ=σ/n​xˉ−μ​特点：</li>
+<li>分布固定</li>
+<li>尾部较“瘦”</li>
+<li>临界值固定（比如 95% 置信区间是 1.96）二、什么时候用 t test？适用条件：</li>
+<li>总体标准差 σ 不知道（几乎所有现实情况）</li>
+<li>样本量较小（n &lt; 30）使用的分布：👉 t 分布（Student's t distribution）公式：t=xˉ−μs/nt=s/n​xˉ−μ​其中：</li>
+<li>s 是样本标准差</li>
+<li>自由度 df = n − 1特点：</li>
+<li>分布比正态分布“胖尾”</li>
+<li>样本越小，尾巴越胖</li>
+<li>样本越大，t 分布会逐渐接近正态分布三、直观理解为什么小样本用 t？因为：</li>
+<li>你不知道总体标准差</li>
+<li>用样本标准差代替会引入额外不确定性</li>
+<li>t 分布把这种不确定性考虑进去了</li>
+<li>所以它更“保守”四、对比总结表对比项z testt test是否已知总体标准差必须已知不需要样本量大样本小样本分布标准正态分布t 分布尾部较瘦较胖是否更常用❌ 很少✅ 非常常用现实中：👉 95% 情况都用 t-test因为你几乎不可能知道真实总体标准差。五、举个例子你测 10 个用户的平均停留时间，想知道是否等于 5 分钟。</li>
+<li>你不知道全体用户的真实标准差</li>
+<li>样本只有 10 个👉 用 t test如果你测了 5000 个用户：</li>
+<li>即便不知道总体标准差</li>
+<li>样本够大👉 可以近似用 z test（但很多统计软件还是默认用 t）六、进阶一点：常见 t-test 类型</li>
+<li>单样本 t-test</li>
+<li>双样本独立 t-test</li>
+<li>配对样本 t-testz-test一般只用于：</li>
+<li>单样本均值检验</li>
+<li>比例检验（大样本）七、考试/面试快速回答版本如果面试问：t-test 和 z-test 的区别？标准回答：z-test用于总体标准差已知或大样本情况下，基于正态分布；</li>
+</ul>
+<p>t-test用于总体标准差未知的小样本情况，基于t分布，尾部更厚，更保守。如果你愿意，我可以再给你画一个“图像理解版本”，帮你彻底搞懂为什么 t 分布尾巴更胖。</p>
+<p>You said:比例检验是什么意思，比如我的primary metrics是 xxx per xxx,应该用t 还是 z</p>
+<p>ChatGPT said:这个问题问得非常好 👍 ——已经是实战统计思维了。我们分两步讲清楚：</p>
+<ul>
+<li>什么是比例检验</li>
+<li>你的 primary metric 是 xxx per xxx 时该用 t 还是 z一、比例检验（proportion test）是什么意思？比例检验用于判断：某个“发生概率”或“转化率”是否有显著差异比如：</li>
+<li>转化率：下单人数 / 访问人数</li>
+<li>点击率：点击人数 / 展示人数</li>
+<li>留存率：次日回访人数 / 首日用户数这种指标的本质是：p=成功次数总次数p=总次数成功次数​每个个体只有两种结果：</li>
+<li>成功 / 失败</li>
+<li>1 / 0👉 本质是 Bernoulli 分布</li>
+</ul>
+<p>👉 总体服从 Binomial 分布</p>
+<p>👉 样本量大时近似 正态分布比例检验通常用 z-test比例检验的标准统计量是：Z=p1−p2SEZ=SEp1​−p2​​标准误：SE=p(1−p)(1n1+1n2)SE=p(1−p)(n1​1​+n2​1​)​为什么用 z？因为：</p>
+<ul>
+<li>比例的方差是已知形式 p(1-p)</li>
+<li>大样本下直接近似正态</li>
+<li>不需要用 t 分布👉 所以：比例检验通常用 z-test二、如果 primary metric 是 “xxx per xxx” 怎么判断？关键问题是：你的指标是“比例”还是“连续变量的均值”？我们分情况。情况 1：xxx per xxx 是转化类指标比如：</li>
+<li>orders per session</li>
+<li>clicks per impression</li>
+<li>conversion per visit</li>
+<li>signup per exposure本质是：每个 session 只有 0 或 1 次成功（或非常低概率）👉 这是比例✅ 用 z-test情况 2：xxx per xxx 是连续值的平均比如：</li>
+<li>revenue per user</li>
+<li>time spent per user</li>
+<li>spend per buyer</li>
+<li>GMV per session这时候：</li>
+<li>每个用户是连续值</li>
+<li>不是 0/1👉 本质是比较“均值”✅ 应该用 t-test三、一个判断口诀问自己一句话：单个观测值是不是 0/1？如果是：👉 比例检验 → z-test如果不是：👉 均值检验 → t-test四、为什么很多 A/B test 默认用 z？因为：</li>
+<li>大厂实验流量很大</li>
+<li>比例型指标很多（CVR、CTR）</li>
+<li>样本量大 → 正态近似成立所以常见默认：👉 两比例 z-test五、一个常见误区很多人看到 “per” 就觉得是比例。其实不是。比如：revenue per user不是比例。因为：一个用户可以贡献 $0、$10、$100…不是成功概率。它是连续变量的平均。👉 应该用 t-test。六、真实实验场景总结指标类型例子用什么转化率signup ratez-test点击率CTRz-test0/1行为purchase yes/noz-test金额revenue per usert-test时长time spentt-test订单数orders per user（可能&gt;1）t-test七、但有一个更高级的现实情况在工业界（Meta / Google / Airbnb 等）：即使是连续指标，很多平台也直接用：👉 z-test + 中心极限定理因为：</li>
+<li>样本巨大</li>
+<li>t 和 z 几乎一样八、最后给你一句实战建议如果是：</li>
+<li>CVR / CTR / rate → 用 z</li>
+<li>Revenue / GMV / Time → 用 t如果流量非常大：👉 t 和 z 差别几乎为 0如果你愿意，可以告诉我你的 primary metric 具体是什么（比如 orders per session 还是 revenue per session），我可以帮你具体判断应该怎么做，甚至告诉你是否要用 delta method。</li>
+</ul>
+<p>You said:可是如果是revenue per lead呢</p>
+<p>ChatGPT said:这个问题问得非常好，而且已经进入实验设计的核心层面了 👍我们一步一步拆开说清楚。一、revenue per lead 本质是什么？Revenue per Lead=总收入Lead 数Revenue per Lead=Lead 数总收入​关键问题是：👉 一个 lead 对应的 revenue 是不是 0/1？不是。一个 lead 可能：</p>
+<ul>
+<li>$0</li>
+<li>$20</li>
+<li>$300</li>
+<li>$5000它是一个连续变量所以本质上你是在比较：E[Revenue]E[Revenue]也就是：👉 每个 lead 的平均 revenue二、统计上它属于什么？它不是比例</li>
+</ul>
+<p>它不是 Bernoulli</p>
+<p>它不是二项分布它是：👉 连续随机变量的均值比较所以标准答案是：✅ 用 t-test（两样本均值检验）三、为什么不是 z-test？比例检验（z-test）适用于：成功次数/总次数成功次数/总次数比如：</p>
+<ul>
+<li>purchase rate</li>
+<li>click rate</li>
+<li>signup rate这些是 0/1 结果。而 revenue per lead 不是成功概率。它是：数值大小的平均所以不是 proportion test。四、现实世界要注意的一件大事 ⚠Revenue 类指标通常：</li>
+<li>极度右偏</li>
+<li>heavy tail</li>
+<li>有极端 outlier这时：单纯 t-test 可能不稳。工业界常见做法：</li>
+<li>Winsorize（截尾）</li>
+<li>Log transform</li>
+<li>Bootstrap</li>
+<li>用 delta method（如果是 ratio of sums）五、一个更深的问题：你算的是“均值”还是“ratio of sums”？有两种算法：方法 A（推荐）先算每个 lead 的 revenue，然后求平均Xˉ=1n∑revenueiXˉ=n1​∑revenuei​👉 这是均值</li>
+</ul>
+<p>👉 直接 t-test方法 B用：总 revenue总 leads总 leads总 revenue​如果是实验层面整体汇总后再算 ratio：那它是：👉 ratio estimator严格来说应该用：</p>
+<ul>
+<li>delta method</li>
+<li>或 bootstrap不过在大样本下：👉 和 t-test 结果几乎一样六、实战判断流程问自己：</li>
+<li>每个单位是不是有一个连续 revenue？</li>
+<li>是 → t-test</li>
+<li>是不是 0/1？</li>
+<li>是 → z-testRevenue per lead：👉 每个 lead 对应一个连续值</li>
+</ul>
+<p>👉 用 t-test七、工业界真实情况在 Meta / Google / Airbnb：</p>
+<ul>
+<li>revenue 类 metric 几乎都按均值做</li>
+<li>大样本下直接用 z 近似</li>
+<li>小样本用 t</li>
+<li>重要实验用 bootstrap 做稳健性八、给你一个直观总结指标本质用什么Conversion rate概率zCTR概率zRevenue per user连续均值tRevenue per lead连续均值tOrders per user (&gt;1)计数均值t九、一句话结论Revenue per lead 是均值比较问题，不是比例问题。👉 标准做法：两样本 t-test</li>
+</ul>
+<p>👉 大样本下：t ≈ z</p>
+<p>👉 如果 heavy tail 很严重，考虑 bootstrap如果你愿意，我可以再给你讲一个更高级的：为什么“conversion rate × revenue per converter”</p>
+<p>和 “revenue per user” 在统计结构上完全不同。那个是很多人做实验会踩的坑。</p>
+          </div>
+        </div>
+
+        <div class="post-nav" style="margin-top:32px;">
+          <a href="../index.html" class="back-link">&#8592; Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/editor.js"></script>
+</body>
+</html>

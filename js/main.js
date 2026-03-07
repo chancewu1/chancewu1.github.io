@@ -24,15 +24,12 @@ $(function () {
 
   // ===== After page load / navigation =====
   var afterLoad = function () {
-    // Open external links in new tab
     main.find('a').filter(function () {
       return this.hostname && this.hostname !== window.location.hostname;
     }).attr('target', '_blank');
 
-    // Re-apply font size to any newly loaded fs buttons
     applyFs(localStorage.getItem('fs') || 'md');
 
-    // Build right-side post TOC from headings
     var tocInner = $('#post-toc-inner');
     if (tocInner.length) {
       tocInner.empty();
@@ -60,7 +57,6 @@ $(function () {
       posttoc.css('display', hasHeadings ? 'flex' : 'none');
     }
 
-    // Smooth scroll for anchor links
     main.find('.js-anchor-link').on('click', function (e) {
       e.preventDefault();
       var target = $(this.hash);
@@ -79,8 +75,7 @@ $(function () {
   afterLoad();
 
   // ===== Category / tag filter =====
-  $('#sidebar-tags').on('click', '.sidebar-tag', function () {
-    var filter = $(this).data('filter');
+  function applyFilter(filter) {
     toc.hide();
     if (filter === 'recent') {
       toc.slice(0, RECENT_NUM).fadeIn(300);
@@ -90,20 +85,25 @@ $(function () {
         return (' ' + tags + ' ').indexOf(' ' + filter + ' ') !== -1;
       }).fadeIn(300);
     }
-    $(this).addClass('active').siblings().removeClass('active');
+    $('#sidebar-tags .sidebar-tag').removeClass('active')
+      .filter('[data-filter="' + filter + '"]').addClass('active');
+    sessionStorage.setItem('sidebar_filter', filter);
+  }
+
+  $('#sidebar-tags').on('click', '.sidebar-tag', function () {
+    applyFilter($(this).data('filter'));
     $('#search-input').val('');
   });
 
-  // Default: show recent N posts
-  toc.hide();
-  toc.slice(0, RECENT_NUM).fadeIn(300);
+  // Restore last active filter instead of always jumping to recent
+  var savedFilter = sessionStorage.getItem('sidebar_filter') || 'recent';
+  applyFilter(savedFilter);
 
   // ===== Search =====
   $('#search-input').on('input', function () {
     var q = $(this).val().trim().toLowerCase();
     if (!q) {
-      toc.hide();
-      toc.slice(0, RECENT_NUM).fadeIn(300);
+      applyFilter(sessionStorage.getItem('sidebar_filter') || 'recent');
       return;
     }
     toc.hide();
@@ -156,6 +156,7 @@ $(function () {
           afterLoad();
           toc = $('.toc-link');
           $('.toc-link').removeClass('active').filter('[href="' + href + '"]').addClass('active');
+          applyFilter(sessionStorage.getItem('sidebar_filter') || 'recent');
           if ($(window).width() <= 1024) sidebar.removeClass('open');
         }
         NProgress.done();

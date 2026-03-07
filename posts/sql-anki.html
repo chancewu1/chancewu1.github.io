@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>SQL Flashcards | Chris Wu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+        /* Anki card styles */
+        .anki-card {
+          border: 1px solid var(--border, #efefef);
+          border-radius: 10px;
+          margin-bottom: 12px;
+          overflow: hidden;
+          background: var(--card-bg, #fff);
+          box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+          transition: box-shadow 0.2s;
+        }
+        .anki-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .anki-q {
+          display: flex; align-items: flex-start; gap: 12px;
+          padding: 14px 18px;
+          cursor: pointer;
+          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 14px; font-weight: 600; color: #1d1d1f;
+          user-select: none;
+        }
+        .anki-num {
+          min-width: 24px; height: 24px;
+          background: var(--accent, #0071e3);
+          color: #fff; border-radius: 6px;
+          font-size: 11px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; margin-top: 1px;
+        }
+        .anki-question { flex: 1; line-height: 1.5; }
+        .anki-toggle {
+          color: #aaa; font-size: 12px; transition: transform 0.2s;
+          flex-shrink: 0; margin-top: 4px;
+        }
+        .anki-card.open .anki-toggle { transform: rotate(90deg); color: var(--accent,#0071e3); }
+        .anki-a {
+          display: none;
+          padding: 0 18px 16px 54px;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          font-size: 13.5px; line-height: 1.75; color: #3a3a3c;
+          border-top: 1px solid var(--border, #efefef);
+        }
+        .anki-card.open .anki-a { display: block; }
+        .anki-a p { margin-bottom: 8px; }
+        .anki-a ul { padding-left: 1.4em; margin-bottom: 8px; }
+        .anki-a li { margin-bottom: 4px; }
+        .anki-a strong { font-weight: 700; color: #1d1d1f; }
+        .anki-meta {
+          font-family: -apple-system, sans-serif;
+          font-size: 13px; color: #8e8e93;
+          margin-bottom: 24px;
+          display: flex; align-items: center; gap: 8px;
+        }
+        .anki-meta span { background: #f2f2f7; padding: 3px 10px; border-radius: 20px; font-size: 12px; }</style>
+</head>
+<body>
+
+  <div id="sidebar" class="open">
+    <div class="sidebar-left">
+      <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
+      <div id="sidebar-tags">
+        <div class="sidebar-tag active" data-filter="recent">最新文章</div>
+        <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
+        <div class="sidebar-tag" data-filter="machine-learning">机器学习</div>
+        <div class="sidebar-tag" data-filter="life">生活</div>
+        <div class="sidebar-tag" data-filter="leetcode">Leetcode</div>
+        <div class="sidebar-tag" data-filter="language">语言学习</div>
+        <div class="sidebar-tag" data-filter="interview">面试记录</div>
+        <div class="sidebar-tag" data-filter="resources">Resources</div>
+        <div class="sidebar-tag" data-filter="business">商业分析</div>
+        <div class="sidebar-tag" data-filter="statistics">数理统计</div>
+        <div class="sidebar-tag" data-filter="notes">转码笔记</div>
+      </div>
+      <div class="fs-control">
+        <button class="fs-btn" data-fs="sm">A</button>
+        <button class="fs-btn active" data-fs="md">A</button>
+        <button class="fs-btn" data-fs="lg">A</button>
+        <button class="fs-btn" data-fs="xl">A</button>
+      </div>
+    </div>
+    <div class="sidebar-right">
+      <input id="search-input" type="text" placeholder="Search posts…" autocomplete="off" />
+      <ul id="post-toc-ul" class="toc-ul">
+      </ul>
+    </div>
+  </div>
+
+  <div id="menu">&#9776;</div>
+
+  <div id="main" class="fadeIn">
+    <div id="post-toc-menu" title="Table of Contents">&#8801;</div>
+    <div id="post-toc"><ul id="post-toc-inner"></ul></div>
+
+    <div class="post">
+      <div class="post-content">
+        <div class="post-header">
+          <div class="post-meta">
+            <span class="post-date">March 07, 2026</span>
+            <span class="post-tag">语言学习</span>
+          </div>
+          <h1 id="post-title">SQL Flashcards</h1>
+        </div>
+
+        <div class="anki-meta">
+          From Anki deck: <span>SQL</span>
+          <span>8 cards</span>
+        </div>
+
+        <p style="font-family:-apple-system,sans-serif;font-size:13.5px;color:#6e6e73;margin-bottom:20px;">
+          Click any question to reveal the answer.
+        </p>
+
+        
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">1</span>
+            <span class="anki-question">% and _ in like sytax in ms sql server</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>In Microsoft SQL Server, the % and _ wildcards are used with the LIKE operator for pattern matching.Wildcards in LIKE Syntax</p>
+<ul>
+<li>% (Percentage Sign):</li>
+<li>Matches zero or more characters.</li>
+<li>Example patterns:</li>
+<li>%abc matches any string ending with &quot;abc&quot; (e.g., &quot;123abc&quot;, &quot;abc&quot;).</li>
+<li>abc% matches any string starting with &quot;abc&quot; (e.g., &quot;abc123&quot;, &quot;abcdef&quot;).</li>
+<li>%abc% matches any string containing &quot;abc&quot; (e.g., &quot;123abc456&quot;, &quot;abc&quot;).</li>
+<li>_ (Underscore):</li>
+<li>Matches exactly one character.</li>
+<li>Example patterns:</li>
+<li>_abc matches any 4-character string ending with &quot;abc&quot; (e.g., &quot;1abc&quot;, &quot;zabc&quot;).</li>
+<li>abc_ matches any 4-character string starting with &quot;abc&quot; (e.g., &quot;abc1&quot;, &quot;abcZ&quot;).</li>
+<li>ab_c matches any 4-character string where the third character is &quot;c&quot; (e.g., &quot;ab1c&quot;, &quot;abdc&quot;).Examples of LIKE Usage1. Matching Strings with %:sqlCopy codeSELECT *</li>
+</ul>
+<p>FROM Customers</p>
+<p>WHERE CustomerName LIKE '%Smith%';</p>
+<ul>
+<li>Matches any CustomerName containing &quot;Smith&quot; (e.g., &quot;John Smith&quot;, &quot;Smithson&quot;, &quot;Blacksmith&quot;).2. Matching Strings with _:sqlCopy codeSELECT *</li>
+</ul>
+<p>FROM Products</p>
+<p>WHERE ProductCode LIKE 'A12_';</p>
+<ul>
+<li>Matches any ProductCode starting with &quot;A12&quot; and having one more character (e.g., &quot;A123&quot;, &quot;A12X&quot;).3. Combining % and _:sqlCopy codeSELECT *</li>
+</ul>
+<p>FROM Employees</p>
+<p>WHERE EmployeeCode LIKE 'E%_23';</p>
+<ul>
+<li>Matches any EmployeeCode starting with &quot;E&quot;, followed by zero or more characters, a single character, and ending with &quot;23&quot; (e.g., &quot;E123&quot;, &quot;E567X23&quot;).4. Escaping Wildcards:If you need to search for % or _ as literal characters, use an escape character.sqlCopy codeSELECT *</li>
+</ul>
+<p>FROM Files</p>
+<p>WHERE FileName LIKE '%\_%' ESCAPE '\';</p>
+<ul>
+<li>Matches any FileName containing an underscore (_), such as &quot;file_name&quot;.Use Cases</li>
+<li>%: General pattern matching for partial matches.</li>
+<li>_: Fine-grained control to match patterns of specific lengths or structures.Let me know if you need more examples or explanations!4oYou said:what does this code mean</li>
+</ul>
+<p>SELECT *</p>
+<p>FROM Users</p>
+<p>WHERE mail  LIKE '[a-zA-Z]%@leetcode.com' AND mail NOT LIKE '%[^a-zA-Z0-9_.-]%@leetcode.com'ChatGPT said:ChatGPTThis SQL query is filtering data from the Users table based on the mail column. It uses the LIKE operator with pattern matching to find specific email formats.Breakdown of the Query1. Condition 1: mail LIKE '[a-zA-Z]%@leetcode.com'</p>
+<ul>
+<li>[a-zA-Z]: Matches any single letter, either uppercase (A-Z) or lowercase (a-z).</li>
+<li>%: Matches zero or more characters.</li>
+<li>@leetcode.com: Ensures the email ends with @leetcode.com.This condition ensures:</li>
+<li>The email starts with a letter (e.g., a, B, x).</li>
+<li>It may have any combination of characters after the first letter but must end with @leetcode.com.Examples of valid emails:</li>
+<li>a@leetcode.com</li>
+<li>JohnDoe@leetcode.comInvalid examples (will not pass this condition):</li>
+<li>1user@leetcode.com (does not start with a letter).</li>
+<li>@leetcode.com (missing a starting letter).2. Condition 2: mail NOT LIKE '%[^a-zA-Z0-9_.-]%@leetcode.com'</li>
+<li>[^a-zA-Z0-9_.-]: Matches any character not in the set a-z, A-Z, 0-9, _, ., or -.</li>
+<li>[^...]: The ^ inside square brackets negates the character set.</li>
+<li>%: Matches zero or more characters.</li>
+<li>@leetcode.com: Ensures the email ends with @leetcode.com.This condition ensures:</li>
+<li>The email does not contain any invalid characters before the @leetcode.com.</li>
+<li>Only alphanumeric characters (a-z, A-Z, 0-9) and the allowed symbols (_, ., -) are permitted.Examples of valid emails:</li>
+<li>John_Doe@leetcode.com</li>
+<li>Jane-Doe@leetcode.com</li>
+<li>user.name@leetcode.comInvalid examples (due to invalid characters):</li>
+<li>user@leet!code.com (contains !).</li>
+<li>user@leetcode$.com (contains $).Combined Meaning of the QueryThe query filters rows where:</li>
+<li>The email starts with a letter ([a-zA-Z]), contains valid characters, and ends with @leetcode.com.</li>
+<li>The email does not contain invalid characters (anything outside a-z, A-Z, 0-9, _, ., -) before @leetcode.com.ExamplesmailIncluded?Reasona@leetcode.com✅Starts with a letter and contains only valid chars.john.doe@leetcode.com✅Valid structure and characters.1user@leetcode.com❌Does not start with a letter.user!@leetcode.com❌Contains invalid character !.user@leet$code.com❌Contains invalid character $.@leetcode.com❌Missing starting letter.This query ensures the mail column adheres to a specific format for valid email addresses at @leetcode.com.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">2</span>
+            <span class="anki-question">rank and dense_rank in my sql server?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>In SQL, RANK() and DENSE_RANK() are window functions used to assign a rank to each row within a partition of a result set. Both consider the order specified in the query but differ in how they handle ties.1. RANK()</p>
+<ul>
+<li>Assigns a unique rank to rows based on the specified order.</li>
+<li>If there are ties (two rows with the same value), the next rank skips values accordingly.</li>
+<li>Syntax:sqlCopy codeSELECT column1, RANK() OVER (PARTITION BY column2 ORDER BY column3 DESC) AS Rank</li>
+</ul>
+<p>FROM table_name;</p>
+<ul>
+<li>Example:</li>
+</ul>
+<p>Consider a table Scores:NameSubjectScoreAliceMath95BobMath95CharlieMath90DavidMath85sqlCopy codeSELECT Name, Score, RANK() OVER (ORDER BY Score DESC) AS Rank</p>
+<p>FROM Scores;</p>
+<p>Result:NameScoreRankAlice951Bob951Charlie903David854</p>
+<ul>
+<li>Alice and Bob share rank 1, but Charlie gets rank 3 (skipping 2).2. DENSE_RANK()</li>
+<li>Also assigns a unique rank based on the specified order.</li>
+<li>If there are ties, it does not skip any ranks. Tied rows have the same rank, and the next rank continues sequentially.</li>
+<li>Syntax:sqlCopy codeSELECT column1, DENSE_RANK() OVER (PARTITION BY column2 ORDER BY column3 DESC) AS DenseRank</li>
+</ul>
+<p>FROM table_name;</p>
+<ul>
+<li>Example:</li>
+</ul>
+<p>Using the same table Scores:sqlCopy codeSELECT Name, Score, DENSE_RANK() OVER (ORDER BY Score DESC) AS DenseRank</p>
+<p>FROM Scores;</p>
+<p>Result:NameScoreDenseRankAlice951Bob951Charlie902David853</p>
+<ul>
+<li>Alice and Bob share rank 1, but Charlie gets rank 2, without skipping.Key DifferencesFeatureRANK()DENSE_RANK()Handling TiesSkips ranks after ties.Does not skip ranks after ties.Gaps in RanksYes (e.g., 1, 1, 3).No (e.g., 1, 1, 2).Use CaseWhen gaps in ranks are acceptable.When sequential ranks are needed.PartitioningBoth RANK() and DENSE_RANK() can be applied within partitions using the PARTITION BY clause.Example:sqlCopy codeSELECT Name, Subject, Score,</li>
+</ul>
+<p>RANK() OVER (PARTITION BY Subject ORDER BY Score DESC) AS Rank,</p>
+<p>DENSE_RANK() OVER (PARTITION BY Subject ORDER BY Score DESC) AS DenseRank</p>
+<p>FROM Scores;</p>
+<p>This calculates ranks within each Subject.Let me know if you'd like more examples or help with your specific scenario!</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">3</span>
+            <span class="anki-question">rank functions in ms sql server?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>RANK()</p>
+<ul>
+<li>Assigns a rank to rows, with gaps in ranking if there are ties.</li>
+<li>Example:sqlCopy codeSELECT Name, Score, RANK() OVER (ORDER BY Score DESC) AS Rank</li>
+</ul>
+<p>FROM Scores;</p>
+<p>If two rows have the same rank, the next rank is skipped.2. DENSE_RANK()</p>
+<ul>
+<li>Similar to RANK(), but does not skip ranks in case of ties.</li>
+<li>Example:sqlCopy codeSELECT Name, Score, DENSE_RANK() OVER (ORDER BY Score DESC) AS DenseRank</li>
+</ul>
+<p>FROM Scores;</p>
+<p>If two rows have the same rank, the next rank continues sequentially.3. ROW_NUMBER()</p>
+<ul>
+<li>Assigns a unique sequential number to each row within a partition, without considering ties.</li>
+<li>Example:sqlCopy codeSELECT Name, Score, ROW_NUMBER() OVER (ORDER BY Score DESC) AS RowNumber</li>
+</ul>
+<p>FROM Scores;</p>
+<p>Every row gets a unique number, even if their scores are the same.4. NTILE(n)</p>
+<ul>
+<li>Distributes rows into a specified number of groups (n) and assigns a group number to each row.</li>
+<li>Groups are as even as possible.</li>
+<li>Example:sqlCopy codeSELECT Name, Score, NTILE(4) OVER (ORDER BY Score DESC) AS Quartile</li>
+</ul>
+<p>FROM Scores;</p>
+<p>This divides the rows into 4 quartiles based on their scores.Comparison of Ranking FunctionsFunctionKey FeatureHandling TiesGaps in RanksSequential?RANK()Assigns rank, skipping gaps for ties.Rows share rank.YesNoDENSE_RANK()Assigns rank without skipping gaps for ties.Rows share rank.NoYesROW_NUMBER()Assigns unique numbers to each row, irrespective of ties.No ties (unique).N/AYesNTILE(n)Divides rows into n roughly equal groups, assigning group numbers.No explicit ties.N/ASequential within groups.Example Dataset and OutputsGiven the following dataset:NameScoreAlice95Bob95Charlie90David85Results:NameScoreRANK()DENSE_RANK()ROW_NUMBER()NTILE(2)Alice951111Bob951121Charlie903232David854342Use Cases for Ranking Functions</p>
+<ul>
+<li>RANK(): When relative ranking with gaps (e.g., competition scoring) is acceptable.</li>
+<li>DENSE_RANK(): When sequential ranks are required, even with ties (e.g., rank display without gaps).</li>
+<li>ROW_NUMBER(): When unique row numbering is needed (e.g., for pagination).</li>
+<li>NTILE(): For grouping data into equal-sized buckets (e.g., percentiles or quartiles).If you need help applying any of these functions, let me know!</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">4</span>
+            <span class="anki-question">Order by clause priority</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>1. Importance of Column Priority in Sorting</p>
+<ul>
+<li>Order of Columns in ORDER BY Matters:</li>
+<li>SQL processes the ORDER BY clause in the order of the columns specified.</li>
+<li>The first column takes precedence, and subsequent columns are only considered for breaking ties.</li>
+<li>Example:sqlCopy codeORDER BY sessions_count DESC, user_id DESC;</li>
+</ul>
+<ul>
+<li>Prioritizes sorting by sessions_count in descending order.</li>
+<li>For rows with the same sessions_count, sorts by user_id in descending order.</li>
+<li>Mistake in Original Query:sqlCopy codeORDER BY 1, 2 DESC;</li>
+</ul>
+<ul>
+<li>This prioritized user_id (column 1) in ascending order, overriding the desired descending order of sessions_count.2. Be Explicit with Sorting Directions</li>
+<li>Always specify ASC or DESC explicitly for each column in the ORDER BY clause if the default order might cause confusion.</li>
+<li>Example:sqlCopy codeORDER BY sessions_count DESC, user_id DESC;</li>
+</ul>
+<p>Avoids ambiguity and ensures correct sorting.3. Testing and Validating Query Outputs</p>
+<ul>
+<li>Always test your query with realistic or edge-case data to ensure the output meets expectations.</li>
+<li>In this case, observing that the results weren't correctly sorted led to identifying an ordering issue.4. SQL is Deterministic with Sorting</li>
+<li>SQL will always sort rows exactly as specified in the ORDER BY clause.</li>
+<li>If the result doesn’t match expectations, the issue lies in how the ORDER BY is written, not with SQL’s behavior.General Best Practices</li>
+<li>Understand Precedence: Column order in ORDER BY determines precedence—ensure it matches your requirements.</li>
+<li>Be Explicit: Avoid relying on defaults (ASC is the default) when clarity is important.</li>
+<li>Use Proper Testing: Validate with multiple scenarios to ensure the query logic is robust.</li>
+<li>Iterate and Debug: If results don't align, recheck your ORDER BY logic and ensure columns are sorted in the intended order.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">5</span>
+            <span class="anki-question">window function for accumulation</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Comparison1. SUM(weight) OVER (ORDER BY turn)</p>
+<ul>
+<li>What It Does:</li>
+<li>Calculates the cumulative sum of the weight column for each row, ordered by turn.</li>
+<li>Each row contains the sum of weight values from the first row to the current row.2. AVG(weight) OVER (ORDER BY turn)</li>
+<li>What It Does:</li>
+<li>Calculates the cumulative average of the weight column for each row, ordered by turn.</li>
+<li>Each row contains the average of weight values from the first row to the current row.3. MAX(weight) OVER (ORDER BY turn)</li>
+<li>What It Does:</li>
+<li>Finds the cumulative maximum of the weight column for each row, ordered by turn.</li>
+<li>Each row contains the maximum weight value encountered from the first row to the current row.ExampleInput Data (queue table):turnweight150210031504200Query:sqlCopy codeSELECT</li>
+</ul>
+<p>turn,</p>
+<p>weight,</p>
+<p>SUM(weight) OVER (ORDER BY turn) AS cumulative_sum,</p>
+<p>AVG(weight) OVER (ORDER BY turn) AS cumulative_avg,</p>
+<p>MAX(weight) OVER (ORDER BY turn) AS cumulative_max</p>
+<p>FROM queue;</p>
+<p>Result:turnweightcumulative_sumcumulative_avgcumulative_max1505050.050210015075.01003150300100.01504200500125.0200Key DifferencesFunctionOutput DescriptionExampleSUM(weight)Running total of weight values from the first row to the current rowAt turn = 3: 50 + 100 + 150 = 300AVG(weight)Running average of weight values from the first row to the current rowAt turn = 3: (50 + 100 + 150) / 3 = 100.0MAX(weight)Running maximum weight value from the first row to the current rowAt turn = 3: MAX(50, 100, 150) = 150Graphical Intuition</p>
+<ul>
+<li>Cumulative Sum (SUM(weight)):</li>
+<li>Starts at the first row’s value and grows steadily as more rows are added.</li>
+<li>Cumulative Average (AVG(weight)):</li>
+<li>Starts equal to the first row’s value but grows more slowly than the sum because it averages values cumulatively.</li>
+<li>Cumulative Maximum (MAX(weight)):</li>
+<li>Increases only when a larger value is encountered; otherwise, it remains constant.Use CasesUse CaseSUM(weight)AVG(weight)MAX(weight)Track cumulative total sales or progressYesNoNoMonitor rolling average metrics (e.g., GPA)NoYesNoIdentify the highest performance up to a pointNoNoYes</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">6</span>
+            <span class="anki-question">what does str_agg and group_concat do in sql</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>STRING_AGG and GROUP_CONCAT in SQLBoth STRING_AGG (PostgreSQL, SQL Server) and GROUP_CONCAT (MySQL, SQLite) are aggregate functions used to concatenate values from multiple rows into a single string, often separated by a delimiter.1. STRING_AGG (PostgreSQL, SQL Server)</p>
+<ul>
+<li>Syntax:STRING_AGG(column_name, 'delimiter')</li>
+</ul>
+<ul>
+<li>Example (PostgreSQL, SQL Server):</li>
+</ul>
+<p>SELECT department_id, STRING_AGG(employee_name, ', ') AS employee_names</p>
+<p>FROM Employee</p>
+<p>GROUP BY department_id;</p>
+<ul>
+<li>Explanation:</li>
+<li>Groups employees by department_id</li>
+<li>Concatenates employee_name values within each department, separated by , .</li>
+<li>Example Output:department_idemployee_names1Alice, Bob, Charlie2Dave, Eve</li>
+<li>Additional Features:</li>
+<li>In SQL Server, you can use WITHIN GROUP (ORDER BY column_name) to control ordering:sqlCopyEditSELECT department_id,</li>
+</ul>
+<p>STRING_AGG(employee_name, ', ') WITHIN GROUP (ORDER BY employee_name) AS employee_names</p>
+<p>FROM Employee</p>
+<p>GROUP BY department_id;</p>
+<p>2. GROUP_CONCAT (MySQL, SQLite)</p>
+<ul>
+<li>Syntax:</li>
+</ul>
+<p>GROUP_CONCAT(column_name SEPARATOR 'delimiter')</p>
+<ul>
+<li>Example (MySQL, SQLite):SELECT department_id, GROUP_CONCAT(employee_name SEPARATOR ', ') AS employee_names</li>
+</ul>
+<p>FROM Employee</p>
+<p>GROUP BY department_id;</p>
+<ul>
+<li>Explanation:</li>
+<li>Similar to STRING_AGG, it groups employees by department_id and concatenates names.</li>
+<li>Example Output:department_idemployee_names1Alice, Bob, Charlie2Dave, Eve</li>
+<li>Ordering in MySQL:</li>
+<li>You can specify an order within GROUP_CONCAT:SELECT department_id,</li>
+</ul>
+<p>GROUP_CONCAT(employee_name ORDER BY employee_name SEPARATOR ', ') AS employee_names</p>
+<p>FROM Employee</p>
+<p>GROUP BY department_id;</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">7</span>
+            <span class="anki-question">what does lead() and lag() do in sql</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>EAD and LAG in SQLLEAD and LAG are window functions used to access values from subsequent or previous rows within the same result set without requiring self-joins.1. LAG() – Access Previous Row's Value</p>
+<ul>
+<li>Retrieves the value from the previous row based on a specified ordering.</li>
+<li>If no previous row exists, it returns NULL (unless a default value is provided).Syntax:LAG(column_name, offset, default_value) OVER (PARTITION BY partition_column ORDER BY order_column)</li>
+</ul>
+<ul>
+<li>column_name: The column to retrieve the value from.</li>
+<li>offset: (Optional, default = 1) How many rows back to look.</li>
+<li>default_value: (Optional) The value to return if there’s no previous row.Example (LAG) – Get Previous Salary</li>
+</ul>
+<p>SELECT</p>
+<p>employee_id,</p>
+<p>department_id,</p>
+<p>salary,</p>
+<p>LAG(salary, 1, 0) OVER (PARTITION BY department_id ORDER BY salary) AS prev_salary</p>
+<p>FROM Employee;</p>
+<p>Resultemployee_iddepartment_idsalaryprev_salary10115000NULL10216000500010317000600020124500NULL202255004500👉 Use Case: Find the previous row’s salary within the same department.2. LEAD() – Access Next Row's Value</p>
+<ul>
+<li>Retrieves the value from the next row based on a specified ordering.</li>
+<li>If no next row exists, it returns NULL (unless a default value is provided).Syntax:sqlCopyEditLEAD(column_name, offset, default_value) OVER (PARTITION BY partition_column ORDER BY order_column)</li>
+</ul>
+<ul>
+<li>column_name: The column to retrieve the value from.</li>
+<li>offset: (Optional, default = 1) How many rows ahead to look.</li>
+<li>default_value: (Optional) The value to return if there’s no next row.Example (LEAD) – Get Next SalarysqlCopyEditSELECT</li>
+</ul>
+<p>employee_id,</p>
+<p>department_id,</p>
+<p>salary,</p>
+<p>LEAD(salary, 1, 0) OVER (PARTITION BY department_id ORDER BY salary) AS next_salary</p>
+<p>FROM Employee;</p>
+<p>Resultemployee_iddepartment_idsalarynext_salary10115000600010216000700010317000NULL20124500550020225500NULL👉 Use Case: Find the next row’s salary within the same department.Key Differences: LEAD vs LAGFunctionPurposeExample UsageLAG()Get the value from the previous rowCompare current and previous salariesLEAD()Get the value from the next rowCompare current and next salaries</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">8</span>
+            <span class="anki-question">Decimal type and Float type in sql</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Key Differences:FeatureFLOAT/REALDECIMAL/NUMERICStorage TypeApproximateExactPrecisionCan introduce small rounding errorsStores exact values up to specified decimal placesBest Used ForScientific calculations, fast processingFinancial data, exact decimal storageWhy DECIMAL Worked Instead of FLOAT?</p>
+<ul>
+<li>FLOAT is an approximate data type, meaning it rounds off values slightly due to how it stores numbers in binary.</li>
+<li>DECIMAL(p, s) (or NUMERIC(p, s)) is an exact data type, meaning it maintains precise decimal places without floating-point rounding errors.</li>
+<li>If your expected output needed exact rounding (like 2.50 instead of 2.4999999), DECIMAL was the right choice.Your Fix (Using DECIMAL)SELECT</li>
+</ul>
+<p>project_id,</p>
+<p>ROUND(AVG(CAST(experience_years AS DECIMAL(10,2))), 2) AS average_years</p>
+<p>FROM project p</p>
+<p>LEFT JOIN employee e ON p.employee_id = e.employee_id</p>
+<p>GROUP BY project_id;</p>
+<p>When to Use What?</p>
+<ul>
+<li>Use FLOAT when dealing with large datasets and speed is more important than precision (e.g., machine learning, physics simulations).</li>
+<li>Use DECIMAL when you need precise values, such as financial transactions, salaries, or anything involving money.Your case needed exact rounding, so DECIMAL was the right move. 💡</li>
+</ul>
+          </div>
+        </div>
+
+        <div class="post-nav" style="margin-top:32px;">
+          <a href="../index.html" class="back-link">&#8592; Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/editor.js"></script>
+</body>
+</html>

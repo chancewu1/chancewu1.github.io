@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>Causal Inference Flashcards | Chris Wu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+        /* Anki card styles */
+        .anki-card {
+          border: 1px solid var(--border, #efefef);
+          border-radius: 10px;
+          margin-bottom: 12px;
+          overflow: hidden;
+          background: var(--card-bg, #fff);
+          box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+          transition: box-shadow 0.2s;
+        }
+        .anki-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .anki-q {
+          display: flex; align-items: flex-start; gap: 12px;
+          padding: 14px 18px;
+          cursor: pointer;
+          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 14px; font-weight: 600; color: #1d1d1f;
+          user-select: none;
+        }
+        .anki-num {
+          min-width: 24px; height: 24px;
+          background: var(--accent, #0071e3);
+          color: #fff; border-radius: 6px;
+          font-size: 11px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; margin-top: 1px;
+        }
+        .anki-question { flex: 1; line-height: 1.5; }
+        .anki-toggle {
+          color: #aaa; font-size: 12px; transition: transform 0.2s;
+          flex-shrink: 0; margin-top: 4px;
+        }
+        .anki-card.open .anki-toggle { transform: rotate(90deg); color: var(--accent,#0071e3); }
+        .anki-a {
+          display: none;
+          padding: 0 18px 16px 54px;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          font-size: 13.5px; line-height: 1.75; color: #3a3a3c;
+          border-top: 1px solid var(--border, #efefef);
+        }
+        .anki-card.open .anki-a { display: block; }
+        .anki-a p { margin-bottom: 8px; }
+        .anki-a ul { padding-left: 1.4em; margin-bottom: 8px; }
+        .anki-a li { margin-bottom: 4px; }
+        .anki-a strong { font-weight: 700; color: #1d1d1f; }
+        .anki-meta {
+          font-family: -apple-system, sans-serif;
+          font-size: 13px; color: #8e8e93;
+          margin-bottom: 24px;
+          display: flex; align-items: center; gap: 8px;
+        }
+        .anki-meta span { background: #f2f2f7; padding: 3px 10px; border-radius: 20px; font-size: 12px; }</style>
+</head>
+<body>
+
+  <div id="sidebar" class="open">
+    <div class="sidebar-left">
+      <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
+      <div id="sidebar-tags">
+        <div class="sidebar-tag active" data-filter="recent">最新文章</div>
+        <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
+        <div class="sidebar-tag" data-filter="machine-learning">机器学习</div>
+        <div class="sidebar-tag" data-filter="life">生活</div>
+        <div class="sidebar-tag" data-filter="leetcode">Leetcode</div>
+        <div class="sidebar-tag" data-filter="language">语言学习</div>
+        <div class="sidebar-tag" data-filter="interview">面试记录</div>
+        <div class="sidebar-tag" data-filter="resources">Resources</div>
+        <div class="sidebar-tag" data-filter="business">商业分析</div>
+        <div class="sidebar-tag" data-filter="statistics">数理统计</div>
+        <div class="sidebar-tag" data-filter="notes">转码笔记</div>
+      </div>
+      <div class="fs-control">
+        <button class="fs-btn" data-fs="sm">A</button>
+        <button class="fs-btn active" data-fs="md">A</button>
+        <button class="fs-btn" data-fs="lg">A</button>
+        <button class="fs-btn" data-fs="xl">A</button>
+      </div>
+    </div>
+    <div class="sidebar-right">
+      <input id="search-input" type="text" placeholder="Search posts…" autocomplete="off" />
+      <ul id="post-toc-ul" class="toc-ul">
+      </ul>
+    </div>
+  </div>
+
+  <div id="menu">&#9776;</div>
+
+  <div id="main" class="fadeIn">
+    <div id="post-toc-menu" title="Table of Contents">&#8801;</div>
+    <div id="post-toc"><ul id="post-toc-inner"></ul></div>
+
+    <div class="post">
+      <div class="post-content">
+        <div class="post-header">
+          <div class="post-meta">
+            <span class="post-date">March 07, 2026</span>
+            <span class="post-tag">数理统计</span>
+          </div>
+          <h1 id="post-title">Causal Inference Flashcards</h1>
+        </div>
+
+        <div class="anki-meta">
+          From Anki deck: <span>Casual Inference</span>
+          <span>31 cards</span>
+        </div>
+
+        <p style="font-family:-apple-system,sans-serif;font-size:13.5px;color:#6e6e73;margin-bottom:20px;">
+          Click any question to reveal the answer.
+        </p>
+
+        
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">1</span>
+            <span class="anki-question">When to Use Causal Inference and AB testing?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>we need to check if we can force the users to use the new feature(like a ui change, new ranking systme)  to determine if we can use ab testing or causal inference/</p>
+<p>the statement above touches on a critical consideration for determining whether A/B testing or causal inference methods are feasible for evaluating the impact of a new feature. Here’s an expanded view:1. Forced Exposure to the New Feature:</p>
+<ul>
+<li>If you can force users to use the new feature (e.g., by rolling it out to a subset of users while keeping others on the existing system), you can reliably conduct an A/B test. This is because:</li>
+<li>You have control over who sees the new feature (treatment group) versus the old version (control group).</li>
+<li>Randomization ensures that the two groups are comparable, enabling you to estimate the causal impact of the feature.2. Opt-In/Voluntary Use of the Feature:</li>
+<li>If users can choose whether or not to use the new feature, it introduces selection bias, making a direct A/B test problematic. In such cases, users who adopt the feature may differ systematically from those who don’t, and the difference in outcomes might not be due to the feature itself.</li>
+<li>To analyze such cases, you may need to rely on causal inference methods, such as:</li>
+<li>Instrumental Variables: Using external factors to explain adoption.</li>
+<li>Propensity Score Matching: Controlling for observable differences between adopters and non-adopters.</li>
+<li>Difference-in-Differences: Comparing changes over time between groups.3. Scenarios Where A/B Testing Works Well:</li>
+<li>The platform has full control over assigning users to see the new feature.</li>
+<li>There’s no interference between treatment and control groups (e.g., users in the treatment group don’t influence outcomes for those in the control group).</li>
+<li>Randomization is practical and ethical for rolling out the feature.4. Scenarios Requiring Causal Inference:</li>
+<li>When the feature rollout cannot be randomized due to technical, ethical, or business constraints.</li>
+<li>Users self-select into using the feature (e.g., opting into a beta program).</li>
+<li>The rollout is gradual or determined by other external factors (e.g., region, user type).In summary, determining whether you can control user exposure to the new feature is key to deciding if A/B testing is feasible. If forced exposure is not possible, you’ll need to explore causal inference methods to account for confounding variables and estimate the feature’s causal effect.</li>
+</ul>
+<p>Broadly, causal inference is the field that seeks to determine whether Y would be different, absent X (different people frame this differently). A/B tests are one (powerful) way to determine this, because they randomize the treatment, so it will be uncorrelated with anything else (like your feature enhancement).</p>
+<p>Eg, you want to know if people spend more if the &quot;buy&quot; button is twice as big? For 30 days, half your visitors will see the bigger button, half see the original. At the end of 30 days, you take the purchase sizes for the original button people, the new button people, and do a t-test to see if the difference is significant.</p>
+<p>However, sometimes you can't randomize (and run an A/B test). Sometimes this is because you have &quot;found&quot; data (the data has already been collected), sometimes it's because randomizing the treatment is unethical (you can't make someone smoke for 30 years to learn if smoking causes cancer). In that case, you have to turn to the tools of &quot;observational causal inference,&quot; which have been developed across statistics and the social sciences. A good free introduction is available here.</p>
+<p>When to Use Causal Inference:</p>
+<ul>
+<li>Randomization is not feasible:</li>
+</ul>
+<ul>
+<li>Ethical or practical constraints prevent random assignment (e.g., studying the effects of smoking on health).</li>
+</ul>
+<ul>
+<li>Observational data is the only option (e.g., historical data or policy changes).</li>
+</ul>
+<ul>
+<li>Long-term effects or rare events:</li>
+</ul>
+<ul>
+<li>A/B tests may require a large sample size or long duration to capture rare outcomes.</li>
+</ul>
+<ul>
+<li>Causal inference methods (e.g., regression discontinuity, propensity score matching, difference-in-differences) can leverage existing data for analysis.</li>
+</ul>
+<ul>
+<li>Natural Experiments or Policy Changes:</li>
+</ul>
+<ul>
+<li>When a policy or event provides a &quot;natural randomization&quot; (e.g., minimum wage changes, new tax laws), causal inference methods can estimate effects without conducting an A/B test.</li>
+</ul>
+<ul>
+<li>Data from the past:</li>
+</ul>
+<ul>
+<li>If the data is already collected (observational or historical), causal inference is the primary option.</li>
+</ul>
+<ul>
+<li>Understanding mechanisms or mediators:</li>
+</ul>
+<ul>
+<li>Causal inference often digs deeper into the &quot;why&quot; and &quot;how&quot; something happens, identifying pathways and mediating variables.</li>
+</ul>
+<p>When to Use A/B Testing:</p>
+<ul>
+<li>Controlled experimentation is feasible:</li>
+</ul>
+<ul>
+<li>You can randomize participants or subjects into treatment and control groups (e.g., testing website designs or email campaigns).</li>
+</ul>
+<ul>
+<li>Short-term interventions:</li>
+</ul>
+<ul>
+<li>A/B tests are ideal for immediate changes, like evaluating a marketing strategy or new product feature.</li>
+</ul>
+<ul>
+<li>Clear and measurable outcomes:</li>
+</ul>
+<ul>
+<li>The outcome metric is easy to define and measure (e.g., click-through rates, conversion rates).</li>
+</ul>
+<ul>
+<li>Sufficient traffic or sample size:</li>
+</ul>
+<ul>
+<li>A/B tests work best when you have enough participants to detect statistically significant effects.</li>
+</ul>
+<ul>
+<li>Low risk of spillover or interference:</li>
+</ul>
+<ul>
+<li>Treatment and control groups must not influence each other (e.g., one customer’s experience does not affect another's).</li>
+</ul>
+<p>Comparing the Two:</p>
+<p>Aspect</p>
+<p>Causal Inference</p>
+<p>A/B Testing</p>
+<p>Randomization</p>
+<p>Not required (uses observational data)</p>
+<p>Required for validity</p>
+<p>Setting</p>
+<p>Observational or natural experiments</p>
+<p>Controlled experiments</p>
+<p>Sample Size</p>
+<p>Flexible (uses existing data)</p>
+<p>Requires large, representative data</p>
+<p>Feasibility</p>
+<p>Works with historical data or ethical constraints</p>
+<p>Needs experimental control</p>
+<p>Outcome</p>
+<p>Can explore long-term effects</p>
+<p>Focuses on short-term, direct effects</p>
+<p>Conclusion:</p>
+<p>Use causal inference when experimentation isn't possible or practical, or when you're working with observational data. Use A/B testing when you can randomize treatment in a controlled environment to directly test the impact of changes. In some cases, a combination of both can strengthen insights.</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">2</span>
+            <span class="anki-question">what is RDD(regression discontinuity design) and when do you use it? give me some examples</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Regression Discontinuity Design (RDD) is a quasi-experimental research design used to estimate the causal effect of an intervention or treatment. It is applied when there is a specific cutoff or threshold (e.g., score, age, income) that determines whether a unit (e.g., person, school, firm) receives a treatment. RDD helps estimate the treatment effect by comparing units that are just above and below the threshold, assuming that these units are similar in all respects except for the treatment.Key Components of RDD:</p>
+<ul>
+<li>Running variable (also called the forcing variable): This is the variable that determines the assignment of treatment (e.g., test scores, age, income).</li>
+<li>Cutoff: The threshold value of the running variable that determines whether a unit receives the treatment (e.g., students who score above 80 on a test might receive an intervention, while those below 80 do not).</li>
+<li>Treatment: The intervention or program that units above the cutoff receive.Types of RDD:</li>
+<li>Sharp RDD: In this case, the assignment to treatment is completely deterministic; units above the cutoff always get the treatment, and those below the cutoff never do.</li>
+<li>Fuzzy RDD: Here, the assignment to treatment is not deterministic. Units above the cutoff are more likely to receive the treatment, but some may not, and some below the cutoff may still receive it.When to Use RDD:RDD is most useful when there is a clear, arbitrary cutoff that determines whether a unit gets treated. You use RDD when random assignment is not feasible, but you have access to the cutoff that can be leveraged to make comparisons. It is especially beneficial in situations where random control trials are not possible due to ethical or logistical constraints.Examples of RDD:</li>
+<li>Education:</li>
+<li>A university offers scholarships based on entrance exam scores, with students who score above a certain threshold (e.g., 85 out of 100) receiving the scholarship. To assess the impact of the scholarship on student performance, you can use RDD by comparing the outcomes of students who score just above and just below the cutoff.</li>
+<li>Healthcare:</li>
+<li>A public health program offers subsidies for healthcare to people whose income is below a certain threshold. RDD could be used to evaluate the impact of the subsidies by comparing the health outcomes of people who are just below and just above the income cutoff.</li>
+<li>Policy Analysis:</li>
+<li>A government implements a job training program for individuals who are unemployed for more than 6 months. Those who cross this 6-month threshold might receive training. To evaluate the impact of the training on employment outcomes, RDD could be used to compare individuals just above and below the 6-month unemployment mark.</li>
+<li>Social Programs:</li>
+<li>A country’s welfare program provides financial support to families below a certain income level. You could use RDD to assess the effects of the program on children's health or educational outcomes by comparing children in families just above and below the income cutoff.Assumptions of RDD:</li>
+<li>Continuity: In RDD, the potential outcomes of a unit (i.e., what would have happened if they had not received the treatment) change smoothly around the cutoff. There should be no other discontinuities (except for the treatment) at the cutoff.</li>
+<li>No manipulation of the running variable: Units should not be able to manipulate their score (or forcing variable) around the cutoff to receive the treatment.RDD is considered a powerful design for causal inference because, under the right conditions, it can approximate random assignment, making it a strong alternative to randomized control trials (RCTs) when randomization is not feasible.4o miniYou said:what tool you can use to conduct this?ChatGPT said:ChatGPTTo conduct Regression Discontinuity Design (RDD) analysis, several statistical and data analysis tools can be used. Here are some of the most popular ones:1. R:</li>
+<li>rdrobust package: A commonly used package for performing robust RDD estimation in R. It offers tools for both sharp and fuzzy RDD analysis and includes methods for checking the validity of the design (e.g., testing for manipulation of the running variable).</li>
+<li>Usage:RCopy codeinstall.packages(&quot;rdrobust&quot;)</li>
+</ul>
+<p>library(rdrobust)</p>
+<p>rdrobust(y, x, c = cutoff_value)</p>
+<ul>
+<li>rdd package: Another package for RDD analysis, focusing on both local linear and polynomial approaches. It allows for estimation of treatment effects with graphical diagnostics.</li>
+<li>Usage:RCopy codeinstall.packages(&quot;rdd&quot;)</li>
+</ul>
+<p>library(rdd)</p>
+<p>rdd_regression(y, x, cut = cutoff_value)</p>
+<p>2. Python:</p>
+<ul>
+<li>rdd Python package: Python has the rdd package, which provides functionalities for sharp and fuzzy RDD models, as well as diagnostic tools.</li>
+<li>Usage:pythonCopy codefrom rdd import RDD</li>
+</ul>
+<p>rdd = RDD(y, x, cutoff_value)</p>
+<p>rdd.fit()</p>
+<ul>
+<li>statsmodels and pandas: Python’s statsmodels library can also be used for RDD analysis, particularly with linear regression models. You can use pandas to handle data and statsmodels for regression estimation and diagnostics.</li>
+<li>Usage:pythonCopy codeimport statsmodels.api as sm</li>
+</ul>
+<p>import pandas as pd</p>
+<p>X = data['running_variable']</p>
+<p>Y = data['outcome']</p>
+<p>X = sm.add_constant(X)</p>
+<p>model = sm.OLS(Y, X).fit()</p>
+<p>print(model.summary())</p>
+<p>3. Stata:</p>
+<ul>
+<li>rd package: Stata has an rd package that facilitates RDD estimation and diagnostics. It includes commands for regression discontinuity estimation, including local polynomial regression.</li>
+<li>Usage:StataCopy coderdrobust outcome_variable running_variable, c(cutoff_value)</li>
+</ul>
+<ul>
+<li>rdplot: For graphical representation, Stata also has rdplot, which helps visualize the relationship between the running variable and the outcome across the cutoff.4. SPSS:</li>
+<li>SPSS can be used for conducting regression discontinuity analysis, though it may require custom coding or the use of macros. It offers basic regression capabilities to analyze RDD through manual coding for local polynomial regression.5. MATLAB:</li>
+<li>MATLAB can be used to perform RDD by using custom code or prebuilt functions. MATLAB's flexibility allows for applying both sharp and fuzzy RDD and for conducting various diagnostics (such as checking for manipulation of the running variable).6. Excel:</li>
+<li>While Excel doesn't directly offer RDD-specific functions, it can be used for simple RDD analysis by performing linear regressions on either side of the cutoff using its regression analysis tool. However, Excel's limited functionality makes it less suitable for advanced RDD methods or diagnostics.7. Jupyter Notebooks (Python):</li>
+<li>If you're using Jupyter Notebooks, you can employ Python libraries such as pandas, statsmodels, rdd, or even scikit-learn for fitting RDD models and performing diagnostics in a more interactive environment.Additional Tools:</li>
+<li>GitHub Repositories: You can also find specialized RDD packages or custom code on GitHub, where researchers and developers often share their own implementations for RDD estimation.Each of these tools has its own set of functions or packages specifically designed for performing RDD analysis. The choice of which tool to use depends on your familiarity with the language, the complexity of the analysis, and the specific features you need for diagnostics and visualization.</li>
+</ul>
+<p>nterpreting the results of a Regression Discontinuity Design (RDD) analysis involves understanding the treatment effect at the cutoff and checking whether the assumptions behind the design hold. Here's a structured approach to interpreting RDD results:1. Treatment Effect Estimate:</p>
+<ul>
+<li>Point Estimate of the Treatment Effect:</li>
+<li>The primary output of an RDD is the estimate of the causal treatment effect, which is the difference in the outcome variable between units just above and just below the cutoff.</li>
+<li>This estimate represents the local average treatment effect (LATE), meaning it estimates the effect of the treatment for those units close to the cutoff (e.g., students near a passing score threshold or individuals just above the income cutoff for welfare).</li>
+<li>Interpretation:</li>
+<li>If the treatment (e.g., scholarship, healthcare program) is assigned to individuals above the cutoff, the estimated treatment effect tells you how the outcome of interest (e.g., test scores, health) changes for individuals just above the cutoff compared to those just below the cutoff, who do not receive the treatment.</li>
+<li>A significant and positive treatment effect means that the treatment improves the outcome, while a negative or insignificant effect suggests no or detrimental impact.Example: If you are estimating the impact of a scholarship program and the treatment effect is +5 points on a test score, it means that students just above the threshold (who received the scholarship) scored, on average, 5 points higher than students just below the cutoff (who did not receive the scholarship).2. Checking for Continuity:</li>
+<li>Graphical Check:</li>
+<li>A key assumption in RDD is that, in the absence of the treatment, the relationship between the running variable (e.g., test score, age) and the outcome would be continuous at the cutoff.</li>
+<li>A visual check using scatter plots or line graphs is essential. Plot the outcome variable against the running variable and visually inspect whether there is a discontinuity (jump) at the cutoff.</li>
+<li>If the graph shows a sharp jump at the cutoff, it suggests a valid RDD and the treatment might have caused the observed discontinuity in the outcome.Example: A sharp increase in test scores at the cutoff could indicate that the scholarship program led to better performance for those who received it.3. Bandwidth Selection:</li>
+<li>Bandwidth refers to how far from the cutoff you include units in the analysis. A narrower bandwidth includes only those units very close to the cutoff, reducing potential bias but increasing variance. A wider bandwidth increases the sample size but may introduce confounding factors.</li>
+<li>The choice of bandwidth can affect the estimated treatment effect. Often, the results should be checked for robustness by trying different bandwidths.</li>
+<li>If the results are similar across different bandwidth choices, the estimate is more reliable.4. Placebo Tests and Robustness:</li>
+<li>Placebo Tests: To check for manipulation or other sources of bias, you can conduct placebo tests by testing for discontinuities at values far from the cutoff where you wouldn’t expect any treatment effect. If you find a significant discontinuity in a place where no treatment is expected, it may indicate a problem with the validity of your RDD.</li>
+<li>Robustness Checks: Check the robustness of the results by varying the specification of the model. For example, you could use different polynomial orders for the running variable, or estimate the model with and without control variables.5. Fuzzy RDD Interpretation:</li>
+<li>If you are working with a fuzzy RDD, where the treatment is not perfectly determined by the cutoff (i.e., some units above the cutoff do not receive treatment and some below the cutoff do receive treatment), you must interpret the results as an intent-to-treat (ITT) effect, rather than a local treatment effect (LATE).</li>
+<li>In this case, you would also need to estimate the local average treatment effect on the treated (LATT), which takes into account the proportion of individuals actually receiving the treatment above the cutoff.6. Statistical Significance:</li>
+<li>P-value: The treatment effect should be evaluated for statistical significance, often using a p-value (e.g., p &lt; 0.05). A p-value below 0.05 suggests that the treatment effect is unlikely to have occurred by chance, providing evidence that the treatment had an effect.</li>
+<li>Confidence Intervals (CI): Confidence intervals provide a range of plausible values for the treatment effect. A narrow CI suggests a more precise estimate, while a wide CI suggests more uncertainty in the result.7. Manipulation of the Running Variable:</li>
+<li>A key assumption of RDD is that the running variable (e.g., test score, income) cannot be manipulated around the cutoff. If individuals can manipulate the running variable to gain treatment, the design becomes invalid.</li>
+<li>You can check for manipulation of the running variable by examining its distribution near the cutoff. If there’s a large bunching of observations just above or below the cutoff, it could suggest manipulation, which would invalidate the RDD results.Example of Interpreting RDD Results:Let’s say you are analyzing the effect of a scholarship program where students with test scores above 80 receive a scholarship.</li>
+<li>Estimate: The RDD analysis estimates that students just above the cutoff score (80) score, on average, 5 points higher than students just below the cutoff.</li>
+<li>Graph: The scatter plot shows a clear jump in test scores at the cutoff, suggesting a valid RDD.</li>
+<li>Significance: The treatment effect is statistically significant (p-value &lt; 0.05), so you can confidently say that receiving the scholarship increases test scores.</li>
+<li>Placebo Test: You conduct a placebo test using a cutoff of 75, where no treatment is expected, and find no significant jump in test scores. This supports the validity of the original RDD.</li>
+<li>Bandwidth: You try different bandwidths (e.g., 5, 10 points above and below the cutoff) and find that the estimated treatment effect remains stable.Summary of Key Steps:</li>
+<li>Examine the treatment effect: This tells you the magnitude and direction of the causal effect.</li>
+<li>Check for continuity at the cutoff: Use graphs and statistical tests to ensure that the running variable behaves smoothly at the cutoff.</li>
+<li>Assess robustness: Check the stability of the results across different bandwidths and specifications.</li>
+<li>Validate assumptions: Ensure that there is no manipulation of the running variable and that the RDD design is valid.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">3</span>
+            <span class="anki-question">Categorizing causal questions</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Type 1: What factors/treatments (Xs) cause the outcome (Y)?</p>
+<p>Method: Causal discoveryBusiness examples:</p>
+<ul>
+<li>What factors are causing a decline in user retention?</li>
+<li>Which marketing channels are driving traffic to our website?Type 2: How much does treatment (X) affect outcome (Y)?</li>
+</ul>
+<p>Method: Causal inferenceBusiness examples:</p>
+<ul>
+<li>How much did the new feature increase user engagement?</li>
+<li>What is the impact of a price change on sales volume?</li>
+</ul>
+<ul>
+<li>Causal discovery involves identifying underlying causal structures from data. For example, it helps answer questions such as, “What factors affect user engagement?” by analyzing app data to uncover relationships among variables such as notifications, user interface design, and content loading speed.</li>
+<li>Causal inference focuses on determining how much specific factors affect an outcome. For instance, it can answer questions such as, “How much do personalized push notifications enhance user engagement?” This subfield includes methods like experimentation, where controlled experiments (e.g., randomized controlled trials) are used to establish causality.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">4</span>
+            <span class="anki-question">what is causal discovery</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Causal discovery is the process of identifying causal relationships from observational data by creating a causal graph that illustrates these relationships. This graph helps to identify variables that have a causal effect on outcomes, potential treatments, and hypotheses for further experimentation or causal inference. By analyzing patterns and dependencies among variables, causal discovery aims to uncover the underlying causal structures within a dataset, aiding us in understanding the true drivers behind observed phenomena and helping us make informed decisions based on data. In short, it is like being a detective, inferring how variables are causally related to one another.How can causal discovery help you?Causal discovery can help answer several important questions:</p>
+<ul>
+<li>Which variables have a causal effect on a certain outcome? Example: Identifying that push notifications and the user interface design impact user engagement.</li>
+<li>What are potential treatments or interventions? Example: Determining that improving loading speed could enhance user satisfaction.</li>
+<li>What are the causal paths in the data? Example: Discovering that sending personalized push notifications leads to higher user engagement by increasing the likelihood that users will open the app.By answering these questions, causal discovery can enable businesses and researchers to understand the mechanisms driving observed effects, develop targeted interventions to improve outcomes, and formulate hypotheses for further experimentation or causal inference analysis.Methods used for causal discoverySeveral methods are commonly used in causal discovery, including:</li>
+<li>Constraint-based methods: Techniques that use conditional independence tests to infer causal relationships. (Try out PC, FCI)</li>
+<li>Score-based methods: Approaches that search for the best-fitting causal graph based on a scoring criterion. (Try out GES, KCRL)</li>
+<li>Functional causal models (FCMs): Models that represent the effect variable as a function of its direct causes and some noise term. (Try out DirectLiNGAM, DECI)</li>
+<li>Causal Discovery from Time-Series Data:</li>
+<li>Leverage temporal ordering to infer causality (e.g., Granger Causality).</li>
+<li>Machine Learning-Based Approaches:</li>
+<li>Modern causal discovery methods incorporate deep learning, reinforcement learning, and Bayesian methods for scalability and flexibility.By leveraging these methods, we can uncover causal relationships and make data-driven decisions that lead to better outcomes. Check out my previous article to learn more about causal discovery: Beginner’s guide to causal discovery: The what, the why, and the how | by Ganga Meghanath | Data Science at Microsoft | Medium.</li>
+</ul>
+<p>Tools for Causal Discovery</p>
+<ul>
+<li>Python Libraries:</li>
+<li>CausalNex:</li>
+<li>A Python library for building Bayesian Networks and performing causal inference.</li>
+<li>Allows for structural learning (building causal graphs) and intervention analysis.</li>
+<li>DoWhy:</li>
+<li>A causal inference library that supports defining causal graphs, identifying treatment effects, and reasoning about counterfactuals.</li>
+<li>Combines traditional statistical methods with modern ML approaches.</li>
+<li>pgmpy:</li>
+<li>A library for creating and reasoning with probabilistic graphical models, including Bayesian Networks.</li>
+<li>CausalDiscoveryToolbox (CDT):</li>
+<li>Offers a collection of algorithms for causal structure learning (e.g., PC, GES) and causal inference.</li>
+<li>Statistical Software:</li>
+<li>TETRAD: A causal discovery tool developed by Carnegie Mellon University, widely used in academia.</li>
+<li>R packages:</li>
+<li>pcalg: For causal structure learning using the PC algorithm.</li>
+<li>bnlearn: For Bayesian network structure learning.</li>
+<li>Deep Learning Frameworks:</li>
+<li>CausalImpact (by Google): Although not strictly for discovery, it helps assess the causal impact of interventions (e.g., marketing campaigns).</li>
+<li>PyTorch-based causal models: Libraries like torchcausal or custom implementations for modeling functional causal relationships.Applications in Your Fields1. Healthcare and Telehealth Platforms:</li>
+<li>Use Case: Understanding the causal factors behind patient outcomes.</li>
+<li>Example: Identifying whether specific medications (like GLP-1 for weight loss) directly improve patient adherence to a treatment plan or reduce health risks.</li>
+<li>Tool: Use DoWhy or CausalNex to model the causal graph and analyze intervention outcomes.</li>
+<li>NLP in Healthcare: Use causal discovery to identify relationships between patient reviews (text data) and the likelihood of re-purchasing healthcare products.2. Marketing and Business Analytics:</li>
+<li>Use Case: Optimizing ad spend by identifying causal relationships between marketing strategies and sales.</li>
+<li>Example: Do changes in online ad wording (NLP-generated) cause higher conversions? Or is the effect due to external seasonal trends?</li>
+<li>Tool: Apply CausalImpact or DoWhy to analyze the impact of changes and control for confounding variables.</li>
+<li>Customer Segmentation: Discover causal relationships between demographic variables and purchasing behavior.3. E-commerce and Recommendation Systems:</li>
+<li>Use Case: Improving recommendation systems by identifying causal relationships.</li>
+<li>Example: Use causal discovery to understand whether user preferences are driven by item features or prior recommendations (feedback loop analysis).</li>
+<li>Tool: Leverage CausalNex for Bayesian Network modeling in recommender systems.4. NLP and Text Data:</li>
+<li>Use Case: Discover causal effects in textual analysis.</li>
+<li>Example: In analyzing customer reviews, find whether specific phrases (e.g., “excellent customer service”) causally influence higher review scores or sales.</li>
+<li>Tool: Combine CausalNex with topic modeling or sentiment analysis pipelines in Python.</li>
+<li>Sentiment and Behavioral Impact: Discover whether positive sentiment causes increased user engagement or simply correlates with it.5. Applied Statistics in Experiments:</li>
+<li>Use Case: Causal discovery in A/B testing.</li>
+<li>Example: Determine whether a new feature (e.g., UI redesign) causally increases user retention, or whether retention is driven by external factors.</li>
+<li>Tool: Use DoWhy or CausalImpact to simulate counterfactuals and analyze the experiment results.6. Manufacturing (Root Cause Analysis):</li>
+<li>Use Case: Understanding causal relationships between machine failure rates and production metrics.</li>
+<li>Example: Does increasing maintenance frequency causally reduce downtime, or are there confounding factors like equipment age?</li>
+<li>Tool: Use CDT or CausalNex for structural learning and intervention analysis.7. Data Pipelines (Error and Anomaly Analysis):</li>
+<li>Use Case: Identify causal factors behind errors or anomalies in data pipelines.</li>
+<li>Example: What causes delays in data delivery from Kinesis to S3? Is it network congestion or upstream processing times?</li>
+<li>Tool: Use pgmpy or DoWhy to model data flow and discover causes.8. Google and Amazon Role Preparation:</li>
+<li>For Google: Expect questions involving causal inference applied to data experiments and user behavior analysis (e.g., what caused a spike in search activity?).</li>
+<li>For Amazon: Understanding how to integrate causal discovery with business intelligence and decision-making.Example Workflow for Causal Discovery</li>
+<li>Define the Problem:</li>
+<li>Clearly outline the variables and relationships you want to investigate. For instance, in marketing: &quot;Do discounts (X) causally increase sales (Y)?&quot;</li>
+<li>Data Preparation:</li>
+<li>Ensure the data is preprocessed (e.g., removing noise, handling missing values).</li>
+<li>Example: In your healthcare dataset, clean patient reviews and normalize numerical variables.</li>
+<li>Construct Causal Graph:</li>
+<li>Use tools like CausalNex or DoWhy to create a DAG.</li>
+<li>Example: In telehealth, model how variables like &quot;age,&quot; &quot;medication type,&quot; and &quot;reviews&quot; influence &quot;health improvement.&quot;</li>
+<li>Test Causal Relationships:</li>
+<li>Apply conditional independence tests or functional models.</li>
+<li>Example: Test if positive reviews (NLP scores) causally lead to higher customer retention.</li>
+<li>Validate and Interpret:</li>
+<li>Validate the model with interventions or experiments if possible.</li>
+<li>Example: Simulate an intervention where you reduce the price of a healthcare product and analyze its causal effect on sales.</li>
+<li>Communicate Findings:</li>
+<li>Use visualizations (e.g., causal graphs) to explain results to stakeholders.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">5</span>
+            <span class="anki-question">What is causal inference</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Causal inference is the process of estimating and understanding the causal effect of one variable on another. It focuses on quantifying and reasoning about cause-and-effect relationships, typically through observational data or experimental data.</p>
+<p>For example:</p>
+<ul>
+<li>Does advertising (A) cause an increase in sales (B), and by how much?</li>
+<li>What is the impact of a new medication (X) on patient recovery rates (Y)?Causal inference seeks to answer &quot;what if&quot; questions, such as:</li>
+<li>Counterfactuals: What would have happened to sales if advertising had not been run?</li>
+<li>Interventions: What happens to an outcome when a variable is actively manipulated?Steps in Causal Inference</li>
+<li>Define the Causal Model:</li>
+<li>Specify the causal relationships (often using Directed Acyclic Graphs, or DAGs).</li>
+<li>Identify the Causal Effect:</li>
+<li>Use statistical methods like matching, regression, or instrumental variables to isolate the causal impact.</li>
+<li>Estimate the Causal Effect:</li>
+<li>Employ models like difference-in-differences, propensity score matching, or A/B testing.</li>
+<li>Evaluate Assumptions:</li>
+<li>Causal inference relies on assumptions like no unmeasured confounding, correct model specification, and sufficient data.</li>
+</ul>
+<p>Causal inference is a methodology used to determine the effect of a treatment or intervention on an outcome. In causal inference, we often deal with various causal estimands (the quantity to be estimated), such as:</p>
+<ul>
+<li>Average Treatment Effect (ATE): The average effect of a treatment across the entire population. ATE = E [ Y(1) — Y(0) ]</li>
+<li>Conditional Average Treatment Effect (CATE): The average effect of a treatment for a specific subgroup within the population. CATE = E [ Y(1) — Y(0) | X = x ]</li>
+<li>Average Treatment Effect on the Treated (ATT): The average effect of a treatment on those who actually received the treatment. ATT = E [ Y(1) — Y(0) | T = 1 ]</li>
+<li>Individual Treatment Effect (ITE): The effect of a treatment on an individual. ITE = Y(1)_i — Y(0)_iHere, Y(1) is the outcome under the treatment and Y(0) is the outcome without the treatment; X = x represents a population subgroup; T = 1 indicates treated population; and i represents an individual.Causal inference can help estimate the effect of a treatment on an outcome of interest.Let’s use a simple example to illustrate these concepts. Suppose we want to understand the effect of a new educational program on student performance. Ideally, we would need to know how the students perform with and without the program at the same time. Obviously, this isn’t possible in reality, but for the sake of understanding, let’s imagine that we have this data. Assume we know the location of the students as either A or B, and that students 1, 2, 3, and 4 eventually enroll in the new program. (This is just a fictional scenario to help us understand the estimands better.)Example data to help explain estimandsIn this example, we can see the performance outcomes for each student with and without the program. By comparing these outcomes, we can estimate the effect of the program.</li>
+<li>ATE: The average difference in performance with and without the program across all students. The average performance without the program is 73.25 and with the program is 80.5, so the ATE is 7.25.</li>
+<li>CATE: The average difference in performance for a specific subgroup, such as students in location A. The average performance without the program is 80.5 and with the program is 86, so the CATE is 5.5.</li>
+<li>ATT: The average difference in performance for students who participated in the program. The average performance without the program is 71 and with the program is 80.75, so the ATT is 9.75.</li>
+<li>ITE: The effect of the program on each individual student. For student 1, the performance with the program is 79 and without it is 77, so the ITE is 2.How can causal inference help you?Causal inference can help answer various business questions, such as:</li>
+<li>How much did the new feature increase user engagement? (ATE)</li>
+<li>What is the impact of a new targeted campaign on customer retention? (ATT)</li>
+<li>How does the effect of a marketing campaign vary across different customer segments? (CATE)</li>
+<li>What is the effect of a personalized recommendation on an individual user’s purchase behavior? (ITE)Different estimands help answer these questions by providing insights into the overall effect, the effect on specific subgroups, the effect on those who received the treatment, or the effect on individual subjects.Methods used for causal inferenceA not uncommon confusion is between experimentation and causal inference. Some people may think these are two separate fields. In fact, experimentation (which you may know as randomized controlled trials or A/B testing) is a fundamental approach within causal inference! Why? Because in an experiment, we aim to estimate the causal effect of a treatment on an outcome, which is precisely what causal inference is about. Let’s explore two primary approaches within causal inference: Experimentation and non-experimentation methods.ExperimentationExperimentation is a method used to establish causal relationships by manipulating one or more variables and observing the effect on an outcome. One of the most rigorous forms of experimentation is the Randomized Controlled Trial (RCT).RCTs are considered the gold standard for establishing causality.In an RCT, participants are randomly assigned to either a treatment group or a control group. This randomization helps ensure that the groups are similar in all respects except for the treatment, thereby isolating the effect of the treatment.Let’s revisit our example of the new educational program. Suppose we randomly assign students to either receive the program (treatment group) or not (control group).Randomization helps create comparable groups by balancing both observed and unobserved characteristics between the treatment and control groups, allowing us to confidently attribute any differences in outcomes to the treatment itself. The causal effect is estimated as the difference in the average outcome between the treatment and control groups.</li>
+</ul>
+<p>Note that in practice, even with randomization, the two groups may not be exactly the same, and we won’t achieve our parallel world, but we’re pretty close. Through random assignment, we have removed the effects that confounders might have on the treatment variable because whether or not a student receives the treatment is not influenced by external factors. Hence, randomization remains a powerful tool for causal inference by minimizing the risk of confounding variables influencing the results.</p>
+<p>Types of experimentation include:</p>
+<ul>
+<li>Clinical trials: A specific type of RCT used extensively in the medical field to test the efficacy and safety of new treatments, drugs, or medical devices.</li>
+<li>A/B testing: Commonly used in digital marketing and product development. Multiple versions of a feature or campaign (e.g., version A and version B) are tested simultaneously to determine which one performs better. Sometimes, A/B testing can involve more than two groups (e.g., A/B/C testing) to compare multiple treatments simultaneously.Non-experimentation methodsYou might be wondering how we can estimate causal effects when we cannot conduct experiments. There are almost always confounding factors, so how can we estimate a causal effect and not just overall correlation? It’s true that confounding factors can complicate things, but there are several methods that can help us get closer to understanding causality even without experiments. These methods are valuable when experimentation isn’t feasible. Let’s look at some broad categories of methods:</li>
+</ul>
+<p>Observational methods: These rely on data collected without manipulating the study environment. They aim to control for confounding factors to estimate causal effects and are particularly useful when conducting experiments is impractical or unethical.</p>
+<p>Quasi-experimental designs: These are used to identify causal relationships when random assignment to treatment and control groups is not feasible. They attempt to mimic the conditions of an experiment to estimate causal effects.</p>
+<p>Counterfactual analysis: This involves comparing the observed outcome with the hypothetical outcome that would have occurred if the treatment had not been applied. This approach is based on the potential outcomes framework.</p>
+<p>Here are some commonly used causal inference techniques that fall under the categories of observational methods, quasi-experimental designs, and counterfactual analysis. Because some of these methods can fall under multiple categories, we list them below:</p>
+<ul>
+<li>Propensity Score Matching (PSM): Pairs individuals who received the treatment with those who didn’t, based on similar characteristics, to reduce bias from confounding variables.</li>
+<li>Instrumental Variables (IV): Uses variables related to the treatment but not directly to the outcome (except through the treatment) to isolate the causal effect by providing a source of variation in the treatment that isn’t influenced by confounders.</li>
+<li>Double Machine Learning (DML): Utilizes Machine Learning to control for confounders by creating “clean” versions of treatment and outcome variables, by subtracting estimated effects from confounders, providing more accurate causal estimates.</li>
+<li>Difference-in-Differences (DiD): Compares the changes in outcomes over time between a treatment group and a control group, helping to control for confounding variables that affect both groups similarly over time.</li>
+<li>Synthetic Control Method (SC): Constructs a synthetic control group by combining data from multiple untreated units to estimate what would have happened to the treated unit in the absence of the treatment.</li>
+<li>Bayesian Structural Time Series (BSTS): Uses Bayesian methods to model time series data. The effect of an intervention is inferred by comparing observed data with a counterfactual scenario, estimating what would have happened without the intervention.</li>
+<li>Regression Discontinuity Design (RDD): Uses a cutoff or threshold to assign treatment. By comparing individuals just above and below this cutoff, RDD estimates the causal effect, assuming those near the threshold are similar except for the treatment.These methods offer alternatives when experimentation isn’t feasible, enabling researchers to estimate causal effects even in the presence of confounding factors.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">6</span>
+            <span class="anki-question">what is quasi-experimental design</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>A quasi-experimental design is a type of research design used to evaluate causal relationships when random assignment to treatment and control groups is not feasible. Unlike a true experiment, participants are not randomly assigned to groups, but the design still tries to mimic the conditions of an experiment.To estimate causal effects, quasi-experimental designs leverage natural or existing group assignments, using statistical techniques to account for confounding variables and isolate the treatment effect.Key Features of Quasi-Experimental Designs</p>
+<ul>
+<li>No Random Assignment:</li>
+<li>Groups are formed based on external factors (e.g., geography, policy changes) or self-selection.</li>
+<li>Comparison Groups:</li>
+<li>A &quot;treatment&quot; group and a &quot;control&quot; group are compared to estimate the treatment effect.</li>
+<li>Causal Inference:</li>
+<li>Statistical techniques are used to address confounders and approximate experimental conditions.Example of Quasi-Experimental DesignPolicy Evaluation: The Effect of Universal Pre-Kindergarten on Academic PerformanceScenario: A state implements a universal pre-kindergarten (pre-K) program for all 4-year-olds, while neighboring states do not. Researchers want to evaluate whether the program improves academic performance in elementary school.How It Works</li>
+<li>Design Type: Difference-in-Differences (DiD)</li>
+<li>Compares outcomes (e.g., test scores) between children in the state with universal pre-K (treatment group) and children in the neighboring states without it (control group), before and after the program implementation.</li>
+<li>Steps:</li>
+<li>Collect test score data for children in both groups, both before and after the program starts.</li>
+<li>Calculate the average change in test scores for children in the treatment group (those exposed to the program).</li>
+<li>Calculate the average change in test scores for children in the control group.</li>
+<li>Subtract the control group's change from the treatment group's change to estimate the causal effect of the program.</li>
+<li>Key Assumption:</li>
+<li>The &quot;parallel trends assumption&quot; assumes that, in the absence of the program, the treatment and control groups would have experienced similar changes in test scores over time.Data ExampleGroupTimeAverage Test ScoreTreatment (State A)Before70Treatment (State A)After80Control (State B)Before68Control (State B)After70Difference-in-Differences Calculation:</li>
+<li>Treatment Group Change: 80−70=1080 - 70 = 1080−70=10</li>
+<li>Control Group Change: 70−68=270 - 68 = 270−68=2</li>
+<li>Estimated Effect: 10−2=810 - 2 = 810−2=8Interpretation: The universal pre-K program increased test scores by an average of 8 points.Advantages of Quasi-Experimental Designs</li>
+<li>Feasibility: Can be used when randomization is unethical or impractical.</li>
+<li>Real-world Applicability: Leverages naturally occurring events, such as policy changes.</li>
+<li>Cost-Effective: Often uses existing data (e.g., administrative data).Limitations</li>
+<li>Confounding Variables: Without randomization, it's harder to rule out alternative explanations for observed effects.</li>
+<li>Parallel Trends Assumption: If the treatment and control groups do not have similar trends before the intervention, the results may be biased.Would you like a step-by-step guide or code for implementing a quasi-experimental design using real-world data?You said:yesChatGPT said:ChatGPTLet’s walk through a step-by-step guide and provide an implementation using Python for a quasi-experimental design with Difference-in-Differences (DiD).Scenario:We’ll evaluate the impact of a minimum wage increase in State A on employment rates, using State B (where the minimum wage remained unchanged) as a control group.Step-by-Step Guide:</li>
+<li>Data Preparation:</li>
+<li>Collect data for both the treatment group (State A) and control group (State B) over time (before and after the policy change).</li>
+<li>Variables:</li>
+<li>state: Identifies the state (A or B).</li>
+<li>time: Indicates whether data is from before or after the policy (e.g., 0 = before, 1 = after).</li>
+<li>employment_rate: The outcome variable (e.g., employment rates).</li>
+<li>treatment: A binary variable where 1 = treated state, 0 = control state.</li>
+<li>Define Groups:</li>
+<li>Treatment Group: State A (experiences the policy change).</li>
+<li>Control Group: State B (no policy change).</li>
+<li>Difference-in-Differences Model:</li>
+<li>Create an interaction term (time * treatment) to isolate the treatment effect.</li>
+<li>The DiD estimator measures the difference in the outcome variable between the treatment and control groups, accounting for both time and group effects.</li>
+<li>Statistical Model:   Use OLS regression to estimate the effect:</li>
+<li></li>
+<li>The coefficient of the interaction term (β3​) represents the causal effect.</li>
+</ul>
+<p>Let’s walk through a step-by-step guide and provide an implementation using Python for a quasi-experimental design with Difference-in-Differences (DiD).Scenario:We’ll evaluate the impact of a minimum wage increase in State A on employment rates, using State B (where the minimum wage remained unchanged) as a control group.Step-by-Step Guide:</p>
+<ul>
+<li>Data Preparation:</li>
+<li>Collect data for both the treatment group (State A) and control group (State B) over time (before and after the policy change).</li>
+<li>Variables:</li>
+<li>state: Identifies the state (A or B).</li>
+<li>time: Indicates whether data is from before or after the policy (e.g., 0 = before, 1 = after).</li>
+<li>employment_rate: The outcome variable (e.g., employment rates).</li>
+<li>treatment: A binary variable where 1 = treated state, 0 = control state.</li>
+<li>Define Groups:</li>
+<li>Treatment Group: State A (experiences the policy change).</li>
+<li>Control Group: State B (no policy change).</li>
+<li>Difference-in-Differences Model:</li>
+<li>Create an interaction term (time * treatment) to isolate the treatment effect.</li>
+<li>The DiD estimator measures the difference in the outcome variable between the treatment and control groups, accounting for both time and group effects.</li>
+<li>Statistical Model:</li>
+<li>Use OLS regression to estimate the effect:</li>
+</ul>
+<p>employment_rate=β0+β1(time)+β2(treatment)+β3(time×treatment)+ϵemployment\_rate = \beta_0 + \beta_1(time) + \beta_2(treatment) + \beta_3(time \times treatment) + \epsilonemployment_rate=β0​+β1​(time)+β2​(treatment)+β3​(time×treatment)+ϵ</p>
+<ul>
+<li>The coefficient of the interaction term (β3\beta_3β3​) represents the causal effect.Python ImplementationpythonCopyEditimport pandas as pd</li>
+</ul>
+<p>import statsmodels.api as sm</p>
+<p>import statsmodels.formula.api as smf</p>
+<p># Simulated dataset</p>
+<p>data = {</p>
+<p>&quot;state&quot;: [&quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;, &quot;B&quot;, &quot;B&quot;],</p>
+<p>&quot;time&quot;: [0, 1, 0, 1, 0, 1, 0, 1],  # 0 = Before, 1 = After</p>
+<p>&quot;treatment&quot;: [1, 1, 1, 1, 0, 0, 0, 0],  # 1 = Treated state, 0 = Control state</p>
+<p>&quot;employment_rate&quot;: [70, 80, 72, 85, 68, 70, 69, 71],  # Employment rates</p>
+<p>}</p>
+<p># Convert to DataFrame</p>
+<p>df = pd.DataFrame(data)</p>
+<p># Fit the Difference-in-Differences model</p>
+<p>model = smf.ols(&quot;employment_rate ~ time + treatment + time:treatment&quot;, data=df).fit()</p>
+<p># Display the results</p>
+<p>print(model.summary())</p>
+<p>Explanation of the Code:</p>
+<ul>
+<li>Variables:</li>
+<li>time: Captures before/after differences.</li>
+<li>treatment: Captures differences between treated and control states.</li>
+<li>time:treatment: Interaction term for the causal effect of the policy.</li>
+<li>Model Interpretation:</li>
+<li>The coefficient for time:treatment represents the causal effect of the policy.Expected Output (Interpreting Results):</li>
+<li>Regression Coefficients:</li>
+<li>Intercept: Baseline employment rate in the control group before the policy.</li>
+<li>time: Change in employment rate over time for the control group.</li>
+<li>treatment: Difference in employment rate between the treatment and control groups before the policy.</li>
+<li>time:treatment: The DiD estimator (causal effect of the policy).For instance:</li>
+<li>If time:treatment = 5, it means the policy caused a 5 percentage point increase in employment rates in the treatment group compared to the control group.Enhancements</li>
+<li>Include covariates (e.g., population size, industry distribution) to control for other factors.</li>
+<li>Use robust standard errors to account for heteroscedasticity or clustering by state:pythonCopyEditmodel = smf.ols(&quot;employment_rate ~ time + treatment + time:treatment&quot;, data=df).fit(cov_type='HC3')</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">7</span>
+            <span class="anki-question">what is propensity score matching(PSM)</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>PSM involves the calculation of the propensity score, which is the probability of a unit (e.g., a person, school, hospital) receiving a particular treatment given a set of observed characteristics. The propensity score is calculated using logistic regression or other statistical methods. Once the propensity scores are calculated, units in the treatment and control groups are matched based on these scores. This process aims to create a synthetic control group that is statistically similar to the treatment group in terms of the observed covariates. PSM is used in observational studies where random assignment to a treatment and control group is not feasible, and it helps in reducing selection bias by equating groups based on these covariates.</p>
+<p>In Plain English:Imagine you want to know if a training program helps employees get promoted faster. However, the people who choose to attend the training program may already be different in some way – maybe they are more motivated, more experienced, or have better skills. This makes it hard to tell whether the training itself helped, or if those differences caused the promotions.Propensity Score Matching (PSM) helps solve this problem by matching people in the training group with similar people in the non-training group based on their characteristics (like motivation, experience, skills, etc.). After matching, you can compare the two groups as if they were more alike, helping you estimate the true effect of the training program.Example:Problem:You have data on 100 employees, where:</p>
+<ul>
+<li>50 attended the training (treatment group).</li>
+<li>50 did not attend (control group).Each employee has characteristics like:</li>
+<li>Years of experience.</li>
+<li>Education level.</li>
+<li>Motivation score (on a scale of 1-10).Step 1: Calculate Propensity ScoresYou create a model (e.g., logistic regression) to calculate the probability (propensity) of each employee attending the training based on their characteristics. For example:</li>
+<li>Employee A: 80% chance of attending training (high motivation, lots of experience).</li>
+<li>Employee B: 20% chance of attending training (low motivation, less experience).Step 2: Match EmployeesFind a &quot;match&quot; for each person in the training group from the control group who has a similar propensity score. For example:</li>
+<li>Employee A (training group, 80% chance) is matched with Employee C (control group, 78% chance).</li>
+<li>Employee B (training group, 20% chance) is matched with Employee D (control group, 22% chance).Step 3: Compare OutcomesNow you compare the promotion rates of the matched pairs. For example:</li>
+<li>Out of 50 matched pairs, 30 people in the training group were promoted, while only 20 people in the control group were promoted.</li>
+<li>This suggests that the training program may have increased the likelihood of promotion.Why Use PSM?Without PSM, you’d be comparing apples to oranges because the training group and control group might differ in ways unrelated to the training itself. PSM helps make a fair comparison by ensuring you’re comparing people who are as similar as possible, except for whether or not they attended the training.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">8</span>
+            <span class="anki-question">how Propensity Scores is calculated in logistic regression?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Step-by-Step Guide1. Understand the Logistic Regression ModelLogistic regression predicts the probability of a binary outcome. In the case of Propensity Score Matching (PSM), the binary outcome is:</p>
+<ul>
+<li>1: The person received the treatment.</li>
+<li>0: The person did not receive the treatment.</li>
+</ul>
+<p>The model calculates the probability of a person receiving the treatment based on their observed characteristics (covariates).The formula for logistic regression is:</p>
+<p>2. Gather the DataLet’s say you have data for individuals with these characteristics:</p>
+<ul>
+<li>Treatment (1 if treated, 0 otherwise).</li>
+<li>Covariates: Years of experience, education level, motivation score.Treatment (T)Years of Experience (X1)Education Level (X2)Motivation Score (X3)1104 (Master's degree)8053 (Bachelor's degree)61155 (PhD)9032 (High School)4</li>
+</ul>
+<p>4. Calculate Propensity Scores</p>
+<p>For each individual, plug their covariate values into the logistic regression equation to calculate their propensity score.</p>
+<p>For example:</p>
+<ul>
+<li></li>
+</ul>
+<p>5. Use Propensity Scores for MatchingNow you have the propensity scores for all individuals. For example:IndividualTreatment (T)Propensity Score110.9995200.987310.9999400.870You can now use these scores to match treated individuals with untreated individuals who have similar scores.Why Logistic Regression?</p>
+<ul>
+<li>Logistic regression is commonly used because it is simple, interpretable, and works well for binary outcomes.</li>
+<li>However, more advanced methods like machine learning models (e.g., random forests) can also be used to calculate propensity scores, especially when there are complex relationships among covariates.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">9</span>
+            <span class="anki-question">When do you use PSM?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>PSM is particularly useful in observational studies where:</p>
+<ul>
+<li>Randomized Controlled Trials are Not Feasible: Due to ethical, logistical, or financial constraints, it may not be possible to conduct a randomized study.</li>
+<li>Reducing Selection Bias: In studies where the treatment group is not randomly selected, PSM helps in balancing the groups based on observed covariates, reducing the bias due to non-random assignment.</li>
+<li>Large Observational Data Sets: PSM is beneficial in large datasets where there is a You use PSM in the following scenarios:1. When Randomization is Impossible or Impractical</li>
+<li>In a randomized controlled trial (RCT), subjects are randomly assigned to treatment and control groups, ensuring balance between groups. However, in many real-world studies, randomization isn't feasible due to ethical, logistical, or financial constraints.</li>
+<li>Example:</li>
+<li>You want to study the effect of smoking on lung cancer, but you cannot ethically assign people to start smoking. Instead, you rely on observational data where some people are smokers and others are not.2. When There is Selection Bias in Observational Data</li>
+<li>In observational studies, people who receive the treatment may be systematically different from those who don't (e.g., more motivated, younger, healthier, etc.). This creates selection bias.</li>
+<li>PSM accounts for these differences by matching individuals in the treatment and control groups based on their likelihood (propensity) of receiving the treatment.3. When You Have Measurable Covariates</li>
+<li>PSM requires data on observable characteristics (covariates) that influence the likelihood of receiving the treatment.</li>
+<li>Example:</li>
+<li>You have data on age, education, and income for people who attended a training program. PSM uses these characteristics to create comparable treatment and control groups.4. When You Need a Fair Comparison</li>
+<li>PSM is used to mimic the conditions of a randomized trial by creating a pseudo-randomized control group that is as similar as possible to the treatment group.</li>
+<li>Example:</li>
+<li>If wealthier people are more likely to use a health app, PSM can match app users with non-users of similar wealth, reducing bias.5. When You Want to Estimate Causal Effects</li>
+<li>PSM is often used to estimate the average treatment effect on the treated (ATT), which measures the effect of the treatment for individuals who actually received it.</li>
+<li>Example:</li>
+<li>You want to know if a job training program improves employment outcomes for those who attended. PSM can help estimate the program's causal impact by comparing attendees with non-attendees who are similar in their observed characteristics.Examples of ApplicationsHealthcare:</li>
+<li>Evaluating the effect of a new drug on patient recovery rates when clinical trials were not conducted.</li>
+<li>Example: Comparing patients who received a new drug to those who did not, while matching based on age, gender, and pre-existing conditions.Policy Analysis:</li>
+<li>Assessing the impact of a policy or intervention.</li>
+<li>Example: Estimating the effect of free school lunches on student performance by comparing students who received free lunches with similar students who did not.Economics:</li>
+<li>Measuring the impact of education or training programs on earnings.</li>
+<li>Example: Matching individuals who attended a job training program with similar individuals who did not (based on age, education, and prior work experience).Marketing:</li>
+<li>Estimating the effectiveness of a marketing campaign.</li>
+<li>Example: Comparing customers who saw an ad with those who didn’t, matching on characteristics like purchase history and demographics.Social Sciences:</li>
+<li>Studying the impact of behaviors or lifestyle choices.</li>
+<li>Example: Assessing the effect of exercise on mental health by matching people who exercise with non-exercisers of similar age and health status.When NOT to Use PSM</li>
+<li>When Key Covariates Are Missing:</li>
+<li>PSM only accounts for observable covariates. If important factors are unobserved or unmeasured, the results can still be biased.</li>
+<li>When There is Insufficient Overlap (Common Support):</li>
+<li>If the treatment and control groups are very different (e.g., no individuals in the control group with similar propensity scores to the treatment group), PSM cannot create good matches.</li>
+<li>When Sample Size is Too Small:</li>
+<li>PSM requires a large enough sample to find good matches. Small datasets may not allow for meaningful matching.</li>
+<li>When Causal Inference is Not the Goal:</li>
+<li>If you're only looking for correlations or descriptive statistics, simpler methods may be more appropriate.Summary: When to Use PSM</li>
+<li>Purpose: Estimate causal effects in observational studies.</li>
+<li>Prerequisites:</li>
+<li>Observational data with treatment and control groups.</li>
+<li>Measurable covariates that influence treatment assignment.</li>
+<li>Goal: Reduce selection bias and create comparable groups.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">10</span>
+            <span class="anki-question">How is PSM used in real-world problems?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Here are real-life cases where PSM is helpful in online experiments where a randomized controlled trial is not feasible.</p>
+<ul>
+<li>Google - Imagine you are tasked with evaluating the effect of an optional software update on Android phones. How would you measure the causal effect of the optional update on user experience?</li>
+</ul>
+<p>To measure the causal effect of an optional software update on user experience, you need to control for potential biases that arise because the update is optional (users who choose to update may differ from those who don’t). Here's a structured approach:Step 1: Define the Problem and Metrics</p>
+<ul>
+<li>Goal: Evaluate the causal effect of the software update on user experience.</li>
+<li>Metrics: Identify measurable aspects of user experience, such as:</li>
+<li>App crash rate.</li>
+<li>Battery usage or performance.</li>
+<li>Time spent using the phone.</li>
+<li>User satisfaction ratings (e.g., via surveys or Net Promoter Score).</li>
+<li>Retention or continued use after the update.Step 2: Challenges in Measuring Causal Effect</li>
+<li>Selection Bias:</li>
+<li>Users who update may have different characteristics (e.g., tech-savviness, device type) compared to those who don’t.</li>
+<li>Confounding Variables:</li>
+<li>Other factors like phone model, app usage patterns, or geographic location may influence user experience independently of the update.Step 3: Study Design OptionsYou need a study design that ensures the comparison between users who update and those who don’t is fair.Option 1: Randomized Controlled Trial (RCT) (Ideal but may not always be feasible)</li>
+<li>Randomly assign users to:</li>
+<li>Treatment Group: Prompted to update or automatically updated.</li>
+<li>Control Group: Not prompted or delayed update.</li>
+<li>Measure user experience metrics for both groups and calculate the causal effect as the difference in outcomes between the groups.Advantages: Eliminates selection bias and confounding.</li>
+</ul>
+<p>Limitations: May not be feasible if the update is already released or users cannot be forced into groups.</p>
+<p>Option 2: Observational Study with Propensity Score Matching (PSM) (Most realistic approach for an optional update)</p>
+<ul>
+<li>Propensity Score Model:</li>
+<li>Use a logistic regression (or machine learning model) to estimate the probability of a user updating (propensity score) based on observed characteristics:</li>
+<li>Phone model and OS version.</li>
+<li>Usage patterns before the update.</li>
+<li>Geographic location.</li>
+<li>Demographics.</li>
+<li></li>
+</ul>
+<ul>
+<li>Match Users:</li>
+<li>Match users who updated with those who didn’t, based on similar propensity scores.</li>
+<li>This creates comparable treatment and control groups.</li>
+<li>Measure Outcomes:</li>
+<li>Compare user experience metrics (e.g., crash rate, battery performance) between the matched groups to estimate the causal effect of the update.Option 3: Difference-in-Differences (DiD) Approach</li>
+<li>Use data from before and after the update for both groups:</li>
+<li>Treatment Group: Users who updated.</li>
+<li>Control Group: Users who didn’t update.</li>
+<li>Measure the change in user experience metrics for both groups:</li>
+<li>Assumption:</li>
+<li>In the absence of the update, both groups would have followed the same trend in user experience metrics.Option 4: Instrumental Variable (IV) Analysis</li>
+<li>Find a variable that predicts whether a user updates but doesn’t directly affect user experience (an instrument).</li>
+<li>Example: Timing of update prompts or notifications.</li>
+<li>Use this instrument to model the likelihood of updating and estimate the causal effect on user experience.</li>
+</ul>
+<p>Limitations: Finding a valid instrument can be challenging.Step 4: Analyze and Interpret Results</p>
+<ul>
+<li>Compare Groups:</li>
+<li>Calculate the average treatment effect (ATE) or average treatment effect on the treated (ATT).</li>
+<li>Use statistical tests to ensure differences are significant.</li>
+<li>Check Robustness:</li>
+<li>Validate results using multiple methods (e.g., PSM, DiD).</li>
+<li>Test for unobserved confounders if possible.Step 5: Report Findings</li>
+<li>Present the estimated causal effect of the update on each metric.</li>
+<li>Discuss potential limitations, such as unmeasured confounders or differences in compliance (e.g., some users may not install the update after being prompted).Example Workflow:</li>
+<li>Gather data:</li>
+<li>User data before and after the update (e.g., crash rates, battery life).</li>
+<li>Characteristics like device model, OS version, usage patterns.</li>
+<li>Fit a propensity score model.</li>
+<li>Match users who updated with similar users who didn’t.</li>
+<li>Compare metrics between matched groups.</li>
+<li>Validate results with a DiD analysis.</li>
+<li>Amazon - The company launched Amazon Prime, a membership program priced at $14.99 per month. This program offers benefits such as waived shipping fees and discounts on select products. How would you measure the causal effect of Amazon Prime on customer spending?To measure the causal effect of Amazon Prime on customer spending, we need to isolate the impact of Prime membership while controlling for confounding factors. Here's how to approach this:1. Randomized Controlled ExperimentThe most robust way to measure causality is through an A/B test (Randomized Controlled Trial):</li>
+<li>Design:</li>
+<li>Randomly assign customers to two groups:</li>
+<li>Treatment group: Offered Amazon Prime membership.</li>
+<li>Control group: Not offered Amazon Prime membership.</li>
+<li>Ensure groups are similar in size and characteristics to minimize bias.</li>
+<li>Measure:</li>
+<li>Compare the average spending of the treatment group (with Prime) to the control group (without Prime) over a specific period.</li>
+<li>Causal Effect:</li>
+<li>Causal Effect=Yˉtreatment−Yˉcontrol\text{Causal Effect} = \bar{Y}_{\text{treatment}} - \bar{Y}_{\text{control}}Causal Effect=Yˉtreatment​−Yˉcontrol​</li>
+<li>Where YYY is the average customer spending.Example: If customers with Prime spend $200/month on average, and those without spend $150/month, the causal effect is $50/month.2. Difference-in-Differences (DiD)If randomization isn’t possible, you can use a quasi-experimental approach:</li>
+<li>Before-and-After Comparison:</li>
+<li>Identify two groups:</li>
+<li>Treatment group: Customers who join Prime during the study.</li>
+<li>Control group: Similar customers who do not join Prime.</li>
+<li>Measure:</li>
+<li>Calculate the change in average spending for both groups before and after the introduction of Prime.</li>
+<li>Causal Effect:</li>
+</ul>
+<p>ΔSpendingtreatment−ΔSpendingcontrol\Delta \text{Spending}_{\text{treatment}} - \Delta \text{Spending}_{\text{control}}ΔSpendingtreatment​−ΔSpendingcontrol​</p>
+<ul>
+<li>Assumption:</li>
+<li>The treatment and control groups must have parallel trends in spending before Prime was introduced.Example: If Prime members increased their spending by $100/month while non-members increased by $40/month (due to external trends), the causal effect is $60/month.3. Instrumental Variables (IV)If there is self-selection bias (e.g., customers who value Prime more may already spend more):</li>
+<li>Find an Instrument:</li>
+<li>An external factor that influences the likelihood of joining Prime but does not directly affect spending.</li>
+<li>Example: Offer random discounts on Prime membership to a subset of customers.</li>
+<li>Two-Stage Analysis:</li>
+<li>Stage 1: Use the instrument to predict Prime membership.</li>
+<li>Stage 2: Use the predicted Prime membership to estimate its effect on spending.4. Regression AnalysisIf observational data is available:</li>
+<li>Use a regression model to estimate spending differences while controlling for confounding variables.</li>
+<li>Model:</li>
+</ul>
+<p>Y=β0+β1⋅PrimeMembership+β2⋅Income+β3⋅ShoppingFrequency+…+ϵY = \beta_0 + \beta_1 \cdot \text{PrimeMembership} + \beta_2 \cdot \text{Income} + \beta_3 \cdot \text{ShoppingFrequency} + \ldots + \epsilonY=β0​+β1​⋅PrimeMembership+β2​⋅Income+β3​⋅ShoppingFrequency+…+ϵ</p>
+<ul>
+<li>Where YYY is spending, and β1\beta_1β1​ measures the causal effect of Prime membership.</li>
+<li>Assumptions:</li>
+<li>All relevant confounders (e.g., income, demographics) are included in the model.5. Propensity Score MatchingMatch customers with and without Prime based on similar characteristics (e.g., age, income, past spending habits).</li>
+<li>Calculate a propensity score (likelihood of joining Prime) using logistic regression.</li>
+<li>Compare spending between matched customers in both groups.</li>
+<li>Estimate the causal effect by taking the average difference in spending.6. Synthetic Control MethodIf Prime membership is rolled out in a specific region or time frame:</li>
+<li>Create a &quot;synthetic control group&quot; by weighting similar customers or regions that didn’t get Prime.</li>
+<li>Compare the spending trends of the treatment group (Prime region) to the synthetic control group.Challenges to Address</li>
+<li>Self-Selection Bias:</li>
+<li>Customers who sign up for Prime may already spend more, confounding the results.</li>
+<li>Randomization or techniques like IV and propensity score matching can help.</li>
+<li>Time-Variant Factors:</li>
+<li>Ensure other external factors (e.g., seasonal trends) are accounted for.</li>
+<li>Measurement Period:</li>
+<li>Consider the short-term and long-term effects of Prime on spending.ConclusionThe best approach depends on data availability and feasibility:</li>
+<li>Ideal: Run a randomized controlled experiment.</li>
+<li>Alternative: Use observational methods like DiD, IV, or propensity score matching to address confounding factors.</li>
+</ul>
+<p>By properly designing the analysis, we can confidently estimate the causal effect of Amazon Prime on customer spending.1/2</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">11</span>
+            <span class="anki-question">How to anser Causal inference questions?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>🎯 Problem StatementAmazon launched Amazon Prime, a membership program priced at $14.99 per month. This program offers benefits such as waived shipping fees and discounts on select products. How would you measure the causal effect of Amazon Prime on customer spending?</p>
+<ul>
+<li>Step 1 - Problem Scoping</li>
+<li>Step 2 - State the Hypothesis</li>
+<li>Step 3 - Data Collection and Preparation</li>
+<li>Step 4 - Causal Effect Estimation</li>
+<li>Step 5 - Model Diagnostics</li>
+<li>Step 6 - Recommendation on Launch💡 Note that in the actual interview, you may or may not need to walk through all steps with rigor as discussed below. Use this as a guide to understand how design and run a PSM experiment and talk about PSM in interview cases, but avoid approaching the case in a rigid manner. Be open to improvisation and make it conversational!</li>
+</ul>
+<p>Step 1 - Problem ScopingYour aim is to understand and frame the open-ended problem with clarifying questions and discussion. Here are key points on what to discuss in this step.</p>
+<ul>
+<li>Business Goal- What is the business objective of testing this feature?As mentioned, Amazon wants to test Amazon Prime which offers benefits like free shipping and discounts to customers. The expectation is that this feature could increase the average spend per customer; thereby bringing additional revenues for Amazon.</li>
+<li>Control and Treatment Groups - Identify the subject granularity (e.g. individual user vs city level) and assignment of subjects into groups and treatment (e.g. is there a randomization involved?).The analysis is conducted at the individual user level. And, randomization is not feasible since you cannot force users to pay and upgrade to Prime. This means that there’s a self-selection bias that can occur. As a consequence, if you were to observe an increase in shopping spend among Prime users compared to non-prime users, you cannot be certain whether the increase was the result from Prime, or that there are underlying characteristic differences between those who chose to upgrade to Prime in the first place. For instance, a loyal customer of Amazon may have decided to upgrade to Prime given that they already spend a lot on the website in the first place. This imbalance in users between the Prime and non-prime will need to be alleviated using PSM.</li>
+<li>KPI(s) Selection - Ensure the Key Performance Indicators (KPIs) align with both the intervention's objectives and the available data.↳ Primary KPI: Average total spend per month per userStep 2 - State the HypothesisOnce you scope the problem, you are ready to design the study to measure the causal effect of Amazon Prime on spending. It’s vital to state the hypotheses clearly, along with statistical power, significance level, and practical significance.💡 Note that statistical power is one of the components required to determine the sample size required per group. However, for practical constraints and complexity of calculation in causal inference models, it will be rare that you are expected to discuss this in the actual interview. This topic will most likely be discussed if you have extensive experience in academic and/or professional experience in causal inference.</li>
+<li>State the Hypotheses - State the business and statistical hypotheses↳ Business Hypothesis: Launching Amazon Prime could increase the overall spending; thereby bringing additional revenues for Amazon.↳ Statistical Hypothesis:Null Hypothesis (Ho): No effect of Amazon Prime on customer spendingAlternative Hypothesis (Ha): There is an effect of Amazon Prime on customer spending</li>
+<li>Significance Level (Alpha) - What is the cutoff on the p-value to deem the effect as statistically significant? The typical value is 0.05, but the range could be between 0.01 through 0.10 depending on the impact of a Type 1 error.In Amazon’s case, we will set the threshold as alpha = 0.05.</li>
+<li>Statistical Power (Power) - To what degree (probability) do you want to detect the true effect if the alternative hypothesis is true? The typical value you strive for is 0.80 but the range could be between 0.80 to 0.95. The higher the power, the more sample size is required to realize the power. Note that, in some experiment cases, you do not have much control over the sample size as the measure of causal effect is on a naturalistic study, rather than an experiment where you can control the sample size allocated for the experiment. The power calculation, in some cases, is conducted, in the aftermath of an experiment.In Amazon’s case, we aim to achieve a statistical power of 0.80.</li>
+<li>Practical Significance - What is the magnitude of the effect the business needs to observe to decide on the launch or no launch of Amazon Prime? Generally, the desired effect is at least a 1% relative improvement (relative lift) over the baseline. The 1% lift may not seem much. But, at Amazon's scale with millions of purchases per year, which equate to billions of revenue per year, a 1% increase in purchases due to Prime could mean hundreds of millions of dollars of additional revenue generated. The range could be as low as 0.1% to 10% - largely dependent on the number of active users and what the business deems as a success.In Amazon’s case, we aim to achieve the practical significance of 1%.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">12</span>
+            <span class="anki-question">what is ATE, ATT, CATE and ITE.</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Summary of MetricsMetricValueATE1.4ATT1.67CATE1.0ITE (for User A)1.0</p>
+<p>How do you get Y(1): Engagement (if Treated), when they are not actually treated?</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">13</span>
+            <span class="anki-question">what is RDD and how it works</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Regression Discontinuity Design (RDD) is a quasi-experimental method used to estimate a treatment effect when random assignment in an experiment is not possible. In RDD, a predetermined cutoff point, often based on a quantitative measure, is used to assign subjects to either a treatment or a control group. Unlike random assignment, RDD leverages a clear, pre-determined criterion to distinguish between groups.</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">14</span>
+            <span class="anki-question">when to use RDD？</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>RDD is particularly useful in scenarios where:</p>
+<ul>
+<li>Clear Cutoff Criterion - There exists a clear, objective criterion that can be used to assign subjects to treatment or control groups. For example, students receiving a scholarship if their grades are above a certain threshold.</li>
+<li>Ethical or Practical Constraints - Random assignment is either not feasible or ethical. For example, policies that are implemented based on age or income levels.</li>
+<li>Focus on Local Treatment Effects - The interest lies in understanding the impact of the treatment around the cutoff point, as RDD primarily provides an estimate of the treatment effect for subjects near the threshold.</li>
+<li>Robustness to Certain Types of Manipulation - In cases where subjects cannot manipulate their position relative to the cutoff easily, RDD can be a more robust design choice.</li>
+<li>Policy Evaluations - Often used in policy evaluation where laws or regulations apply to a certain group based on a specific measure or threshold.💡 In the actual interview case, it’s worth discussing why AB experiments with RCT fails based on one or a combination of the factors outlined above. Then, proceed in discussing the key points in why Causal Inference methods like RDD should be used.</li>
+</ul>
+<p>1.3 How is RDD used in real-world problems?</p>
+<p>Here is how RDD could be applied in real-world situations:</p>
+<ul>
+<li>Coursera - Coursera is an on-demand education platform that offers courses for career upskilling. To increase course enrollment, video lessons in courses are provided with subtitles. When 80% of the video lessons in a course contain subtitles, the course is labeled 'subtitles included' on the course banner. How do you measure the causal effect of subtitles on course enrollments?</li>
+<li>Etsy - Merchants that sold at least 1,000 products receive a ‘top seller” badge. How would you measure the causal effect of the ‘top seller’ badge on sales?</li>
+<li>LinkedIn - A user who publishes at least 30 posts specific to his or her industry receives a ‘top voice’ tag on their profile. How do you measure the causal effect of the ‘top voice’ tag on the author’s engagement?Advantages of RDD</li>
+<li>Provides robust causal estimates if assumptions are met.</li>
+<li>Requires no randomization, making it practical in real-world settings.</li>
+<li>Simple to implement and interpret near the threshold.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">15</span>
+            <span class="anki-question">experiment duration of RDD</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Experiment Duration - How long do you run the experiment to gather the data required to run inference? There are a couple of key considerations to consider:</p>
+<ul>
+<li>You have options to choose from when considering the duration of the RDD experiment. How you choose the analysis largely depends on a number of factors from the volatility of the experiment metric, seasonality and user adoption time of the new feature.(A) 1 to 4 Weeks: Short-Term Analysis(B) 1 to 6 Months: Mid-Term Analysis(C) 6+ Months: Long-Term Analysis</li>
+<li>Note that, when applying RDD to measure the causal effect, a typical experiment is not 1 to 2 weeks as you see in AB testing with RCTs. The reason is that in controlled experiments, a behavioral change as a consequence of treatment is, most often, immediate such that 1 to 2 weeks is sufficient to have a noticeable difference between the control and treatment.</li>
+<li>Hence, we observe the enrollments over the course of 1 month upon updating the qualifying courses with the subtitle banners.Sample Size - How many observations in the sample do you need in the analysis to achieve a desired statistical power of 80%?</li>
+<li>The discussion of the sample size in the context of RDD is not as straightforward, and it’s not as easy to calculate in the context of AB Testing with T-Test. In the interview setting, it is rare that you will be asked to discuss what the calculation formula is, and it’s beyond the scope of this lesson.</li>
+<li>In general, given that the data collected is naturalistic observations, randomization is not feasible, and courses are manually selected based on policy, the sample is confined to the number of courses available.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">16</span>
+            <span class="anki-question">Assumption of RDD and how does it excuted</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>tep 5 - Model DiagnosticsSince RDD uses regression modeling, you can check for the assumptions of the model using regression evaluation and diagnostics. For the overall evaluation, you want to assess R.squared or R.squared adjusted. For diagnostics, you want to check for the following assumptions:</p>
+<ul>
+<li>Normality of residuals</li>
+<li>Constant variance of residuals</li>
+<li>Linearity of X and Y</li>
+<li>No or low multi-collinearity</li>
+<li>No auto-correlation (observation independence)</li>
+<li>No or low influential outliersThe following diagnostics plots can be leveraged in checking some of the assumptions of the model.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">17</span>
+            <span class="anki-question">How to recommend launch or not in RDD and how to interpret the result</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Step 6 - Recommendation on LaunchAssuming that this is the final regression model from the RDD method and the diagnostics indicate that the model is well-fitted, (1) we can proceed in interpreting the results and (2) decide on the launch.Interpreting the Results:ParametersCoefficientP-ValueIntercept3520.530.000Subtitles19.830.000I(Subtitles ≥ 80%)926.580.000We can interpret the results in the following manner:</p>
+<ul>
+<li>As shown by the intercept term, the average enrollments with no subtitles is 3,520.</li>
+<li>Holding all other variables constant, for one unit of increase in the subtitles percentage, we see an average increase of enrollment by 19.83. This effect is statistically significant.</li>
+<li>When the course receives the subtitle label at the 80% cutoff, we see that the average enrollment increases by 926.58, and this effect is statistically significant.The last bullet is the key insight extracted from the RDD analysis. It suggests that, the introduction to subtitle labels, does have a statistically significant effect on courses. But, now the question is, whether the effect observed is practically significant.What Do the Parameters Represent?</li>
+<li>Intercept (3520.53):</li>
+<li>Represents the average enrollment for courses without subtitles (baseline, control group).</li>
+<li>Subtitles (19.83):</li>
+<li>For every 1% increase in subtitle percentage, the enrollment increases by 19.83 on average, holding other variables constant.</li>
+<li>I(Subtitles ≥ 80%) (926.58):</li>
+<li>Represents the discontinuity effect at the 80% subtitle cutoff. When subtitles reach 80%, there’s a 926.58 increase in average enrollment.Key Insight from RDD</li>
+<li>The key insight is the discontinuity effect (926.58) at the 80% cutoff. This suggests that reaching 80% subtitles has a statistically significant and practically meaningful impact on course enrollments.</li>
+</ul>
+<p>Interpretation of the Lift</p>
+<ul>
+<li>The 26.3% lift means that the average enrollment increases by 26.3% when the subtitle percentage crosses the 80% threshold.</li>
+<li>The course receives practical significance because the lift exceeds the desired threshold of 1% increase.</li>
+</ul>
+<p>Actionable InsightsOur launch decision boils down to the following:(1) Do we have a robust model based on parallel trend assumption and regression model assumptions? In this case, we do.(2) Do we have statistical and practical significance of subtitle labels on enrollments? Yes, we do.Given the validity of the model and the significance of subtitle labels, we should either ramp up to test this on a larger population or launch this nationwide.💡 In an actual interview, you should expect to discuss other potential outcomes. What happens when you see negative lift or no statistical significance? Consider all the possible outcomes from the experiment, and determine a reasonable action to follow. See the table below:Effect ObservedStatistical SignificanceDecisionPositive, practically significantYesLaunch / Ramp-UpPositive, not practically significantYesRun the experiment longerPositive, practically significantNoRun the experiment longerPositive, not practically significantNoRun the experiment longer, refine then re-test or scrap the featureNegativeYes / NoRefine then re-test or scrap the feature</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">18</span>
+            <span class="anki-question">What is Difference-in-Differences (DiD)?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Difference-in-Differences (DiD)Difference-in-Differences (DiD) is a quasi-experimental method used to estimate causal effects by comparing the changes in outcomes over time between a treatment group and a control group. The key idea is to measure the difference in trends before and after a treatment (or intervention), controlling for baseline differences between groups.</p>
+<p>DiD relies on comparing the changes in outcomes over time between a group that is exposed to some treatment or intervention (the treatment group) and a group that is not (the control group).If the treatment has no effect on the subjects, you would deem a constant difference in the trends between the treatment and control groups. Otherwise, the trends will change in the treatment group during the intervention period given the intervention effect.</p>
+<p>Key Assumptions</p>
+<ul>
+<li>Parallel Trends Assumption:</li>
+<li>In the absence of the treatment, the treatment group and control group would have followed the same trend over time.</li>
+<li>If this assumption is violated, the estimated treatment effect may be biased.</li>
+<li>No Simultaneous Confounding Events:</li>
+<li>No other factors or interventions should disproportionately affect either group during the study period.</li>
+<li>Consistency in Measurement:</li>
+<li>The outcome variable should be measured consistently across time and groups.Difference in Differences (DiD) is a statistical analysis that measures the change in the difference between the control and treatment groups over the course of pre and post-intervention periods. DiD is often applied on a dataset that is (1) aggregated at a group level (e.g. geography, market) and (2) tracked across a time horizon with daily, weekly, or monthly granularity.</li>
+</ul>
+<p>In general, you use DiD when subjects of an experiment cannot be randomly assigned to the control and treatment groups.</p>
+<p>The basic equation for a DiD analysis is:ΔY= ΔY_Treated − ΔY_ControlWhere:</p>
+<ul>
+<li>ΔY represents the estimated treatment effect or the intervention effect.</li>
+<li>ΔY_Treatment is the difference in the outcome variable for the treatment group from before and after the treatment is applied (we call these pre-and post-intervention periods)</li>
+<li>ΔY_Control is the difference in the outcome variable for the control group over the same periods as the treatment.</li>
+</ul>
+<p>Intuitively, you can interpret this as follows. Assume that subjects in the treatment and control groups are exactly the same, and you observe their behavior over time. If the control saw a positive delta of let’s say 100, you should observe exactly the same delta for the treatment. But, if you observe that the delta in the treatment is 120, the additional 20 increase is most likely due to the treatment having an effect on the subjects in the treatment group during the intervention period. And, that “difference” in the “differences” is the main essence of how the DiD method measures the causal effect of a treatment。</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">19</span>
+            <span class="anki-question">when to use DID</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>In general, you should consider using DiD when users cannot be randomized into control and treatment groups. Rather, DiD is applied in naturalistic observations. Here are the following considerations when DiD are applied in real-world cases.</p>
+<ul>
+<li>Aggregate Data - The outcome measured is aggregated at a group level such as zip code, state, country, or device. For instance, if you launch the change in a specific zip code, you would compare the change in a target KPI (e.g. sign-ups) between the test market and similar markets without the test.</li>
+<li>Time Series Data - The aggregate data is time series with trends. You observe the change in the trend of a target KPI over time before and after the test. The time horizon could be several days (7 to 14 days) to months (1 to 3 months); the time granularity could be daily, weekly or monthly. We will discuss this later.</li>
+<li>Scalability Challenges - You would consider using RCT when there are not enough subjects to randomize into treatment and control groups. For instance, if a product is limited to a handful of cities, there may not be enough cities to apply randomization.</li>
+<li>Economic Risk - Randomly assigning a market with a treatment could be detrimental to a company financially if the product is not the right fit for a particular market. For instance, if a company like AWAY, which sells travel suitcases, launches Ad campaigns in markets where residents, on average, do not travel as much. They would have wasted their campaign and experiment dollars on markets that would not have moved in the first place. In another situation, a wrong product on the wrong market could also cause a major decline on the product sales itself. Under such risks, it’s not best not to apply randomizations, but select a sample market to test before rolling out the change to the general population.</li>
+<li>Policy Risk - Random assignment of the treatment is not feasible given business and/or governmental policy reasons. For instance, Uber testing Uber Pool may not be feasible in certain cities that do not allow permits of such on-demand pooling services.</li>
+<li>Ethical Risk - Random assignment is not feasible given that it’s not ethical to refrain certain participants from receiving a treatment that could benefit them. For instance, social distancing to mitigate COVID-19 cannot be randomly assigned across states. Some states will choose to apply this; some states may not.💡 In the actual interview case, it’s worth discussing why AB experiments with RCT fails based on one or a combination of the factors outlined above. Then, proceed in discussing the key points in why Causal Inference methods like DiD should be used.</li>
+</ul>
+<p>1.3 How is DiD used in real-world problems?Here are real-world examples of how DiD is applied:</p>
+<ul>
+<li>Uber introduced a ride-pooling feature in select cities to provide more affordable options and reduce carbon footprint. Using DiD could assess the impact of this new feature on overall ridership levels by comparing changes in ridership in cities where the feature was introduced against cities that only have the traditional ride options.</li>
+<li>Lyft launched billboard Ads across highways around San Francisco and Chicago to increase driver sign-ups. DiD can assess the change in the driver sign-ups in San Francisco and Chicago compared to similar cities without the billboards.</li>
+<li>CVS Pharmacy offers a home kit for diagnosing a particular disease. To promote the sale of the kit, CVS mails brochures to residents in select zip codes. DiD could measure the impact of mail on the kit by comparing changes in the kit sales in zip codes where the brochures were mailed against zip codes with no mail.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">20</span>
+            <span class="anki-question">when to use DID , PSM, RDD?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>While Difference-in-Differences (DiD), Propensity Score Matching (PSM), and Regression Discontinuity Design (RDD) share similarities in their goal of estimating causal effects, they are distinct techniques with different assumptions and use cases. Here’s a breakdown of when to use each method and how they differ: 1. Difference-in-Differences (DiD)</p>
+<ul>
+<li>What It Does: Compares changes in outcomes over time between a treatment group and a control group.</li>
+<li>When to Use:</li>
+<li>You have data before and after an intervention for both treatment and control groups.</li>
+<li>The parallel trends assumption holds: In the absence of treatment, the treatment and control groups would have followed similar trends over time.</li>
+<li>The intervention (treatment) is applied at a specific time point.</li>
+<li>Examples:</li>
+<li>Evaluating the effect of a new law or policy implemented in one region but not in others.</li>
+<li>Measuring the impact of a price change on sales for a treated product vs. untreated products.</li>
+<li>Key Limitation:</li>
+<li>It assumes no other factors affect the outcome differently for the treatment and control groups during the study period.2. Propensity Score Matching (PSM)</li>
+<li>What It Does: Matches treated and untreated units based on their probability of receiving the treatment (propensity score), then compares outcomes between matched pairs.</li>
+<li>When to Use:</li>
+<li>You have observational data where treatment assignment is not randomized (e.g., self-selected treatment).</li>
+<li>You want to control for observable confounders that might influence both treatment assignment and outcomes.</li>
+<li>Treatment assignment is not based on a clear cutoff (use RDD in such cases).</li>
+<li>Examples:</li>
+<li>Comparing patient outcomes between those who chose a new drug vs. those who did not, after matching on demographic and health characteristics.</li>
+<li>Analyzing the effect of participating in a training program, accounting for differences in participants’ education levels, experience, etc.</li>
+<li>Key Limitation:</li>
+<li>PSM only controls for observed variables. If there are unobserved confounders, the results may be biased.3. Regression Discontinuity Design (RDD)</li>
+<li>What It Does: Exploits a cutoff or threshold in a running variable (e.g., eligibility score) to estimate causal effects.</li>
+<li>When to Use:</li>
+<li>There’s a clear, predefined cutoff that determines treatment assignment (e.g., a test score threshold for a scholarship).</li>
+<li>Units cannot manipulate their running variable to fall just above or below the threshold.</li>
+<li>The data is dense around the cutoff, allowing for meaningful comparisons.</li>
+<li>Examples:</li>
+<li>Evaluating the effect of receiving financial aid on college attendance, where aid is given to students with family income below a certain threshold.</li>
+<li>Measuring the impact of a minimum wage policy on employment, where the policy applies to firms with 50+ employees.</li>
+<li>Key Limitation:</li>
+<li>Only provides a local average treatment effect (LATE) for units near the cutoff, which may not generalize to the whole population.Key DifferencesFeatureDiDPSMRDDTreatment AssignmentBased on time (before/after treatment)Self-selected or non-randomizedBased on a cutoff in a running variableKey AssumptionParallel trendsNo unmeasured confoundersNo manipulation around the thresholdControls forTime-invariant differencesObserved confoundersUnobserved confounders near the cutoffGeneralityBroad effect for treatment groupAverage effect for matched populationLocal effect near cutoffData RequirementPre- and post-treatment dataObservational dataClear threshold with dense data near itExample Use CasePolicy evaluationProgram participationThreshold-based policy or programWhen to Use Each</li>
+<li>Use DiD:</li>
+<li>When treatment is implemented at a specific time for one group but not another.</li>
+<li>You have pre- and post-treatment data for both groups.</li>
+<li>Use PSM:</li>
+<li>When treatment assignment is not random but depends on observed factors (e.g., demographics, preferences).</li>
+<li>You lack time-series data, or there’s no clear treatment timing.</li>
+<li>Use RDD:</li>
+<li>When treatment is assigned based on a cutoff in a continuous variable (e.g., test scores, income thresholds).</li>
+<li>You have dense data near the cutoff and can test for manipulation.Which to Choose?</li>
+<li>If you have pre/post-treatment data: Start with DiD.</li>
+<li>If treatment assignment depends on observable variables: Consider PSM.</li>
+<li>If there’s a cutoff rule: Use RDD.Each method has strengths and limitations, so the choice depends on the data, context, and assumptions you can reasonably meet. Let me know if you'd like to explore these methods with an example dataset!</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">21</span>
+            <span class="anki-question">Randomized Controlled Trial (RCT) vs. A/B Testing</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Randomized Controlled Trials (RCTs) and A/B Testing share a common foundation: they are both experimental methods that use randomization to estimate causal effects. However, they are not exactly the same and are often applied in slightly different contexts.What is an RCT?A Randomized Controlled Trial (RCT) is a research design where participants are randomly assigned to one or more treatment groups or a control group. It is widely used in fields like medicine, social sciences, and policy evaluation.Key Features:</p>
+<ul>
+<li>Random Assignment:</li>
+<li>Participants are randomly divided into groups to ensure comparability and eliminate selection bias.</li>
+<li>Control Group:</li>
+<li>A baseline group receives no treatment (or a placebo in medical studies).</li>
+<li>Multiple Treatment Arms (optional):</li>
+<li>There can be more than one treatment group to test different interventions.</li>
+<li>Outcome Measurement:</li>
+<li>Outcomes are compared between groups to estimate the causal effect of the treatment.Example:</li>
+<li>Medical Trial: Testing a new drug for diabetes.</li>
+<li>Group 1: Receives the new drug.</li>
+<li>Group 2: Receives a placebo.</li>
+<li>Compare blood sugar levels after the intervention.Strengths:</li>
+<li>Gold standard for causal inference due to randomization.</li>
+<li>Controls for both observed and unobserved confounders.What is A/B Testing?A/B Testing is a type of RCT commonly used in the digital space (e.g., product development, marketing, UX design) to compare two or more variations of a product, feature, or content.Key Features:</li>
+<li>Random Assignment:</li>
+<li>Users or participants are randomly split into groups (e.g., Group A, Group B).</li>
+<li>Simple Comparison:</li>
+<li>Typically involves comparing two versions of something:</li>
+<li>A (Control): Current version.</li>
+<li>B (Treatment): New version or variant.</li>
+<li>Outcome Measurement:</li>
+<li>Measure performance metrics (e.g., click-through rate, conversion rate) to decide which version performs better.Example:</li>
+<li>Website Optimization: Testing a new button color for a website.</li>
+<li>Group A: Sees the current blue button.</li>
+<li>Group B: Sees the new green button.</li>
+<li>Compare click-through rates.Strengths:</li>
+<li>Easy to implement in digital environments.</li>
+<li>Scalable and provides actionable insights for decision-making.Key Differences Between RCT and A/B TestingAspectRCTA/B TestingPrimary UseAcademic research, medicine, policy evaluationDigital products, marketing, UX designParticipantsOften individuals (patients, subjects)Users or customers of a productControl and TreatmentOften one control and multiple treatmentsUsually one control (A) and one treatment (B)Outcome TypeOften clinical or complex outcomesUsually simple metrics (e.g., clicks, revenue)Randomization ScaleLimited sample sizeScalable to millions of usersComplexityCan involve multiple treatment groups, placeboUsually binary (A vs. B)Are They the Same Thing?Not exactly, but they are very similar. A/B testing can be considered a specific type of RCT, tailored for use in digital environments with simplified designs and rapid deployment. Here's how they overlap:</li>
+<li>RCTs:</li>
+<li>General experimental design with applications in various fields.</li>
+<li>Broader and more flexible in scope (e.g., medical trials, education studies, social programs).</li>
+<li>A/B Testing:</li>
+<li>A streamlined version of an RCT.</li>
+<li>Focused on comparing two (or sometimes more) versions of a digital product or feature.When to Use Each</li>
+<li>Use RCT:</li>
+<li>When evaluating interventions in controlled environments (e.g., new medical treatments, public policy).</li>
+<li>When outcomes are complex or long-term.</li>
+<li>Use A/B Testing:</li>
+<li>When optimizing digital experiences (e.g., website design, email campaigns, app features).</li>
+<li>When testing changes that can be quickly rolled out and measured with simple metrics.Example Combining BothImagine a company wants to test the impact of a mental health app on reducing anxiety. They could:</li>
+<li>RCT:</li>
+<li>Randomly assign participants to receive the app or no intervention (control group).</li>
+<li>Measure changes in anxiety scores over 3 months.</li>
+<li>A/B Testing:</li>
+<li>Test two versions of the app's user interface (Version A vs. Version B) on user engagement metrics (e.g., time spent using the app).Conclusion</li>
+<li>RCT is a more general experimental framework, while A/B testing is its practical application in digital and business contexts.</li>
+<li>Both rely on randomization to infer causality but differ in complexity, focus, and application domain.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">22</span>
+            <span class="anki-question">Why Define Alpha and Power in DiD, RDD, and PSM?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>When conducting statistical analyses like Difference-in-Differences (DiD), Regression Discontinuity Design (RDD), and Propensity Score Matching (PSM), defining alpha (α\alphaα) and statistical power is essential because these metrics help evaluate the reliability and robustness of the results:1. Alpha (α\alphaα)</p>
+<ul>
+<li>Definition: Alpha is the significance level, the threshold for determining whether an observed effect is statistically significant.</li>
+<li>Common values: α=0.05\alpha = 0.05α=0.05 or α=0.01\alpha = 0.01α=0.01.</li>
+<li>Interpretation: If the p-value is less than α\alphaα, the null hypothesis (no effect) is rejected, meaning the observed effect is unlikely to have occurred by chance.</li>
+<li>Why Important:</li>
+<li>In practice, α\alphaα controls the Type I error rate (the probability of falsely concluding that there is a treatment effect when there is none).</li>
+<li>In real data practice, setting α=0.05\alpha = 0.05α=0.05 means you are willing to accept a 5% chance of incorrectly detecting an effect.2. Statistical Power</li>
+<li>Definition: Power is the probability of detecting a true effect (rejecting the null hypothesis) if the effect exists.</li>
+<li>Power is typically set to 80%80\%80% or 90%90\%90%.</li>
+<li>Power depends on:</li>
+<li>Effect size: The true difference between treatment and control.</li>
+<li>Sample size: Larger samples increase power.</li>
+<li>Variability in the data: Lower variability increases power.</li>
+<li>Alpha: Lower alpha reduces power, as you are stricter about rejecting the null hypothesis.</li>
+<li>Why Important:</li>
+<li>Low power increases the chance of a Type II error (failing to detect a true effect).</li>
+<li>In practice, you must ensure your study is powered adequately to detect effects of practical importance, especially in smaller datasets.Alpha and Power in Real Data Practice</li>
+<li>Difference-in-Differences (DiD):</li>
+<li>Alpha:</li>
+<li>Used to assess the p-value of coefficients, particularly the interaction term (treatment effect).</li>
+<li>Power:</li>
+<li>Depends on the number of pre- and post-treatment observations and the variability in the outcome.</li>
+<li>Real Practice:</li>
+<li>Ensure enough observations in both treatment and control groups across time.</li>
+<li>A high power ensures confidence in detecting a true treatment effect.</li>
+<li>Regression Discontinuity Design (RDD):</li>
+<li>Alpha:</li>
+<li>Determines whether the discontinuity (jump at the threshold) is statistically significant.</li>
+<li>Power:</li>
+<li>Depends on the density of observations near the threshold.</li>
+<li>A high power means you have enough observations around the cutoff to detect a true effect.</li>
+<li>Real Practice:</li>
+<li>You might need a high density of data near the threshold to ensure a robust result.</li>
+<li>Propensity Score Matching (PSM):</li>
+<li>Alpha:</li>
+<li>Evaluates whether the treatment effect for matched groups is statistically significant.</li>
+<li>Power:</li>
+<li>Requires sufficient overlap in propensity scores between treated and untreated groups.</li>
+<li>Real Practice:</li>
+<li>Focus on ensuring adequate sample size after matching (loss of data during matching can reduce power).P-Value in DiDYes, p-values are part of a DiD analysis, as the coefficients in the regression model are tested for significance:</li>
+<li>The interaction term (treatment effect) has a p-value that tells you whether the observed difference in differences is statistically significant.</li>
+<li>If p&lt;αp &lt; \alphap&lt;α, you can conclude the treatment effect is statistically significant.Example in DiD:In a DiD regression:Yit=α+β⋅Treatmenti+γ⋅Postt+δ⋅(Treatmenti×Postt)+ϵitY_{it} = \alpha + \beta \cdot Treatment_i + \gamma \cdot Post_t + \delta \cdot (Treatment_i \times Post_t) + \epsilon_{it}Yit​=α+β⋅Treatmenti​+γ⋅Postt​+δ⋅(Treatmenti​×Postt​)+ϵit​</li>
+<li>δ\deltaδ: The interaction term represents the treatment effect.</li>
+<li>P-value for δ\deltaδ: Tests whether the treatment effect is significantly different from 0.Summary</li>
+<li>Alpha (α\alphaα) and Power:</li>
+<li>α\alphaα: Controls the probability of false positives (Type I errors).</li>
+<li>Power: Ensures you have enough sensitivity to detect true effects (avoids Type II errors).</li>
+<li>In Real Data Practice:</li>
+<li>Use alpha to set the significance threshold for p-values (e.g., α=0.05\alpha = 0.05α=0.05).</li>
+<li>Ensure high power by having adequate sample size, sufficient variability reduction, and well-defined effect sizes.</li>
+<li>P-Values in DiD:</li>
+<li>P-values test whether the treatment effect (interaction term) is statistically significant. A low p-value indicates a significant treatment effect.By carefully defining α\alphaα and power, you ensure that the results from DiD, RDD, or PSM analyses are statistically robust and interpretable in practice. Let me know if you’d like a practical example of these concepts!</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">23</span>
+            <span class="anki-question">Power is Critical for Determining Sample Size In Causal inference?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Statistical power plays a central role in determining the required sample size for any experiment or analysis, including DiD, RDD, and PSM. A well-powered study ensures that you can detect an effect if one exists, reducing the risk of Type II errors (failing to detect a true effect).Relationship Between Power and Sample SizeThe sample size required depends on several factors:</p>
+<ul>
+<li>Effect Size (d):</li>
+<li>The magnitude of the treatment effect you expect to observe (e.g., the difference between treatment and control groups).</li>
+<li>Larger effect sizes require smaller sample sizes.</li>
+<li>Significance Level (α):</li>
+<li>The threshold for detecting significance (e.g., α=0.05).</li>
+<li>Lower α\alphaα (stricter criteria) requires a larger sample size.</li>
+<li>Power (1−β):</li>
+<li>The probability of correctly detecting a true effect.</li>
+<li>Higher power (e.g., 0.80) requires larger sample sizes.</li>
+<li>Variance (σ2):</li>
+<li>Higher variability in the data requires larger sample sizes to reliably detect effects.</li>
+<li>Study Design:</li>
+<li>DiD: Requires enough observations for both treatment and control groups over multiple time periods.</li>
+<li>RDD: Needs a sufficient number of observations near the threshold.</li>
+<li>PSM: Requires a large enough sample for adequate matching between treatment and control groups.Sample Size Formula (Simplified for Two-Sample T-Test)</li>
+</ul>
+<p>Practical Steps for Sample Size Calculation1. Specify Parameters:</p>
+<ul>
+<li>Effect size: Define the smallest effect size you want to detect.</li>
+<li>Significance level (α\alphaα): Commonly set to 0.05</li>
+<li>Power: Typically 0.8</li>
+<li>Variance: Estimate based on prior studies or pilot data.2. Use Software or Tools:</li>
+<li>Instead of calculating manually, tools like R, Python, or statistical software can calculate sample sizes.</li>
+</ul>
+<p>How Sample Size Affects Real Data Practice</p>
+<ul>
+<li>Underpowered Study:</li>
+<li>Insufficient sample size may fail to detect meaningful effects, even if they exist (Type II error).</li>
+<li>Results might lack credibility.</li>
+<li>Overpowered Study:</li>
+<li>A very large sample size can detect statistically significant effects that are too small to be practically relevant.</li>
+<li>Wastes resources (time, money, computational effort).</li>
+<li>Goldilocks Principle:</li>
+<li>Balance sample size to achieve adequate power without unnecessary costs.P-Values in Powered Studies</li>
+<li>Even in DiD, RDD, or PSM, p-values are used to determine statistical significance.</li>
+<li>A properly powered study ensures that p-values are meaningful, reflecting a real ability to detect true effects.Summary</li>
+<li>Power determines sample size: A high-power study ensures the sample size is sufficient to detect meaningful effects.</li>
+<li>Practical tools: Use software for calculations tailored to your design (e.g., DiD, RDD, PSM).</li>
+<li>Balance power, alpha, and sample size to design robust, efficient studies.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">24</span>
+            <span class="anki-question">How DID acutally work ?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>We can interpret the results in the following manner:</p>
+<ul>
+<li>As shown by the intercept of 54,730, states in the control group, on average, services 54,730 rides per month.</li>
+<li>States in the treatment group, on average, services 4,910 more rides per month than the those in the control group.</li>
+<li>Across states in both control and treatment group, the monthly ride averages increases to 10,720 during the intervention period, independent of the introduction to Uber Pool.</li>
+<li>*The introduction to Uber Pool in states in the treatment group further increases the average monthly rides to 8,659 which statistical significance given that p-value = 0.005 &lt; significance level = 0.05.The last bullet is the key insight extracted from the DiD analysis. It suggests that, the introduction to Uber Pool, does have a statistically significant effect on the intervention group. But, now the question is, whether the effect observed is practically significant.We would deem the feature is successful, if we observed 1% lift from the counterfactual, if the states in the treatment group had never received the feature, what would the monthly ride averages have been?We know that based on the coefficients, intercept + treatment + intervention, the counterfactual would have been 54,730 + 4,910 + 10,720 = 70,360. We see an absolute difference of 8,659 more rides during the intervention period, which increases the ride averages to 79,019. The relative lift (lift in short) is ( treatment - counterfactual ) / counterfactual * 100% = (79,019 - 70,360) / 70,360 * 100% = 12.3%.Given that the observed lift is 12.3% &gt; the cutoff at 1%, we deem the effect is practically significant as well.💡 In the actual interview setting, unless given the model summary table, as you explain your DiD solution, just provide an overview of how you would summarize a table with coefficient and p-value in general.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">25</span>
+            <span class="anki-question">DID assumption and limitation</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>3. Limitations of Difference-in-Differences (DiD)Be aware that DiD has limitations that you may need to consider:</p>
+<ul>
+<li>Parallel Trends Assumption: Ensure that in the absence of treatment, the average outcome for the treated and control groups would have followed the same trend over time. If the trends are not parallel, you may need to consider a different Causal Inference method such as Synthetic Controls or Bayesian Structural Time Series.</li>
+<li>Confounding Factors: Identify any time-varying factors that could affect the treatment effect and control for them in the model. Pre-and-post intervention could be disrupted by other factors such as economic fluctuations and competition.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">26</span>
+            <span class="anki-question">what is Synthetic Controls</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Synthetic ControlsSynthetic Control Method (SCM) is a statistical technique used in causal inference to evaluate the effect of an intervention (or treatment) when randomization is not feasible. It creates a synthetic control group by combining multiple untreated units (or groups) into a weighted average that closely matches the pre-treatment characteristics of the treated unit.The synthetic control acts as a counterfactual: it estimates what would have happened to the treated unit if the treatment had not occurred.How Does it Work?</p>
+<ul>
+<li>Select a Treated Unit:</li>
+<li>Identify the unit (e.g., a region, organization, or individual) that receives the treatment.</li>
+<li>Choose Potential Control Units:</li>
+<li>Select untreated units that are similar to the treated unit in terms of pre-treatment characteristics.</li>
+<li>Construct a Synthetic Control:</li>
+<li>Use a weighted combination of the control units to create a synthetic unit that mimics the treated unit's pre-treatment outcomes.</li>
+<li>Compare Outcomes:</li>
+<li>After the treatment, compare the outcomes of the treated unit to the synthetic control.</li>
+<li>The difference represents the estimated causal effect of the treatment.Key Assumptions</li>
+<li>Pre-Treatment Similarity:</li>
+<li>The synthetic control closely matches the treated unit’s outcomes in the pre-treatment period.</li>
+<li>No Spillover Effects:</li>
+<li>The treatment does not indirectly affect control units.</li>
+<li>Exogeneity:</li>
+<li>There are no unmeasured confounders that influence both the treatment and the outcome.ExampleScenario:A state raises its minimum wage, and you want to evaluate its impact on employment. You construct a synthetic control by combining employment data from similar states that did not raise the minimum wage.</li>
+<li>Treated Unit:</li>
+<li>The state that increased its minimum wage.</li>
+<li>Control Units:</li>
+<li>Other states with similar pre-treatment employment trends.</li>
+<li>Synthetic Control:</li>
+<li>A weighted combination of control states to mimic the treated state's pre-treatment employment.</li>
+<li>Outcome Comparison:</li>
+<li>Compare the treated state's employment trends after the wage increase to the synthetic control’s trends.</li>
+<li>The difference is the estimated causal effect of the minimum wage increase.Advantages</li>
+<li>Causal Inference Without Randomization:</li>
+<li>Useful in observational studies where randomization is impossible.</li>
+<li>Customizable Controls:</li>
+<li>The synthetic control can better approximate the treated unit than any single control unit.</li>
+<li>Visual and Intuitive:</li>
+<li>The method provides clear comparisons of trends pre- and post-treatment.Limitations</li>
+<li>Requires High-Quality Data:</li>
+<li>The method relies on sufficient pre-treatment data and well-matched controls.</li>
+<li>Only One Treated Unit:</li>
+<li>Designed for cases with a single treated unit (or small number of treated units).</li>
+<li>Subjectivity in Control Selection:</li>
+<li>Selecting the pool of potential controls can introduce bias.</li>
+<li>Local Validity:</li>
+<li>Estimates are valid for the treated unit but may not generalize to other contexts.Applications</li>
+<li>Policy Evaluation:</li>
+<li>Example: Evaluating the impact of a tax policy in one country by comparing it to a synthetic country constructed from others.</li>
+<li>Public Health:</li>
+<li>Example: Assessing the effect of a smoking ban on hospitalization rates.</li>
+<li>Economics:</li>
+<li>Example: Measuring the economic impact of hosting a major event like the Olympics.Comparison with Other MethodsFeatureSynthetic ControlsDifference-in-Differences (DiD)Propensity Score Matching (PSM)Key ConceptConstruct a synthetic unitCompare trends before/afterMatch based on observed covariatesTreatment AssignmentNon-random, single treated unitNon-random, multiple unitsNon-random, multiple unitsPre-Treatment TrendsMatches observed outcomesRequires parallel trends assumptionFocuses on covariates, not trendsUse CaseSingle treated unitMultiple treated unitsMultiple treated/untreated unitsSummary</li>
+<li>Synthetic Controls are powerful for evaluating interventions in a single treated unit by creating a counterfactual from untreated units.</li>
+<li>They are especially useful when randomization or a clear control group is unavailable.</li>
+<li>However, they require high-quality data and careful design to ensure validity.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">27</span>
+            <span class="anki-question">What is Bayesian Structural Time Series (BSTS)?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Bayesian Structural Time Series (BSTS)Bayesian Structural Time Series (BSTS) is a statistical modeling framework that uses Bayesian methods to analyze and forecast time series data. It is particularly powerful for:</p>
+<ul>
+<li>Modeling time series with structural components (e.g., trend, seasonality).</li>
+<li>Handling causal inference problems, such as evaluating the effect of an intervention.</li>
+<li>Providing probabilistic forecasts with uncertainty intervals.Key Features of BSTS</li>
+<li>Structural Components:</li>
+<li>BSTS decomposes a time series into interpretable components, such as:</li>
+<li>Trend: Long-term growth or decline.</li>
+<li>Seasonality: Repeated patterns at regular intervals (e.g., weekly or yearly cycles).</li>
+<li>Regressors: Explanatory variables affecting the time series.</li>
+<li>Bayesian Framework:</li>
+<li>Parameters are estimated using Bayesian inference, which incorporates prior beliefs and updates them based on observed data.</li>
+<li>This provides a distribution of possible outcomes rather than a single point estimate.</li>
+<li>Dynamic Components:</li>
+<li>Components can evolve over time, allowing the model to adapt to changes in the data.</li>
+<li>Intervention Analysis:</li>
+<li>BSTS is often used for causal impact analysis, evaluating how an intervention (e.g., a policy or marketing campaign) affects the outcome.How Does BSTS Work?</li>
+<li></li>
+</ul>
+<ul>
+<li>Bayesian Inference:</li>
+<li>Priors are specified for the model parameters.</li>
+<li>The posterior distribution is estimated using techniques like Markov Chain Monte Carlo (MCMC).</li>
+<li>Prediction:</li>
+<li>Forecasts are made by sampling from the posterior distribution, which provides uncertainty intervals.</li>
+<li>Intervention Analysis:</li>
+<li>Compare the observed time series to the model's predicted counterfactual (what would have happened without the intervention).Use Cases for BSTS</li>
+<li>Causal Impact Analysis:</li>
+<li>Evaluate the effect of an intervention (e.g., a new policy, marketing campaign) by comparing actual outcomes to a counterfactual prediction.</li>
+<li>Example: Google’s CausalImpact library is built on BSTS for this purpose.</li>
+<li>Time Series Forecasting:</li>
+<li>Make probabilistic forecasts with confidence intervals.</li>
+<li>Example: Predicting future sales, website traffic, or stock prices.</li>
+<li>Seasonal and Trend Decomposition:</li>
+<li>Understand the underlying patterns in the data by isolating trend and seasonal effects.</li>
+<li>Outlier Detection:</li>
+<li>Identify anomalies by comparing observed values to model predictions.Advantages of BSTS</li>
+<li>Flexible and Interpretable:</li>
+<li>Models structural components (trend, seasonality) separately, making it easy to understand.</li>
+<li>Handles Missing Data:</li>
+<li>Bayesian methods can naturally handle missing observations.</li>
+<li>Uncertainty Quantification:</li>
+<li>Provides probabilistic predictions with uncertainty intervals.</li>
+<li>Dynamic Modeling:</li>
+<li>Can adapt to changes in trends or seasonality over time.Limitations of BSTS</li>
+<li>Computationally Intensive:</li>
+<li>Bayesian methods (e.g., MCMC) can be slow, especially for large datasets.</li>
+<li>Requires Expertise:</li>
+<li>Setting up priors and interpreting posterior distributions requires statistical knowledge.</li>
+<li>Complexity:</li>
+<li>May be overkill for simple time series tasks.Example: Causal Impact AnalysisSuppose a company runs a marketing campaign and wants to measure its impact on website traffic. The time series consists of daily website visits before and after the campaign.</li>
+<li>Pre-Treatment Period:</li>
+<li>Use historical data to model the time series with BSTS, capturing trend and seasonality.</li>
+<li>Post-Treatment Period:</li>
+<li>Compare the actual observed traffic to the counterfactual prediction (what traffic would have been without the campaign).</li>
+<li>Effect Estimation:</li>
+<li>The difference between observed and predicted traffic is the estimated effect of the campaign.Software and Libraries for BSTS</li>
+<li>R:</li>
+<li>bsts: A popular library for Bayesian structural time series.</li>
+<li>CausalImpact: Built on bsts for causal inference.</li>
+<li>Python:</li>
+<li>pybsts: A Python library for BSTS (less developed than R’s bsts).</li>
+<li>pymc3: A general Bayesian modeling library that can be used to implement BSTS.Comparison with Related MethodsFeatureBSTSARIMAProphetTrend/SeasonalityExplicitly modeledDifferenced implicitlyExplicitly modeledCausal InferenceYesNoNoProbabilistic OutputYes (via Bayesian inference)LimitedLimitedUncertaintyExplicit intervals from posteriorApproximationApproximationSummaryBayesian Structural Time Series (BSTS) is a flexible, Bayesian-based approach to time series analysis that is especially useful for causal inference, trend modeling, and forecasting with uncertainty. It’s widely used in scenarios where understanding the impact of an intervention or generating probabilistic forecasts is critical.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">28</span>
+            <span class="anki-question">what is meta learner?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>A meta-learner is a machine learning framework or model that learns how to combine predictions from multiple base models (or learners) to improve overall performance. It operates at a higher level than the individual models, analyzing their predictions and making a final decision. Meta-learners are widely used in ensemble methods and causal inference.Key Concepts of Meta-Learners</p>
+<ul>
+<li>Base Learners:</li>
+<li>The individual machine learning models (e.g., linear regression, decision trees, neural networks) that generate predictions or intermediate outputs.</li>
+<li>Meta-Learner:</li>
+<li>A higher-level model that takes the outputs of the base learners as input and produces the final prediction.</li>
+<li>Stacking:</li>
+<li>A common implementation where base learners are &quot;stacked&quot; together, and the meta-learner decides how to weight their contributions.</li>
+<li>Use in Causal Inference:</li>
+<li>Meta-learners like T-learners, S-learners, and X-learners are designed to estimate treatment effects in observational studies.Types of Meta-Learners1. In Machine Learning (Ensemble Learning):Meta-learners are central to ensemble methods, such as:</li>
+<li>Stacking:</li>
+<li>Combines multiple models by training a meta-learner on their predictions.</li>
+<li>Example: Combining predictions from random forests, gradient boosting, and SVMs with a logistic regression model as the meta-learner.</li>
+<li>Blending:</li>
+<li>A simplified version of stacking where base models and meta-learners are trained on different subsets of data.2. In Causal Inference (Heterogeneous Treatment Effects):Meta-learners are used to estimate Individual Treatment Effects (ITE) in observational studies:</li>
+<li>S-Learner:</li>
+<li>Uses a single model that takes both treatment assignment and covariates as inputs to estimate outcomes.</li>
+<li>T-Learner:</li>
+<li>Uses two separate models: one for treated units and one for untreated units.</li>
+<li>X-Learner:</li>
+<li>Combines T-learners with additional steps to improve performance, especially when treatment and control groups are imbalanced.How Meta-Learners WorkEnsemble Learning Example:Imagine you have three base models predicting whether a customer will buy a product:</li>
+<li>Model 1: Logistic Regression.</li>
+<li>Model 2: Random Forest.</li>
+<li>Model 3: Gradient Boosting.A meta-learner combines their predictions:</li>
+<li>Input to the meta-learner: Predictions from the three models (e.g., probabilities).</li>
+<li>Output: Final prediction (e.g., a weighted average of the base model predictions).Causal Inference Example:To estimate treatment effects:.Applications</li>
+<li>Ensemble Learning:</li>
+<li>Combines strengths of different models to improve prediction accuracy.</li>
+<li>Examples: Kaggle competitions, production-grade recommendation systems.</li>
+<li>Causal Inference:</li>
+<li>Estimates heterogeneous treatment effects in observational studies.</li>
+<li>Examples: Understanding the impact of a marketing campaign on customer groups.</li>
+<li>Time Series:</li>
+<li>Combines multiple models (e.g., ARIMA, Prophet) for better forecasts.</li>
+<li>Model Debugging:</li>
+<li>Helps identify which base models are performing well and which need improvement.Advantages</li>
+<li>Improved Accuracy:</li>
+<li>Meta-learners leverage the strengths of multiple base models to reduce bias and variance.</li>
+<li>Flexibility:</li>
+<li>Can combine models of different types (e.g., linear and non-linear models).</li>
+<li>Interpretable Weights:</li>
+<li>Some meta-learners (e.g., linear models) allow interpreting the contributions of base models.Limitations</li>
+<li>Complexity:</li>
+<li>Requires training multiple models, increasing computational cost.</li>
+<li>Overfitting:</li>
+<li>Risk of overfitting, especially if the meta-learner is too complex or the base models are highly correlated.</li>
+<li>Requires Validation:</li>
+<li>Needs careful validation to avoid information leakage during training.Meta-Learners in Practice</li>
+<li>Libraries and Tools:</li>
+<li>Machine Learning: scikit-learn (StackingClassifier, StackingRegressor), H2O AutoML, TensorFlow.</li>
+<li>Causal Inference: EconML (Python library with S-, T-, and X-learners).</li>
+<li>Example in Python:</li>
+</ul>
+<p>Let me know if you'd like a practical example of a meta-learner implementation!</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">29</span>
+            <span class="anki-question">Meta learner limition</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>3. Limitations of Meta LearnersMeta-learners, while powerful tools in causal inference, have several limitations that are important to consider:</p>
+<ul>
+<li>Quality of Observational Data: The effectiveness of meta-learners is highly dependent on the quality of the observational data used. Issues like missing data, measurement errors, or unmeasured confounders can significantly impact the results.</li>
+<li>Model Specification: The performance of meta-learners depends heavily on the correct specification of the underlying models. Incorrect model specification can lead to biased estimates of treatment effects.</li>
+<li>Computational Complexity: Some meta-learner approaches, especially those involving complex models or large datasets, can be computationally intensive, requiring significant resources and time for analysis.</li>
+<li>Sensitivity to Overfitting: Meta-learners that use machine learning models are prone to overfitting, especially in scenarios with a large number of covariates relative to the number of observations.</li>
+<li>Requirement for Large Sample Sizes: Accurate estimation of heterogeneous treatment effects often requires large sample sizes, particularly when analyzing subgroups within the data.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">30</span>
+            <span class="anki-question">what is cuped?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>https://www.statsig.com/blog/cuped</p>
+<p>https://chatgpt.com/c/6901aa24-5204-8328-9045-945da60cdf9c</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">31</span>
+            <span class="anki-question">Measure of central tendency: median/mode</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>】</p>
+          </div>
+        </div>
+
+        <div class="post-nav" style="margin-top:32px;">
+          <a href="../index.html" class="back-link">&#8592; Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/editor.js"></script>
+</body>
+</html>

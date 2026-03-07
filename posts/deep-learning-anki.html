@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>Deep Learning Flashcards | Chris Wu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+        /* Anki card styles */
+        .anki-card {
+          border: 1px solid var(--border, #efefef);
+          border-radius: 10px;
+          margin-bottom: 12px;
+          overflow: hidden;
+          background: var(--card-bg, #fff);
+          box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+          transition: box-shadow 0.2s;
+        }
+        .anki-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .anki-q {
+          display: flex; align-items: flex-start; gap: 12px;
+          padding: 14px 18px;
+          cursor: pointer;
+          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 14px; font-weight: 600; color: #1d1d1f;
+          user-select: none;
+        }
+        .anki-num {
+          min-width: 24px; height: 24px;
+          background: var(--accent, #0071e3);
+          color: #fff; border-radius: 6px;
+          font-size: 11px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; margin-top: 1px;
+        }
+        .anki-question { flex: 1; line-height: 1.5; }
+        .anki-toggle {
+          color: #aaa; font-size: 12px; transition: transform 0.2s;
+          flex-shrink: 0; margin-top: 4px;
+        }
+        .anki-card.open .anki-toggle { transform: rotate(90deg); color: var(--accent,#0071e3); }
+        .anki-a {
+          display: none;
+          padding: 0 18px 16px 54px;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          font-size: 13.5px; line-height: 1.75; color: #3a3a3c;
+          border-top: 1px solid var(--border, #efefef);
+        }
+        .anki-card.open .anki-a { display: block; }
+        .anki-a p { margin-bottom: 8px; }
+        .anki-a ul { padding-left: 1.4em; margin-bottom: 8px; }
+        .anki-a li { margin-bottom: 4px; }
+        .anki-a strong { font-weight: 700; color: #1d1d1f; }
+        .anki-meta {
+          font-family: -apple-system, sans-serif;
+          font-size: 13px; color: #8e8e93;
+          margin-bottom: 24px;
+          display: flex; align-items: center; gap: 8px;
+        }
+        .anki-meta span { background: #f2f2f7; padding: 3px 10px; border-radius: 20px; font-size: 12px; }</style>
+</head>
+<body>
+
+  <div id="sidebar" class="open">
+    <div class="sidebar-left">
+      <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
+      <div id="sidebar-tags">
+        <div class="sidebar-tag active" data-filter="recent">最新文章</div>
+        <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
+        <div class="sidebar-tag" data-filter="machine-learning">机器学习</div>
+        <div class="sidebar-tag" data-filter="life">生活</div>
+        <div class="sidebar-tag" data-filter="leetcode">Leetcode</div>
+        <div class="sidebar-tag" data-filter="language">语言学习</div>
+        <div class="sidebar-tag" data-filter="interview">面试记录</div>
+        <div class="sidebar-tag" data-filter="resources">Resources</div>
+        <div class="sidebar-tag" data-filter="business">商业分析</div>
+        <div class="sidebar-tag" data-filter="statistics">数理统计</div>
+        <div class="sidebar-tag" data-filter="notes">转码笔记</div>
+      </div>
+      <div class="fs-control">
+        <button class="fs-btn" data-fs="sm">A</button>
+        <button class="fs-btn active" data-fs="md">A</button>
+        <button class="fs-btn" data-fs="lg">A</button>
+        <button class="fs-btn" data-fs="xl">A</button>
+      </div>
+    </div>
+    <div class="sidebar-right">
+      <input id="search-input" type="text" placeholder="Search posts…" autocomplete="off" />
+      <ul id="post-toc-ul" class="toc-ul">
+      </ul>
+    </div>
+  </div>
+
+  <div id="menu">&#9776;</div>
+
+  <div id="main" class="fadeIn">
+    <div id="post-toc-menu" title="Table of Contents">&#8801;</div>
+    <div id="post-toc"><ul id="post-toc-inner"></ul></div>
+
+    <div class="post">
+      <div class="post-content">
+        <div class="post-header">
+          <div class="post-meta">
+            <span class="post-date">March 07, 2026</span>
+            <span class="post-tag">深度学习</span>
+          </div>
+          <h1 id="post-title">Deep Learning Flashcards</h1>
+        </div>
+
+        <div class="anki-meta">
+          From Anki deck: <span>Deep Learning</span>
+          <span>10 cards</span>
+        </div>
+
+        <p style="font-family:-apple-system,sans-serif;font-size:13.5px;color:#6e6e73;margin-bottom:20px;">
+          Click any question to reveal the answer.
+        </p>
+
+        
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">1</span>
+            <span class="anki-question">What is a Tensor?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>A tensor is a multi-dimensional array used in machine learning, deep learning, and scientific computing. It generalizes scalars, vectors, and matrices to higher dimensions and is the fundamental data structure in TensorFlow, PyTorch, and NumPy.</p>
+<p>Example of a 3D Tensor:luaCopyEditTensor of shape (2,3,3):</p>
+<p>[</p>
+<p>[[1, 2, 3],</p>
+<p>[4, 5, 6],</p>
+<p>[7, 8, 9]],</p>
+<p>[[10, 11, 12],</p>
+<p>[13, 14, 15],</p>
+<p>[16, 17, 18]]</p>
+<p>]</p>
+<ul>
+<li>Shape: (2, 3, 3) → 2 matrices of size 3×3</li>
+<li>Dimensions (Rank): 32. How Are Tensors Used?✅ Machine Learning &amp; Deep Learning (Neural Networks use tensors to process inputs)</li>
+</ul>
+<p>✅ Scientific Computing (Physics, Engineering, Quantum Mechanics)</p>
+<p>✅ Computer Vision (Images as 4D tensors: Batch × Height × Width × Channels)</p>
+<p>✅ Natural Language Processing (NLP) (Text embeddings are represented as tensors)3. Tensors in PythonUsing NumPypythonCopyEditimport numpy as np</p>
+<p># Scalar (0D Tensor)</p>
+<p>scalar = np.array(5)</p>
+<p># Vector (1D Tensor)</p>
+<p>vector = np.array([1, 2, 3])</p>
+<p># Matrix (2D Tensor)</p>
+<p>matrix = np.array([[1, 2, 3], [4, 5, 6]])</p>
+<p># 3D Tensor</p>
+<p>tensor_3d = np.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])</p>
+<p>print(&quot;Shape of 3D tensor:&quot;, tensor_3d.shape)  # Output: (2, 2, 2)</p>
+<p>Using PyTorchpythonCopyEditimport torch</p>
+<p># Creating tensors</p>
+<p>tensor_a = torch.tensor([1, 2, 3])  # 1D tensor</p>
+<p>tensor_b = torch.tensor([[1, 2], [3, 4]])  # 2D tensor</p>
+<p>print(&quot;Shape:&quot;, tensor_b.shape)  # Output: torch.Size([2, 2])</p>
+<p>Using TensorFlowpythonCopyEditimport tensorflow as tf</p>
+<p>tensor_tf = tf.constant([[1, 2], [3, 4]])</p>
+<p>print(&quot;TensorFlow Tensor:&quot;, tensor_tf)</p>
+<p>4. Tensor OperationsTensors support various mathematical operations:Addition &amp; MultiplicationpythonCopyEdita = torch.tensor([[1, 2], [3, 4]])</p>
+<p>b = torch.tensor([[5, 6], [7, 8]])</p>
+<p># Element-wise addition</p>
+<p>print(a + b)</p>
+<p># Matrix multiplication</p>
+<p>print(torch.matmul(a, b))</p>
+<p>Reshaping TensorspythonCopyEditx = torch.tensor([[1, 2, 3], [4, 5, 6]])</p>
+<p>x_reshaped = x.view(3, 2)  # Reshape to (3,2)</p>
+<p>Broadcasting (Expanding Dimensions)pythonCopyEdita = torch.tensor([[1], [2], [3]])  # Shape (3,1)</p>
+<p>b = torch.tensor([4, 5, 6])        # Shape (3,)</p>
+<p>result = a + b  # Broadcasts b to shape (3,3)</p>
+<p>6. Real-World Applications🔹 Deep Learning: TensorFlow, PyTorch, JAX</p>
+<p>🔹 Computer Vision: Images stored as tensors (4D: Batch × Height × Width × Channels)</p>
+<p>🔹 Speech Recognition: Audio data represented as tensors</p>
+<p>🔹 Reinforcement Learning: Tensors store environment states🔹 Summary✔ A tensor is a generalization of scalars, vectors, and matrices</p>
+<p>✔ Tensors are fundamental to deep learning and numerical computing</p>
+<p>✔ Used in PyTorch, TensorFlow, NumPy for efficient computations</p>
+<p>✔ Supports GPU acceleration, automatic differentiation, and complex operations</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">2</span>
+            <span class="anki-question">Why do you need GPU in deeplearning instead of CPU</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>In deep learning, GPUs (Graphics Processing Units) are preferred over CPUs (Central Processing Units) due to their parallel processing capabilities and efficiency in handling large-scale matrix operations, which are fundamental to training neural networks. Here’s why:1. Parallel Processing Power</p>
+<ul>
+<li>Deep learning involves performing massive numbers of matrix multiplications, which are highly parallelizable.</li>
+<li>GPUs have thousands of cores designed to execute thousands of small operations in parallel, making them much faster for these tasks than CPUs, which have fewer, more powerful cores optimized for sequential processing.2. High Throughput for Matrix Computations</li>
+<li>Deep learning models rely heavily on matrix operations (e.g., multiplication, addition, dot products).</li>
+<li>GPUs are optimized for linear algebra operations, as used in deep learning frameworks like TensorFlow and PyTorch.3. Optimized for Deep Learning Workloads</li>
+<li>Libraries like CUDA (NVIDIA) and ROCm (AMD) provide GPU-accelerated operations specifically for deep learning.</li>
+<li>Frameworks like TensorFlow and PyTorch are optimized to run efficiently on GPUs, making them faster than CPUs for training deep networks.4. Faster Training Times</li>
+<li>Training deep learning models on large datasets (e.g., ImageNet) can take days or weeks on a CPU but can be reduced to hours or days with a GPU.</li>
+<li>This speedup allows for quicker iteration and model tuning.5. Efficient Memory Bandwidth</li>
+<li>GPUs have high memory bandwidth, allowing them to transfer data faster between memory and processing units.</li>
+<li>This reduces bottlenecks when handling large tensors, which is common in deep learning.6. Cost Efficiency for Large-Scale Training</li>
+<li>GPUs provide better performance per dollar than CPUs for deep learning workloads.</li>
+<li>Cloud platforms like AWS, Google Cloud, and Azure offer GPU instances to handle deep learning tasks more efficiently.7. Scalability with Multiple GPUs</li>
+<li>Modern deep learning applications often use multiple GPUs to train large-scale models in parallel (e.g., distributed training).</li>
+<li>GPUs can be connected using NVLink or PCIe, enabling them to share memory and work together efficiently.</li>
+</ul>
+<p>CPU vs GPU: When to Use Each?FeatureCPUGPUCoresFew (e.g., 8–64)ThousandsProcessing TypeSerialParallelDeep Learning PerformanceSlowerMuch FasterPower ConsumptionLowerHigherBest ForInference, small modelsTraining large models, high-performance computingConclusionGPUs are essential for deep learning because they significantly accelerate training and inference by handling massive parallel computations efficiently. While CPUs are useful for general-purpose computing and inference in some cases, deep learning models require the parallelism and high throughput that GPUs provide.</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">3</span>
+            <span class="anki-question">what is RNN and why it can be used in time series and NLP</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>What is an RNN (Recurrent Neural Network)?</p>
+<p>A Recurrent Neural Network (RNN) is a type of neural network designed to process sequential data, meaning data where order matters. Unlike traditional feedforward neural networks, RNNs have loops (recurrent connections) that allow information to persist across time steps.How RNNs Work</p>
+<ul>
+<li>In a standard neural network, inputs and outputs are independent of each other.</li>
+<li>In an RNN, hidden states (memory) allow the network to retain information from previous inputs.</li>
+<li>At each time step, the RNN:</li>
+<li></li>
+</ul>
+<ul>
+<li>Why is RNN Used in Time Series and NLP?1. Time Series Forecasting</li>
+<li>Capturing Temporal Dependencies: Time series data has a natural order, and past values influence future predictions. RNNs retain past information, making them effective for predicting stock prices, weather, and sales.</li>
+<li>Dynamic Adaptation: Unlike traditional models like ARIMA, RNNs can learn complex non-linear patterns.Example: Predicting future stock prices using past prices.2. Natural Language Processing (NLP)</li>
+<li>Sequential Nature of Text: In NLP, the meaning of a word depends on the words before it (e.g., &quot;New York&quot; is different from &quot;New&quot;). RNNs capture this context.</li>
+<li>Variable-Length Inputs: RNNs can process texts of varying lengths, unlike traditional feedforward networks.</li>
+<li>Applications: Used in sentiment analysis, machine translation, text generation, and speech recognition.Example: Translating “I love deep learning” into French.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">4</span>
+            <span class="anki-question">Exploding Gradient VS  Vanishing Gradient</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Exploding Gradient vs. Vanishing Gradient in Deep LearningBoth exploding gradients and vanishing gradients are common issues in deep learning, especially in Recurrent Neural Networks (RNNs) and deep neural networks with many layers.</p>
+<p>1. Vanishing Gradient Problem</p>
+<p>What is it?</p>
+<ul>
+<li>In deep networks, during backpropagation, the gradients (derivatives of the loss function) become very small as they propagate backward.</li>
+<li>When gradients shrink close to zero, earlier layers in the network learn very slowly or stop learning entirely.</li>
+<li>This leads to poor training in deep networks because the weights in early layers barely get updated.Effects of Vanishing Gradient</li>
+<li>Slow convergence or no learning in earlier layers.</li>
+<li>The network struggles to capture long-range dependencies.</li>
+<li>More dominant in RNNs, where long-term dependencies are needed.</li>
+</ul>
+<p>2. Exploding Gradient Problem</p>
+<p>What is it?</p>
+<ul>
+<li>When gradients grow exponentially instead of shrinking, causing unstable training.</li>
+<li>The network weights become extremely large, leading to NaN (Not a Number) errors or failure to converge.Why Does It Happen?</li>
+<li>If the weights in the network are too large, the gradients increase exponentially during backpropagation.</li>
+<li>This is more common in deep networks and RNNs, where the same weight matrices are applied across many time steps.</li>
+</ul>
+<p>Solution to Exploding Gradient✅ Gradient Clipping: Limits gradient values to prevent them from becoming too large.pythonCopyEditoptimizer = tf.keras.optimizers.Adam(learning_rate=0.001, clipnorm=1.0)</p>
+<p>✅ Weight Regularization (L2 Norm / Weight Decay): Prevents weights from growing too large. ✅ Proper Weight Initialization: Using Xavier (Glorot) initialization or He initialization to keep initial values stable.</p>
+<p>Summary</p>
+<ul>
+<li>Vanishing Gradient: Gradients become too small, making training slow and ineffective.</li>
+<li>Exploding Gradient: Gradients become too large, making training unstable.</li>
+<li>RNNs suffer more from both problems due to repeated multiplication over many time steps.</li>
+<li>Solutions include: using LSTM/GRU for RNNs, ReLU activations, batch normalization, and gradient clipping.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">5</span>
+            <span class="anki-question">what are the activate functions(ReLu, Softmax, softPlus, sigmond, tanh) and when to use them?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Activation Functions in Deep LearningActivation functions introduce non-linearity to neural networks, enabling them to learn complex patterns. The most common activation functions are:</p>
+<ul>
+<li>ReLU (Rectified Linear Unit)</li>
+<li>Softmax</li>
+<li>SoftPlus</li>
+<li>Sigmoid</li>
+<li>Tanh</li>
+</ul>
+<p>Summary: When to Use Each Activation Function</p>
+<ul>
+<li>✅ ReLU → Best for hidden layers in deep networks.</li>
+<li>✅ Softmax → Use in the final layer for multi-class classification.</li>
+<li>✅ SoftPlus → Alternative to ReLU, smooth activation.</li>
+<li>✅ Sigmoid → Use for binary classification (output layer only).</li>
+<li>✅ Tanh → Use in RNNs or when zero-centered activation is needed.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">6</span>
+            <span class="anki-question">What is Nerual Network?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>What is a Neural Network?A Neural Network is a computational model inspired by the structure and function of the human brain. It consists of layers of interconnected nodes (neurons) that process and learn from data. Neural networks are the foundation of deep learning and are widely used in AI applications like image recognition, natural language processing, and autonomous systems.</p>
+<p>3. Types of Neural Networks1️⃣ Feedforward Neural Network (FNN)</p>
+<ul>
+<li>The simplest type: data flows in one direction.</li>
+<li>Used in basic classification and regression tasks.2️⃣ Convolutional Neural Network (CNN)</li>
+<li>Specialized for image processing (e.g., object detection, face recognition).</li>
+<li>Uses convolutional layers to detect spatial patterns.3️⃣ Recurrent Neural Network (RNN)</li>
+<li>Designed for sequential data (e.g., speech recognition, time series, NLP).</li>
+<li>Has memory via recurrent connections to retain past information.</li>
+<li>Variants: LSTM (Long Short-Term Memory) and GRU (Gated Recurrent Unit).4️⃣ Generative Adversarial Network (GAN)</li>
+<li>Used for generating new data (e.g., Deepfake images, AI-generated art).</li>
+<li>Has two competing networks: Generator and Discriminator.5️⃣ Transformer Networks</li>
+<li>Used in NLP tasks (e.g., ChatGPT, BERT).</li>
+<li>Processes input in parallel (faster than RNNs).</li>
+<li>Self-attention mechanism captures long-term dependencies.4. Advantages of Neural Networks✅ Handles Complex Data: Can learn intricate patterns.</li>
+</ul>
+<p>✅ Feature Engineering: Learns features automatically (especially in deep learning).</p>
+<p>✅ Scalability: Works well with large datasets.</p>
+<p>✅ Versatility: Used in images, text, audio, and more.Challenges❌ Computationally Expensive: Requires high processing power (GPUs).</p>
+<p>❌ Overfitting: Can memorize instead of generalizing.</p>
+<p>❌ Black Box Nature: Hard to interpret how decisions are made.</p>
+<p>import matplotlib.pyplot as plt</p>
+<p>import networkx as nx</p>
+<p># Define the structure of a simple neural network</p>
+<p>layers = [3, 4, 3, 1]  # Number of neurons in each layer (input, hidden1, hidden2, output)</p>
+<p>positions = {}  # Dictionary to store node positions</p>
+<p>G = nx.DiGraph()  # Directed graph</p>
+<p># Create nodes and positions</p>
+<p>x_spacing = 3  # Space between layers</p>
+<p>y_spacing = 1.5  # Space between neurons</p>
+<p>for i, num_neurons in enumerate(layers):</p>
+<p>for j in range(num_neurons):</p>
+<p>node_id = f&quot;L{i}_N{j}&quot;</p>
+<p>positions[node_id] = (i * x_spacing, -j * y_spacing)</p>
+<p>G.add_node(node_id)</p>
+<p># Create edges (connections between neurons in consecutive layers)</p>
+<p>for i in range(len(layers) - 1):</p>
+<p>for j in range(layers[i]):</p>
+<p>for k in range(layers[i + 1]):</p>
+<p>G.add_edge(f&quot;L{i}_N{j}&quot;, f&quot;L{i+1}_N{k}&quot;)</p>
+<p># Draw the network</p>
+<p>plt.figure(figsize=(8, 6))</p>
+<p>nx.draw(G, positions, with_labels=False, node_size=700, node_color=&quot;skyblue&quot;, edge_color=&quot;gray&quot;)</p>
+<p>plt.title(&quot;Simple Neural Network Visualization&quot;)</p>
+<p>plt.show()</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">7</span>
+            <span class="anki-question">Should Each Neuron in a Neural Network Have the Same Activation Function?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>Should Each Neuron in a Neural Network Have the Same Activation Function?No, not necessarily. While it's common to use the same activation function for neurons in a given layer, different layers can (and often should) use different activation functions based on their role in the network.</p>
+<p>4. Can Individual Neurons Have Different Activations in the Same Layer?</p>
+<ul>
+<li>In standard dense (fully connected) layers, all neurons typically use the same activation function.</li>
+<li>However, in advanced architectures, some layers may mix activation functions:</li>
+<li>Mixture of Experts (MoE): Uses different activations for different neurons.</li>
+<li>Custom Architectures: Some researchers experiment with different activations in the same layer.🔑 Key Takeaways</li>
+<li>Hidden layers generally use ReLU (or Tanh in RNNs).</li>
+<li>Output layer activation depends on the task (Regression: None/Linear, Binary: Sigmoid, Multi-class: Softmax).</li>
+<li>Each layer typically has the same activation across neurons, but different layers can have different activations.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">8</span>
+            <span class="anki-question">What is backpropagation and how it is related to find the bias and weight , also gradinet descent?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>What is Backpropagation?Backpropagation (Backward Propagation of Errors) is an algorithm used to train neural networks by adjusting weights and biases to minimize error. It is the key to how deep learning models learn from data.</p>
+<p>1. How Backpropagation WorksBackpropagation consists of two main steps:</p>
+<ul>
+<li>Forward Propagation: The input passes through the network, layer by layer, to generate an output (prediction).</li>
+<li>Backward Propagation: The error (difference between actual and predicted values) is propagated backward through the network to update the weights and biases.   4. Example: Backpropagation in PythonLet’s implement a simple backpropagation example using NumPy.</li>
+</ul>
+<p>import numpy as np</p>
+<p># Sigmoid Activation Function</p>
+<p>def sigmoid(x):</p>
+<p>return 1 / (1 + np.exp(-x))</p>
+<p># Derivative of Sigmoid (for backpropagation)</p>
+<p>def sigmoid_derivative(x):</p>
+<p>return x * (1 - x)</p>
+<p># Training Data (X: input, y: expected output)</p>
+<p>X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])  # Input</p>
+<p>y = np.array([[0], [1], [1], [0]])  # Expected output (XOR Problem)</p>
+<p># Initialize Weights and Biases</p>
+<p>np.random.seed(1)</p>
+<p>W1 = np.random.uniform(-1, 1, (2, 2))  # Weights for input to hidden</p>
+<p>b1 = np.zeros((1, 2))</p>
+<p>W2 = np.random.uniform(-1, 1, (2, 1))  # Weights for hidden to output</p>
+<p>b2 = np.zeros((1, 1))</p>
+<p># Learning Rate</p>
+<p>alpha = 0.1</p>
+<p># Training Process (Backpropagation)</p>
+<p>for epoch in range(10000):  # Training Iterations</p>
+<p># Forward Pass</p>
+<p>hidden_input = np.dot(X, W1) + b1</p>
+<p>hidden_output = sigmoid(hidden_input)</p>
+<p>final_input = np.dot(hidden_output, W2) + b2</p>
+<p>final_output = sigmoid(final_input)</p>
+<p># Compute Error</p>
+<p>error = y - final_output</p>
+<p># Backward Pass (Gradient Calculation)</p>
+<p>d_output = error * sigmoid_derivative(final_output)  # Output layer gradient</p>
+<p>d_hidden = d_output.dot(W2.T) * sigmoid_derivative(hidden_output)  # Hidden layer gradient</p>
+<p># Update Weights and Biases using Gradient Descent</p>
+<p>W2 += hidden_output.T.dot(d_output) * alpha</p>
+<p>b2 += np.sum(d_output, axis=0, keepdims=True) * alpha</p>
+<p>W1 += X.T.dot(d_hidden) * alpha</p>
+<p>b1 += np.sum(d_hidden, axis=0, keepdims=True) * alpha</p>
+<p># Test the trained model</p>
+<p>print(&quot;Final Predictions:&quot;, final_output)</p>
+<p>5. Key Takeaways✅ Backpropagation computes gradients of weights &amp; biases.</p>
+<p>✅ Gradient Descent updates weights using those gradients.</p>
+<p>✅ Biases shift the activation, while weights determine the strength of connections.</p>
+<p>✅ The process repeats until the model minimizes error.</p>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">9</span>
+            <span class="anki-question">What is gradient descent? and why to use it?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>What is Gradient Descent?Gradient Descent is an optimization algorithm used to minimize the loss function in machine learning and deep learning models by updating the weights and biases iteratively.</p>
+<p>4. Example: Gradient Descent in PythonLet’s visualize gradient descent minimizing a simple quadratic function.import numpy as np</p>
+<p>import matplotlib.pyplot as plt</p>
+<p># Function to minimize (Loss function)</p>
+<p>def loss_function(x):</p>
+<p>return x**2 + 4*x + 4  # Example: (x+2)^2</p>
+<p># Derivative (Gradient of the function)</p>
+<p>def gradient(x):</p>
+<p>return 2*x + 4</p>
+<p># Gradient Descent Implementation</p>
+<p>x = 10  # Start at x=10</p>
+<p>learning_rate = 0.1  # Step size</p>
+<p>history = [x]  # Store values for visualization</p>
+<p>for _ in range(20):  # Iterate 20 steps</p>
+<p>x = x - learning_rate * gradient(x)  # Update step</p>
+<p>history.append(x)</p>
+<p># Plot Gradient Descent Steps</p>
+<p>x_vals = np.linspace(-10, 10, 100)</p>
+<p>y_vals = loss_function(x_vals)</p>
+<p>plt.plot(x_vals, y_vals, label=&quot;Loss Function&quot;)</p>
+<p>plt.scatter(history, loss_function(np.array(history)), color='red', marker='o', label=&quot;Gradient Descent Steps&quot;)</p>
+<p>plt.xlabel(&quot;x&quot;)</p>
+<p>plt.ylabel(&quot;Loss&quot;)</p>
+<p>plt.title(&quot;Gradient Descent Visualization&quot;)</p>
+<p>plt.legend()</p>
+<p>plt.show()</p>
+<p>5. Challenges in Gradient Descent❌ Choosing the Right Learning Rate:</p>
+<ul>
+<li>Too high → May overshoot the minimum.</li>
+<li>Too low → Convergence is very slow.</li>
+<li>Solution: Use learning rate schedules or adaptive learning rates (Adam, RMSprop).❌ Local Minima:</li>
+<li>Some loss functions have local minima where gradient descent can get stuck.</li>
+<li>Solution: SGD with momentum can help escape local minima.❌ Vanishing and Exploding Gradients:</li>
+<li>In deep networks, gradients may become too small (vanishing) or too large (exploding).</li>
+<li>Solution: Use batch normalization, ReLU activations, LSTMs/GRUs.</li>
+</ul>
+          </div>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q" onclick="this.parentNode.classList.toggle('open')">
+            <span class="anki-num">10</span>
+            <span class="anki-question">what is tensor?</span>
+            <span class="anki-toggle">▸</span>
+          </div>
+          <div class="anki-a">
+            <p>What is a Tensor?</p>
+<ul>
+<li>A tensor is a generalization of scalars, vectors, and matrices to higher dimensions.</li>
+<li>In NumPy, a tensor is simply an N-dimensional array (ND-array).</li>
+<li>The term &quot;tensor&quot; is commonly used in machine learning (e.g., TensorFlow, PyTorch) to refer to multi-dimensional data structures.Tensors of Different OrdersOrder (Rank)ExampleTerminology0D (Rank-0)5Scalar1D (Rank-1)[1, 2, 3]Vector2D (Rank-2)[[1, 2], [3, 4]]Matrix3D (Rank-3)[[[1,2],[3,4]], [[5,6],[7,8]]]Tensor4D+ (Rank-4 and above)N-dimensional arrayHigher-order tensorExample of a 3D TensorpythonCopyEditimport numpy as np</li>
+</ul>
+<p>tensor_3d = np.array([[[1, 2, 3],</p>
+<p>[4, 5, 6]],</p>
+<p>[[7, 8, 9],</p>
+<p>[10, 11, 12]]])</p>
+<p>print(tensor_3d)</p>
+<p>print(&quot;Shape:&quot;, tensor_3d.shape)  # (2, 2, 3)</p>
+<p>Output:luaCopyEdit[[[ 1  2  3]</p>
+<p>[ 4  5  6]]</p>
+<p>[[ 7  8  9]</p>
+<p>[10 11 12]]]</p>
+<p>Shape: (2, 2, 3)</p>
+<p>This 3D array (tensor) has:</p>
+<ul>
+<li>2 matrices (layers)</li>
+<li>Each with 2 rows</li>
+<li>Each row having 3 columnsWhen Are Tensors Used?Tensors are widely used in:</li>
+<li>Deep Learning (Neural Networks): Data like images, text, and audio are represented as tensors.</li>
+<li>Physics &amp; Engineering: Tensor calculus is used in fields like relativity.</li>
+<li>Computer Vision &amp; NLP: Multi-dimensional data representations.Conclusion</li>
+<li>A 3D array is a tensor, but tensors can have any number of dimensions (3D, 4D, 5D, etc.).</li>
+<li>The term tensor is mostly used in machine learning &amp; physics.</li>
+</ul>
+          </div>
+        </div>
+
+        <div class="post-nav" style="margin-top:32px;">
+          <a href="../index.html" class="back-link">&#8592; Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/editor.js"></script>
+</body>
+</html>

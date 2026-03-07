@@ -660,3 +660,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
   max-height: 300px; object-fit: contain;
   background: #f2f2f7;
 }
+
+
+/* ===== Embedded video iframes ===== */
+.media-figure iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
