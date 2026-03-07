@@ -1033,7 +1033,12 @@
       }).join('\n');
 
       var linksHtml = Array.from(links).map(function(a){
-        return '        <li><a class="toc-link" href="' + a.getAttribute('href') + '" data-tags="' + (a.dataset.tags||'') + '">' + a.textContent.trim() + '</a></li>';
+        var href = a.getAttribute('href');
+        // Ensure href always has posts/ prefix in index.html
+        if (!href.startsWith('posts/') && !href.startsWith('http')) {
+          href = 'posts/' + href;
+        }
+        return '        <li><a class="toc-link" href="' + href + '" data-tags="' + (a.dataset.tags||'') + '">' + a.textContent.trim() + '</a></li>';
       }).join('\n');
 
       showPub(['Fetching index.html','Updating sidebar','Pushing to GitHub']);
