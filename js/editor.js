@@ -20,8 +20,9 @@
   var adminUnlocked = !!sessionStorage.getItem('admin_unlocked');
   var editing     = null;
   var currentPath = window.location.pathname;
-  var isPost      = currentPath.includes('/posts/');
-  var currentFile = isPost ? currentPath.split('/').pop() : null;
+  var isPost      = currentPath.includes('/posts/') || currentPath.includes('\\posts\\');
+  var currentFile = (currentPath.includes('/posts/') || currentPath.includes('\\posts\\'))
+    ? currentPath.split(/[\/\\]/).pop() : null;
 
   // ── Never inject anything until unlocked ────────────────────
   if (!adminUnlocked) {
@@ -41,9 +42,22 @@
 
   // ── Admin is unlocked — inject everything ───────────────────
   injectStyles();
-  window.addEventListener('DOMContentLoaded', injectHTML);
-  // If DOM already loaded (script is deferred)
-  if (document.readyState !== 'loading') injectHTML();
+  function initAdmin() {
+    injectHTML();
+    // Re-evaluate isPost now that DOM is ready (handles file:// paths)
+    var path2 = window.location.href;
+    isPost = path2.includes('/posts/') || path2.includes('\\posts\\') || path2.includes('%2Fposts%2F');
+    currentFile = isPost ? decodeURIComponent(path2).split(/[\/\\]/).pop().split('?')[0] : null;
+    // Enable/disable buttons based on current page
+    setTimeout(function() {
+      var eb = document.getElementById('ed-edit-btn');
+      var db = document.getElementById('ed-del-btn');
+      if (eb) eb.disabled = !isPost;
+      if (db) db.disabled = !isPost;
+    }, 50);
+  }
+  window.addEventListener('DOMContentLoaded', initAdmin);
+  if (document.readyState !== 'loading') initAdmin();
 
   function showLoginModal() {
     var bg = document.createElement('div');
@@ -277,7 +291,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           Edit
         </button>
-        <button class="ed-pill ep-del" onclick="ED.askDelete()" ${isPost?'':'disabled'}>
+        <button class="ed-pill ep-del" id="ed-del-btn" onclick="ED.askDelete()" ${isPost?'':'disabled'}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
           Delete
         </button>
@@ -292,6 +306,11 @@
         </button>
         <button class="ed-pill ep-lock" onclick="ED.logout()" title="Lock admin" style="color:#ff453a;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+        <div class="ed-div"></div>
+        <button class="ed-pill ep-edit" onclick="ED.openSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Sidebar
         </button>
       </div>
 
@@ -429,6 +448,35 @@
           </div>
         </div>
       </div>
+
+    <!-- Sidebar editor modal -->
+    <div id="ed-sb-modal" class="ed-modal-bg" onclick="ED.closeSidebar(event)">
+      <div id="ed-sb-box" onclick="event.stopPropagation()" style="background:#1c1c1e;border:1px solid rgba(255,255,255,0.12);border-radius:18px;width:min(700px,95vw);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.5);font-family:-apple-system,sans-serif;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;">
+          <h3 style="color:#fff;font-size:16px;font-weight:700;margin:0;">Edit Sidebar</h3>
+          <button onclick="ED.closeSidebarForce()" style="background:rgba(255,255,255,0.1);border:none;color:#8e8e93;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">&#215;</button>
+        </div>
+        <div style="display:flex;flex:1;overflow:hidden;min-height:0;">
+          <div style="width:50%;border-right:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;overflow:hidden;">
+            <div style="padding:14px 20px 10px;font-size:11px;font-weight:600;color:#636366;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;">Categories <span style="color:#8e8e93;font-weight:400;text-transform:none;letter-spacing:0;">left sidebar</span></div>
+            <div id="ed-cats-list" style="flex:1;overflow-y:auto;padding:0 12px 12px;"></div>
+            <div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.07);display:flex;gap:8px;flex-shrink:0;">
+              <input id="ed-cat-label" placeholder="Label e.g. 生活" class="ed-dark-inp" style="flex:1;margin:0;padding:7px 11px;font-size:13px;" />
+              <input id="ed-cat-key" placeholder="key e.g. life" class="ed-dark-inp" style="width:100px;margin:0;padding:7px 11px;font-size:13px;" />
+              <button onclick="ED.addCategory()" class="ed-tb ed-pubBtn" style="padding:7px 14px;border-radius:8px;flex-shrink:0;">Add</button>
+            </div>
+          </div>
+          <div style="width:50%;display:flex;flex-direction:column;overflow:hidden;">
+            <div style="padding:14px 20px 10px;font-size:11px;font-weight:600;color:#636366;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;">Posts <span style="color:#8e8e93;font-weight:400;text-transform:none;letter-spacing:0;">right sidebar</span></div>
+            <div id="ed-posts-list" style="flex:1;overflow-y:auto;padding:0 12px 12px;"></div>
+          </div>
+        </div>
+        <div style="padding:14px 24px;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;">
+          <button class="ed-tb ed-cancel" onclick="ED.closeSidebarForce()">Cancel</button>
+          <button class="ed-tb ed-pubBtn" onclick="ED.saveSidebar()">Save &amp; Publish</button>
+        </div>
+      </div>
+    </div>
     `);
 
     // Wire live preview
@@ -794,6 +842,177 @@
     logout: function () {
       sessionStorage.removeItem('admin_unlocked');
       location.reload();
+    },
+
+    // ── Sidebar editor ─────────────────────────────────────────
+    openSidebar: function () {
+      this._renderCats();
+      this._renderPosts();
+      document.getElementById('ed-sb-modal').classList.add('open');
+    },
+
+    closeSidebar: function (e) {
+      if (e.target.id === 'ed-sb-modal') this.closeSidebarForce();
+    },
+    closeSidebarForce: function () {
+      document.getElementById('ed-sb-modal').classList.remove('open');
+    },
+
+    _renderCats: function () {
+      var tags = document.querySelectorAll('#sidebar-tags .sidebar-tag');
+      var html = '';
+      tags.forEach(function (t) {
+        var key   = t.dataset.filter;
+        var label = t.textContent.trim();
+        html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+          '<div style="flex:1;">' +
+            '<div style="color:#ebebf5;font-size:13px;">' + label + '</div>' +
+            '<div style="color:#636366;font-size:11px;font-family:monospace;">' + key + '</div>' +
+          '</div>' +
+          '<button onclick="ED._editCat(this)" data-key="' + key + '" data-label="' + label + '" ' +
+            'style="background:rgba(255,255,255,0.07);border:none;color:#8e8e93;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">Rename</button>' +
+          '<button onclick="ED._deleteCat(this)" data-key="' + key + '" ' +
+            'style="background:rgba(255,59,48,0.12);border:none;color:#ff453a;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">Delete</button>' +
+        '</div>';
+      });
+      document.getElementById('ed-cats-list').innerHTML = html || '<p style="color:#636366;font-size:13px;padding:12px 6px;">No categories yet.</p>';
+    },
+
+    _renderPosts: function () {
+      var links = document.querySelectorAll('#post-toc-ul .toc-link');
+      var html = '';
+      links.forEach(function (a) {
+        var title = a.textContent.trim();
+        var href  = a.getAttribute('href');
+        var file  = href.split('/').pop();
+        var cat   = a.dataset.tags || '';
+        html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="color:#ebebf5;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + title + '</div>' +
+            '<div style="color:#636366;font-size:11px;font-family:monospace;">' + file + '</div>' +
+          '</div>' +
+          '<select onchange="ED._recat(this)" data-file="' + file + '" ' +
+            'style="background:#2a2a2c;border:1px solid rgba(255,255,255,0.1);color:#8e8e93;padding:4px 6px;border-radius:6px;font-size:11px;cursor:pointer;">' +
+            Object.entries(CATEGORIES).map(function(e){ return '<option value="' + e[0] + '"' + (cat===e[0]?' selected':'') + '>' + e[1] + '</option>'; }).join('') +
+          '</select>' +
+          '<button onclick="ED._movePost(this,-1)" data-file="' + file + '" title="Move up" ' +
+            'style="background:rgba(255,255,255,0.07);border:none;color:#8e8e93;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">↑</button>' +
+          '<button onclick="ED._movePost(this,1)" data-file="' + file + '" title="Move down" ' +
+            'style="background:rgba(255,255,255,0.07);border:none;color:#8e8e93;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">↓</button>' +
+        '</div>';
+      });
+      document.getElementById('ed-posts-list').innerHTML = html || '<p style="color:#636366;font-size:13px;padding:12px 6px;">No posts yet.</p>';
+    },
+
+    addCategory: function () {
+      var label = document.getElementById('ed-cat-label').value.trim();
+      var key   = document.getElementById('ed-cat-key').value.trim().toLowerCase().replace(/\s+/g,'-');
+      if (!label || !key) { alert('Enter both a label and a key.'); return; }
+      // Add to live sidebar
+      var tags = document.getElementById('sidebar-tags');
+      var div  = document.createElement('div');
+      div.className = 'sidebar-tag';
+      div.dataset.filter = key;
+      div.textContent = label;
+      tags.appendChild(div);
+      // Add to CATEGORIES map
+      CATEGORIES[key] = label;
+      document.getElementById('ed-cat-label').value = '';
+      document.getElementById('ed-cat-key').value   = '';
+      this._renderCats();
+    },
+
+    _editCat: function (btn) {
+      var key      = btn.dataset.key;
+      var oldLabel = btn.dataset.label;
+      var newLabel = prompt('Rename category:', oldLabel);
+      if (!newLabel || newLabel === oldLabel) return;
+      // Update live sidebar
+      var tag = document.querySelector('.sidebar-tag[data-filter="' + key + '"]');
+      if (tag) tag.textContent = newLabel;
+      CATEGORIES[key] = newLabel;
+      this._renderCats();
+    },
+
+    _deleteCat: function (btn) {
+      var key = btn.dataset.key;
+      if (!confirm('Delete category "' + key + '"? Posts in this category won\'t be deleted, just uncategorized.')) return;
+      var tag = document.querySelector('.sidebar-tag[data-filter="' + key + '"]');
+      if (tag) tag.remove();
+      delete CATEGORIES[key];
+      this._renderCats();
+    },
+
+    _recat: function (sel) {
+      var file   = sel.dataset.file;
+      var newCat = sel.value;
+      // Update the toc-link data-tags
+      var link = document.querySelector('.toc-link[href*="' + file + '"]');
+      if (link) link.dataset.tags = newCat;
+    },
+
+    _movePost: function (btn, dir) {
+      var file = btn.dataset.file;
+      var ul   = document.getElementById('post-toc-ul');
+      var li   = Array.from(ul.children).find(function(l){ return l.querySelector('a[href*="'+file+'"]'); });
+      if (!li) return;
+      if (dir === -1 && li.previousElementSibling) ul.insertBefore(li, li.previousElementSibling);
+      if (dir ===  1 && li.nextElementSibling)     ul.insertBefore(li.nextElementSibling, li);
+      this._renderPosts();
+    },
+
+    // Save sidebar changes and publish index.html
+    saveSidebar: async function () {
+      if (!ghToken) { this.openToken(); return; }
+      this.closeSidebarForce();
+
+      // Serialize current sidebar state from live DOM
+      var tags  = document.querySelectorAll('#sidebar-tags .sidebar-tag');
+      var links = document.querySelectorAll('#post-toc-ul .toc-link');
+
+      var tagsHtml  = Array.from(tags).map(function(t){
+        return '        <div class="sidebar-tag' + (t.classList.contains('active')?' active':'') + '" data-filter="' + t.dataset.filter + '">' + t.textContent.trim() + '</div>';
+      }).join('\n');
+
+      var linksHtml = Array.from(links).map(function(a){
+        return '        <li><a class="toc-link" href="' + a.getAttribute('href') + '" data-tags="' + (a.dataset.tags||'') + '">' + a.textContent.trim() + '</a></li>';
+      }).join('\n');
+
+      showPub(['Fetching index.html','Updating sidebar','Pushing to GitHub']);
+      try {
+        step(0,'active');
+        var idxRes  = await ghGet('/repos/'+REPO+'/contents/index.html');
+        var idxHtml = b64decode(idxRes.content);
+        step(0,'done');
+
+        step(1,'active');
+        // Replace sidebar-tags block
+        idxHtml = idxHtml.replace(
+          /<div id="sidebar-tags">[\s\S]*?<\/div>\s*(?=\s*<div class="fs-control")/,
+          '<div id="sidebar-tags">\n' + tagsHtml + '\n      </div>\n      '
+        );
+        // Replace toc-ul block
+        idxHtml = idxHtml.replace(
+          /(<ul id="post-toc-ul"[^>]*>)[\s\S]*?(<\/ul>)/,
+          '$1\n' + linksHtml + '\n      $2'
+        );
+        step(1,'done');
+
+        step(2,'active');
+        var ref      = await ghGet('/repos/'+REPO+'/git/ref/heads/'+BRANCH);
+        var commit   = await ghGet('/repos/'+REPO+'/git/commits/'+ref.object.sha);
+        var tree     = await ghPost('/repos/'+REPO+'/git/trees',{
+          base_tree: commit.tree.sha,
+          tree:[{path:'index.html', mode:'100644', type:'blob', content:idxHtml}]
+        });
+        var nc = await ghPost('/repos/'+REPO+'/git/commits',{
+          message:'Update sidebar',
+          tree:tree.sha, parents:[ref.object.sha]
+        });
+        await ghPatch('/repos/'+REPO+'/git/refs/heads/'+BRANCH,{sha:nc.sha});
+        step(2,'done');
+        pubDone('✓ Sidebar updated!','Changes live at chancewu1.github.io');
+      } catch(e) { pubFail(e.message); }
     }
   };
 
@@ -882,12 +1101,6 @@
   <div id="sidebar" class="open">
     <div class="sidebar-left">
       <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
-      <div class="sidebar-social">
-        <a href="mailto:chancewu1@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
-        <a href="https://github.com/chancewu1" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
-        <a href="https://twitter.com" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-        <a href="https://linkedin.com" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-      </div>
       <div id="sidebar-tags">
         <div class="sidebar-tag active" data-filter="recent">最新文章</div>
         <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
@@ -930,8 +1143,8 @@
         </div>
         ${bodyHtml}
         <div class="social-share">
-          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}" target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-          <a href="https://github.com/chancewu1" target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+          <a href="mailto:chancewu1@gmail.com" title="Email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+          <a href="https://linkedin.com" target="_blank" title="LinkedIn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
         </div>
         <div class="post-nav"><a href="../index.html" class="back-link">&#8592; Back to Home</a></div>
       </div>
