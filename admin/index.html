@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --sidebar: #1c1c1e;
+      --accent: #0071e3;
+      --accent-light: rgba(0,113,227,0.1);
+      --danger: #ff3b30;
+      --danger-light: rgba(255,59,48,0.1);
+      --success: #34c759;
+      --text: #1d1d1f;
+      --text2: #6e6e73;
+      --text3: #aeaeb2;
+      --border: rgba(0,0,0,0.08);
+      --font: "Inter", -apple-system, sans-serif;
+      --mono: "SF Mono", "Fira Code", monospace;
+      --radius: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: var(--font); font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+
+    /* ── Layout ── */
+    .layout { display: flex; height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 220px; min-width: 220px;
+      background: var(--sidebar);
+      display: flex; flex-direction: column;
+      padding: 24px 0 20px;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .logo-mark {
+      width: 36px; height: 36px; border-radius: 9px;
+      background: var(--accent); color: #fff;
+      font-weight: 700; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-text { color: #fff; font-weight: 600; font-size: 14px; }
+    .logo-sub { color: #636366; font-size: 11px; margin-top: 1px; }
+
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px;
+      color: #8e8e93; font-size: 13px; font-weight: 500;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .nav-item.active { color: #fff; border-left-color: var(--accent); background: rgba(0,113,227,0.12); }
+    .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .sidebar-footer {
+      padding: 16px 20px 0;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .view-blog-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 9px;
+      color: #8e8e93; font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: color 0.15s, background 0.15s;
+      text-decoration: none;
+    }
+    .view-blog-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .view-blog-btn svg { width: 14px; height: 14px; }
+
+    /* ── Main area ── */
+    .main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .topbar-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .topbar-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 16px;
+      border-radius: 9px; border: none;
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn:active { transform: scale(0.97); }
+    .btn svg { width: 14px; height: 14px; }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(0,113,227,0.3); }
+    .btn-ghost { background: rgba(0,0,0,0.05); color: var(--text); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    /* ── Panels ── */
+    .panel { display: none; flex: 1; overflow-y: auto; padding: 28px; }
+    .panel.active { display: block; }
+
+    /* ── Stats row ── */
+    .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 1px 8px var(--border);
+    }
+    .stat-val { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; }
+    .stat-label { font-size: 12px; color: var(--text2); margin-top: 6px; }
+
+    /* ── Post list ── */
+    .section-title { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+
+    .post-table {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 8px var(--border);
+      overflow: hidden;
+    }
+    .post-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 110px 120px;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+    }
+    .post-row:last-child { border-bottom: none; }
+    .post-row:hover { background: rgba(0,113,227,0.03); }
+    .post-row.header { background: #f9f9fb; font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
+    .post-row.header:hover { background: #f9f9fb; }
+
+    .post-title-cell { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .post-title-cell strong { font-size: 13.5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .post-title-cell span { font-size: 11.5px; color: var(--text3); }
+
+    .tag-pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+      background: var(--accent-light); color: var(--accent);
+    }
+
+    .post-actions { display: flex; gap: 6px; justify-content: flex-end; }
+    .icon-btn {
+      width: 30px; height: 30px;
+      border-radius: 7px; border: 1px solid var(--border);
+      background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text2);
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .icon-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-light); }
+    .icon-btn.danger:hover { color: var(--danger); border-color: var(--danger); background: var(--danger-light); }
+    .icon-btn svg { width: 14px; height: 14px; }
+
+    /* ── Editor panel ── */
+    .editor-layout { display: flex; gap: 20px; height: calc(100vh - 130px); }
+    .editor-left { display: flex; flex-direction: column; gap: 14px; width: 340px; min-width: 340px; }
+    .editor-right { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-size: 12px; font-weight: 600; color: var(--text2); }
+    .field-input {
+      padding: 9px 13px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      font-family: var(--font); font-size: 13px; color: var(--text);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+    select.field-input { cursor: pointer; }
+
+    .editor-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 8px var(--border);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .editor-card-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px; font-weight: 600; color: var(--text2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .editor-tabs { display: flex; gap: 2px; }
+    .editor-tab {
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px; font-weight: 500; color: var(--text2);
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .editor-tab.active { background: var(--accent); color: #fff; }
+    .editor-tab:not(.active):hover { background: rgba(0,0,0,0.05); color: var(--text); }
+
+    #md-editor {
+      flex: 1;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      border: none; outline: none; resize: none;
+      color: var(--text);
+      background: var(--card);
+    }
+
+    .preview-pane {
+      flex: 1;
+      padding: 20px 24px;
+      overflow-y: auto;
+      font-family: "Lora", Georgia, serif;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #3a3a3c;
+      display: none;
+    }
+    .preview-pane.active { display: block; }
+    .preview-pane h1 { font-size: 1.8rem; font-weight: 700; color: #1d1d1f; margin-bottom: 12px; letter-spacing: -0.02em; }
+    .preview-pane h2 { font-size: 1.2rem; font-weight: 700; color: #1d1d1f; margin: 28px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .preview-pane h3 { font-size: 1rem; font-weight: 700; color: #1d1d1f; margin: 20px 0 8px; }
+    .preview-pane p { margin-bottom: 14px; }
+    .preview-pane code { font-family: var(--mono); font-size: 0.83em; background: #f2f2f7; color: #c0392b; padding: 2px 5px; border-radius: 4px; }
+    .preview-pane pre { background: #1c1c1e; color: #f0f0f0; padding: 16px 20px; border-radius: 10px; overflow-x: auto; margin-bottom: 16px; font-family: var(--mono); font-size: 13px; line-height: 1.65; }
+    .preview-pane pre code { background: none; color: inherit; padding: 0; }
+    .preview-pane ul, .preview-pane ol { padding-left: 1.4em; margin-bottom: 14px; }
+    .preview-pane blockquote { border-left: 3px solid var(--accent); padding: 12px 18px; background: rgba(0,113,227,0.04); border-radius: 0 8px 8px 0; font-style: italic; color: #6e6e73; margin: 16px 0; }
+    .preview-pane strong { font-weight: 700; color: #1d1d1f; }
+
+    .editor-actions { display: flex; gap: 10px; align-items: center; }
+    .save-status { font-size: 12px; color: var(--success); display: none; }
+    .save-status.show { display: block; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #1c1c1e; color: #fff;
+      padding: 12px 22px; border-radius: 22px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      opacity: 0; transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none; z-index: 999; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #1c3d20; border: 1px solid var(--success); }
+    .toast.error { background: #3d1c1c; border: 1px solid var(--danger); }
+
+    /* ── Modal ── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 500; display: none;
+      align-items: center; justify-content: center;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 28px;
+      width: 380px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+    }
+    .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .modal p { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 24px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+    /* ── Empty state ── */
+    .empty { text-align: center; padding: 60px 20px; color: var(--text2); }
+    .empty svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.3; }
+    .empty p { font-size: 14px; }
+
+    /* ── File picker banner ── */
+    .picker-banner {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 2px dashed var(--border);
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .picker-banner h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .picker-banner p { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+    .picker-banner .path { font-family: var(--mono); font-size: 12px; color: var(--text3); margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">CW</div>
+      <div>
+        <div class="logo-text">Blog Admin</div>
+        <div class="logo-sub">chancewu1.github.io</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-panel="dashboard" onclick="showPanel('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-panel="posts" onclick="showPanel('posts')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Posts
+      </div>
+      <div class="nav-item" data-panel="editor" onclick="newPost()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Post
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a class="view-blog-btn" href="../index.html" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Blog
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-sub" id="topbar-sub">Overview of your blog</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn btn-ghost" id="open-folder-btn" onclick="openFolder()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Open Blog Folder
+        </button>
+        <button class="btn btn-primary" onclick="newPost()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Post
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard panel -->
+    <div class="panel active" id="panel-dashboard">
+      <div id="no-folder-banner" class="picker-banner">
+        <h3>Open your blog folder to get started</h3>
+        <p>Click "Open Blog Folder" above and select the <strong>blog</strong> folder<br>at <code>/Users/chriswu/cwuproject/blog</code></p>
+        <button class="btn btn-primary" onclick="openFolder()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Open Folder
+        </button>
+      </div>
+      <div id="dashboard-content" style="display:none">
+        <div class="stats" id="stats-row"></div>
+        <div class="section-title">Recent Posts</div>
+        <div class="post-table" id="recent-posts-list"></div>
+      </div>
+    </div>
+
+    <!-- Posts panel -->
+    <div class="panel" id="panel-posts">
+      <div class="post-table" id="all-posts-list">
+        <div class="empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <p>Open your blog folder first</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor panel -->
+    <div class="panel" id="panel-editor">
+      <div class="editor-layout">
+        <!-- Left: metadata -->
+        <div class="editor-left">
+          <div class="editor-card" style="padding:20px;gap:16px;display:flex;flex-direction:column;">
+            <div class="field-group">
+              <label class="field-label">Post Title</label>
+              <input class="field-input" id="post-title" type="text" placeholder="My new post…" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Category</label>
+              <select class="field-input" id="post-category">
+                <option value="deep-learning">深度学习</option>
+                <option value="machine-learning">机器学习</option>
+                <option value="life">生活</option>
+                <option value="leetcode">Leetcode</option>
+                <option value="language">语言学习</option>
+                <option value="interview">面试记录</option>
+                <option value="resources">Resources</option>
+                <option value="business">商业分析</option>
+                <option value="statistics">数理统计</option>
+                <option value="notes">转码笔记</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Date</label>
+              <input class="field-input" id="post-date" type="date" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Filename <span style="color:var(--text3);font-weight:400">(auto-generated)</span></label>
+              <input class="field-input" id="post-filename" type="text" placeholder="my-new-post.html" />
+            </div>
+            <div class="editor-actions">
+              <button class="btn btn-primary" onclick="savePost()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Save Post
+              </button>
+              <span class="save-status" id="save-status">✓ Saved</span>
+            </div>
+          </div>
+
+          <!-- Markdown cheatsheet -->
+          <div class="editor-card" style="padding:16px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;">Markdown Cheatsheet</div>
+            <div style="font-family:var(--mono);font-size:11.5px;color:var(--text2);line-height:2;">
+              # H1 &nbsp;&nbsp; ## H2 &nbsp;&nbsp; ### H3<br>
+              **bold** &nbsp;&nbsp; *italic*<br>
+              `inline code`<br>
+              ```<br>code block<br>```<br>
+              - list item<br>
+              [link](url)<br>
+              > blockquote
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: editor + preview -->
+        <div class="editor-right">
+          <div class="editor-card" style="flex:1;">
+            <div class="editor-card-header">
+              <span>Content</span>
+              <div class="editor-tabs">
+                <div class="editor-tab active" onclick="switchTab('write')">Write</div>
+                <div class="editor-tab" onclick="switchTab('preview')">Preview</div>
+              </div>
+            </div>
+            <textarea id="md-editor" placeholder="Write your post content here using Markdown…&#10;&#10;## Introduction&#10;&#10;Your content goes here."></textarea>
+            <div class="preview-pane" id="preview-pane"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="modal-backdrop" id="delete-modal">
+  <div class="modal">
+    <h3>Delete this post?</h3>
+    <p id="delete-modal-text">This will permanently delete the post file. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──
+let rootDir = null;       // FileSystemDirectoryHandle for blog root
+let postsDir = null;      // FileSystemDirectoryHandle for posts/
+let posts = [];           // [{filename, title, category, date, handle}]
+let editingFile = null;   // filename being edited (null = new)
+let deleteTarget = null;
+
+const CATEGORIES = {
+  'deep-learning': '深度学习', 'machine-learning': '机器学习',
+  'life': '生活', 'leetcode': 'Leetcode', 'language': '语言学习',
+  'interview': '面试记录', 'resources': 'Resources', 'business': '商业分析',
+  'statistics': '数理统计', 'notes': '转码笔记'
+};
+
+// ── Panel nav ──
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelector(`[data-panel="${name}"]`).classList.add('active');
+  const titles = { dashboard: ['Dashboard', 'Overview of your blog'], posts: ['All Posts', 'Manage your content'], editor: ['Post Editor', 'Write and edit posts'] };
+  document.getElementById('topbar-title').textContent = titles[name][0];
+  document.getElementById('topbar-sub').textContent = titles[name][1];
+}
+
+// ── Open folder ──
+async function openFolder() {
+  if (!('showDirectoryPicker' in window)) {
+    toast('Your browser doesn\'t support File System API. Use Chrome or Edge.', 'error'); return;
+  }
+  try {
+    rootDir = await window.showDirectoryPicker({ mode: 'readwrite' });
+    postsDir = await rootDir.getDirectoryHandle('posts', { create: false });
+    await scanPosts();
+    document.getElementById('no-folder-banner').style.display = 'none';
+    document.getElementById('dashboard-content').style.display = 'block';
+    document.getElementById('open-folder-btn').textContent = '✓ ' + rootDir.name;
+    renderDashboard();
+    renderPostList();
+    toast('Blog folder loaded — ' + posts.length + ' posts found', 'success');
+  } catch (e) {
+    if (e.name !== 'AbortError') toast('Could not open folder: ' + e.message, 'error');
+  }
+}
+
+// ── Scan posts directory ──
+async function scanPosts() {
+  posts = [];
+  for await (const [name, handle] of postsDir.entries()) {
+    if (!name.endsWith('.html')) continue;
+    const file = await handle.getFile();
+    const html = await file.text();
+    const title = (html.match(/<title>([^|<]+)/) || [])[1]?.trim() || name.replace('.html','');
+    const dateMatch = html.match(/class="post-date">([^<]+)/);
+    const tagMatch = html.match(/class="post-tag">([^<]+)/);
+    posts.push({
+      filename: name,
+      title: title.replace(' | Chris Wu',''),
+      category: tagMatch ? tagMatch[1].trim() : '—',
+      date: dateMatch ? dateMatch[1].trim() : '—',
+      handle
+    });
+  }
+  posts.sort((a,b) => a.filename.localeCompare(b.filename));
+}
+
+// ── Dashboard ──
+function renderDashboard() {
+  const cats = {};
+  posts.forEach(p => { cats[p.category] = (cats[p.category]||0)+1; });
+  const topCat = Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card"><div class="stat-val">${posts.length}</div><div class="stat-label">Total Posts</div></div>
+    <div class="stat-card"><div class="stat-val">${Object.keys(cats).length}</div><div class="stat-label">Categories</div></div>
+    <div class="stat-card"><div class="stat-val">${topCat ? topCat[1] : 0}</div><div class="stat-label">${topCat ? topCat[0] : '—'} posts</div></div>
+  `;
+  const recent = [...posts].reverse().slice(0, 5);
+  document.getElementById('recent-posts-list').innerHTML =
+    tableHeader() + recent.map(postRow).join('');
+}
+
+// ── Post list ──
+function renderPostList() {
+  const el = document.getElementById('all-posts-list');
+  if (!posts.length) {
+    el.innerHTML = '<div class="empty"><p>No posts found</p></div>'; return;
+  }
+  el.innerHTML = tableHeader() + posts.map(postRow).join('');
+}
+
+function tableHeader() {
+  return `<div class="post-row header">
+    <div>Title</div><div>Category</div><div>Date</div><div style="text-align:right">Actions</div>
+  </div>`;
+}
+
+function postRow(p) {
+  return `<div class="post-row">
+    <div class="post-title-cell">
+      <strong>${escHtml(p.title)}</strong>
+      <span>${p.filename}</span>
+    </div>
+    <div><span class="tag-pill">${escHtml(p.category)}</span></div>
+    <div style="font-size:12px;color:var(--text2)">${p.date}</div>
+    <div class="post-actions">
+      <div class="icon-btn" onclick="editPost('${p.filename}')" title="Edit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
+      <a class="icon-btn" href="../posts/${p.filename}" target="_blank" title="View">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+      <div class="icon-btn danger" onclick="askDelete('${p.filename}')" title="Delete">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── New post ──
+function newPost() {
+  if (!rootDir) { toast('Open your blog folder first', 'error'); return; }
+  editingFile = null;
+  document.getElementById('post-title').value = '';
+  document.getElementById('post-category').value = 'machine-learning';
+  document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('post-filename').value = '';
+  document.getElementById('md-editor').value = '';
+  document.getElementById('preview-pane').innerHTML = '';
+  document.getElementById('save-status').classList.remove('show');
+  switchTab('write');
+  showPanel('editor');
+
+  // Auto-generate filename from title
+  document.getElementById('post-title').addEventListener('input', autoFilename);
+}
+
+function autoFilename() {
+  const title = document.getElementById('post-title').value;
+  if (!editingFile) {
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    document.getElementById('post-filename').value = slug ? slug + '.html' : '';
+  }
+}
+
+// ── Edit post ──
+async function editPost(filename) {
+  if (!postsDir) { toast('Open your blog folder first', 'error'); return; }
+  try {
+    const handle = await postsDir.getFileHandle(filename);
+    const file = await handle.getFile();
+    const html = await file.text();
+
+    // Extract fields
+    const titleMatch = html.match(/<title>([^|<]+)/);
+    const dateMatch = html.match(/class="post-date">([^<]+)/);
+    const tagMatch = html.match(/data-tags="([^"]+)"/);
+    const bodyMatch = html.match(/<!-- CONTENT_START -->([\s\S]*?)<!-- CONTENT_END -->/);
+
+    // Fallback: extract body from post-content between h1 and social-share
+    let mdContent = '';
+    if (bodyMatch) {
+      mdContent = bodyMatch[1].trim();
+    } else {
+      // Extract raw HTML between </h1> and <div class="social-share">
+      const rawMatch = html.match(/<\/h1>\s*<\/div>\s*([\s\S]*?)<div class="social-share">/);
+      if (rawMatch) mdContent = htmlToMd(rawMatch[1].trim());
+    }
+
+    editingFile = filename;
+    document.getElementById('post-title').value = (titleMatch?.[1]||'').replace(' | Chris Wu','').trim();
+    document.getElementById('post-category').value = tagMatch?.[1]?.split(' ')[0] || 'machine-learning';
+    document.getElementById('post-filename').value = filename;
+
+    // Parse date
+    const months = {January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',July:'07',August:'08',September:'09',October:'10',November:'11',December:'12'};
+    const dm = (dateMatch?.[1]||'').match(/(\w+)\s+(\d+),\s+(\d+)/);
+    if (dm) document.getElementById('post-date').value = `${dm[3]}-${months[dm[1]]||'01'}-${dm[2].padStart(2,'0')}`;
+
+    document.getElementById('md-editor').value = mdContent;
+    document.getElementById('save-status').classList.remove('show');
+    switchTab('write');
+    showPanel('editor');
+  } catch(e) {
+    toast('Could not load post: ' + e.message, 'error');
+  }
+}
+
+// ── Save post ──
+async function savePost() {
+  if (!postsDir) { toast('Open your blog folder first', 'error'); return; }
+  const title = document.getElementById('post-title').value.trim();
+  const category = document.getElementById('post-category').value;
+  const dateVal = document.getElementById('post-date').value;
+  const filename = document.getElementById('post-filename').value.trim() || slugify(title) + '.html';
+  const mdContent = document.getElementById('md-editor').value;
+
+  if (!title) { toast('Please enter a title', 'error'); return; }
+
+  const dateObj = dateVal ? new Date(dateVal + 'T12:00:00') : new Date();
+  const dateStr = dateObj.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  const categoryLabel = CATEGORIES[category] || category;
+
+  const bodyHtml = mdToHtml(mdContent);
+  const html = buildPostHtml(title, dateStr, category, categoryLabel, filename, bodyHtml, mdContent);
+
+  try {
+    const handle = await postsDir.getFileHandle(filename, { create: true });
+    const writable = await handle.createWritable();
+    await writable.write(html);
+    await writable.close();
+
+    // Update sidebar post list in index.html
+    await updateIndexSidebar(title, filename, category);
+
+    editingFile = filename;
+    document.getElementById('post-filename').value = filename;
+    document.getElementById('save-status').classList.add('show');
+    setTimeout(() => document.getElementById('save-status').classList.remove('show'), 3000);
+
+    await scanPosts();
+    renderDashboard();
+    renderPostList();
+    toast('Post saved — ' + filename, 'success');
+  } catch(e) {
+    toast('Save failed: ' + e.message, 'error');
+  }
+}
+
+// ── Update index.html sidebar ──
+async function updateIndexSidebar(title, filename, category) {
+  try {
+    const handle = await rootDir.getFileHandle('index.html');
+    const file = await handle.getFile();
+    let html = await file.text();
+
+    // Check if entry already exists
+    if (html.includes(`href="posts/${filename}"`)) return;
+
+    // Insert new entry at top of toc-ul
+    const newEntry = `\n        <li><a class="toc-link" href="posts/${filename}" data-tags="${category}">${escHtml(title)}</a></li>`;
+    html = html.replace(/(<ul id="post-toc-ul"[^>]*>\s*)/, '$1' + newEntry);
+
+    const writable = await handle.createWritable();
+    await writable.write(html);
+    await writable.close();
+  } catch(e) { /* non-fatal */ }
+}
+
+// ── Delete ──
+function askDelete(filename) {
+  deleteTarget = filename;
+  const post = posts.find(p => p.filename === filename);
+  document.getElementById('delete-modal-text').textContent =
+    `Delete "${post?.title || filename}"? This cannot be undone.`;
+  document.getElementById('delete-modal').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('delete-modal').classList.remove('show');
+  deleteTarget = null;
+}
+async function confirmDelete() {
+  if (!deleteTarget || !postsDir) return;
+  try {
+    await postsDir.removeEntry(deleteTarget);
+    // Remove from index.html sidebar
+    await removeFromIndex(deleteTarget);
+    closeModal();
+    await scanPosts();
+    renderDashboard();
+    renderPostList();
+    toast('Post deleted', 'success');
+  } catch(e) {
+    toast('Delete failed: ' + e.message, 'error');
+    closeModal();
+  }
+}
+async function removeFromIndex(filename) {
+  try {
+    const handle = await rootDir.getFileHandle('index.html');
+    const file = await handle.getFile();
+    let html = await file.text();
+    // Remove the li containing this filename
+    html = html.replace(new RegExp(`\\s*<li><a[^>]+href="posts/${filename}"[^>]*>[^<]*<\\/a><\\/li>`, 'g'), '');
+    const writable = await handle.createWritable();
+    await writable.write(html);
+    await writable.close();
+  } catch(e) { /* non-fatal */ }
+}
+
+// ── Editor tabs ──
+function switchTab(tab) {
+  const editor = document.getElementById('md-editor');
+  const preview = document.getElementById('preview-pane');
+  const tabs = document.querySelectorAll('.editor-tab');
+  if (tab === 'preview') {
+    editor.style.display = 'none';
+    preview.classList.add('active');
+    preview.innerHTML = mdToHtml(editor.value);
+    tabs[0].classList.remove('active'); tabs[1].classList.add('active');
+  } else {
+    editor.style.display = 'block';
+    preview.classList.remove('active');
+    tabs[0].classList.add('active'); tabs[1].classList.remove('active');
+  }
+}
+
+// ── Markdown → HTML (lightweight) ──
+function mdToHtml(md) {
+  if (!md) return '';
+  let html = md
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    // fenced code blocks
+    .replace(/```(\w*)\n([\s\S]*?)```/g, (_,lang,code) => `<pre><code>${code.trimEnd()}</code></pre>`)
+    // headings
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    // bold / italic
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    // inline code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // blockquote
+    .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
+    // unordered list
+    .replace(/^\- (.+)$/gm, '<li>$1</li>')
+    // ordered list
+    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+    // links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+    // wrap consecutive <li> in <ul>
+    .replace(/(<li>[\s\S]+?<\/li>)(\n(?!<li>)|$)/g, (m, lis) => '<ul>' + lis + '</ul>\n')
+    // paragraphs
+    .split(/\n{2,}/).map(block => {
+      block = block.trim();
+      if (!block) return '';
+      if (/^<(h[123]|ul|ol|li|pre|blockquote)/.test(block)) return block;
+      return '<p>' + block.replace(/\n/g,' ') + '</p>';
+    }).join('\n');
+  return html;
+}
+
+// ── HTML → Markdown (basic, for loading existing posts) ──
+function htmlToMd(html) {
+  return html
+    .replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '# $1\n\n')
+    .replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, '## $1\n\n')
+    .replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, '### $1\n\n')
+    .replace(/<strong[^>]*>([\s\S]*?)<\/strong>/gi, '**$1**')
+    .replace(/<em[^>]*>([\s\S]*?)<\/em>/gi, '*$1*')
+    .replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, '`$1`')
+    .replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, (_, inner) => {
+      const code = inner.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi,'$1').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+      return '```\n' + code.trim() + '\n```\n\n';
+    })
+    .replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_,inner) => '> ' + inner.replace(/<[^>]+>/g,'').trim() + '\n\n')
+    .replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, '- $1\n')
+    .replace(/<ul[^>]*>|<\/ul>|<ol[^>]*>|<\/ol>/gi, '\n')
+    .replace(/<p[^>]*>([\s\S]*?)<\/p>/gi, '$1\n\n')
+    .replace(/<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, '[$2]($1)')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&')
+    .replace(/\n{3,}/g,'\n\n').trim();
+}
+
+// ── Build full post HTML ──
+function buildPostHtml(title, dateStr, category, categoryLabel, filename, bodyHtml, mdRaw) {
+  const SIDEBAR_HTML = buildSidebar(filename);
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>${escHtml(title)} | Chris Wu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+
+${SIDEBAR_HTML}
+
+  <div id="menu">&#9776;</div>
+
+  <div id="main" class="fadeIn">
+    <div id="post-toc-menu" title="Table of Contents">&#8801;</div>
+    <div id="post-toc"><ul id="post-toc-inner"></ul></div>
+
+    <div class="post">
+      <div class="post-content">
+        <div class="post-header">
+          <div class="post-meta">
+            <span class="post-date">${dateStr}</span>
+            <span class="post-tag">${escHtml(categoryLabel)}</span>
+          </div>
+          <h1 id="post-title">${escHtml(title)}</h1>
+        </div>
+
+<!-- CONTENT_START -->
+${mdRaw}
+<!-- CONTENT_END -->
+
+${bodyHtml}
+
+        <div class="social-share">
+          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}" target="_blank" title="Share on Twitter">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="https://github.com/chancewu1" target="_blank" title="GitHub">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </a>
+        </div>
+
+        <div class="post-nav">
+          <a href="../index.html" class="back-link">&#8592; Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"><\/script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"><\/script>
+  <script src="../js/main.js"><\/script>
+</body>
+</html>`;
+}
+
+function buildSidebar(currentFile) {
+  const postLinks = posts.map(p =>
+    `        <li><a class="toc-link${p.filename===currentFile?' active':''}" href="${p.filename}" data-tags="${p.filename===currentFile?document.getElementById('post-category')?.value||'':''}">${escHtml(p.title)}</a></li>`
+  ).join('\n');
+
+  return `  <div id="sidebar" class="open">
+    <div class="sidebar-left">
+      <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
+      <div class="sidebar-social">
+        <a href="mailto:chancewu1@gmail.com" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+        <a href="https://github.com/chancewu1" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+        <a href="https://twitter.com" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="https://linkedin.com" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+      </div>
+      <div id="sidebar-tags">
+        <div class="sidebar-tag active" data-filter="recent">最新文章</div>
+        <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
+        <div class="sidebar-tag" data-filter="machine-learning">机器学习</div>
+        <div class="sidebar-tag" data-filter="life">生活</div>
+        <div class="sidebar-tag" data-filter="leetcode">Leetcode</div>
+        <div class="sidebar-tag" data-filter="language">语言学习</div>
+        <div class="sidebar-tag" data-filter="interview">面试记录</div>
+        <div class="sidebar-tag" data-filter="resources">Resources</div>
+        <div class="sidebar-tag" data-filter="business">商业分析</div>
+        <div class="sidebar-tag" data-filter="statistics">数理统计</div>
+        <div class="sidebar-tag" data-filter="notes">转码笔记</div>
+      </div>
+      <div class="fs-control">
+        <button class="fs-btn" data-fs="sm" title="Small">A</button>
+        <button class="fs-btn active" data-fs="md" title="Default">A</button>
+        <button class="fs-btn" data-fs="lg" title="Large">A</button>
+        <button class="fs-btn" data-fs="xl" title="XL">A</button>
+      </div>
+    </div>
+    <div class="sidebar-right">
+      <input id="search-input" type="text" placeholder="Search posts…" autocomplete="off" />
+      <ul id="post-toc-ul" class="toc-ul">
+${postLinks}
+      </ul>
+    </div>
+  </div>`;
+}
+
+// ── Helpers ──
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'post';
+}
+function escHtml(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' '+type : '');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// Set today's date as default
+document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

@@ -602,3 +602,61 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
   #main { left: 0 !important; }
   .page-content, .post-content { margin: 16px auto; padding: 36px 32px; }
 }
+
+/* ===== Media (images & videos) ===== */
+.media-figure {
+  margin: 28px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.media-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0;
+}
+
+.media-figure video {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #000;
+  max-height: 520px;
+}
+
+.media-figure figcaption {
+  padding: 10px 14px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+  font-style: italic;
+}
+
+/* Inline images inside post content (not wrapped in figure) */
+.post-content img,
+.page-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+  margin: 20px auto;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+/* Editor RTE media preview */
+#ed-rte .media-figure {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+#ed-rte .media-figure img,
+#ed-rte .media-figure video {
+  width: 100%; display: block;
+  max-height: 300px; object-fit: contain;
+  background: #f2f2f7;
+}

@@ -1,0 +1,964 @@
+/* ============================================================
+   Blog Editor
+   - Password-gated (never visible to public)
+   - Rich text editing (no Markdown needed)
+   - Publishes directly to GitHub Pages via API
+   ============================================================ */
+(function () {
+
+  var REPO      = 'chancewu1/chancewu1.github.io';
+  var BRANCH    = 'main';
+  var CATEGORIES = {
+    'machine-learning': '机器学习',  'deep-learning': '深度学习',
+    'life': '生活',                  'leetcode': 'Leetcode',
+    'language': '语言学习',          'interview': '面试记录',
+    'resources': 'Resources',        'business': '商业分析',
+    'statistics': '数理统计',        'notes': '转码笔记'
+  };
+
+  var ghToken     = localStorage.getItem('gh_token') || '';
+  var adminUnlocked = !!sessionStorage.getItem('admin_unlocked');
+  var editing     = null;
+  var currentPath = window.location.pathname;
+  var isPost      = currentPath.includes('/posts/');
+  var currentFile = isPost ? currentPath.split('/').pop() : null;
+
+  // ── Never inject anything until unlocked ────────────────────
+  if (!adminUnlocked) {
+    // Shortcut: type W then C then H within 1.5s
+    var _seq = [], _seqTimer;
+    document.addEventListener('keydown', function (e) {
+      _seq.push(e.key.toLowerCase());
+      clearTimeout(_seqTimer);
+      _seqTimer = setTimeout(function () { _seq = []; }, 1500);
+      if (_seq.slice(-3).join('') === 'wch') {
+        _seq = [];
+        showLoginModal();
+      }
+    });
+    return; // stop here — no toolbar, no editor injected for public
+  }
+
+  // ── Admin is unlocked — inject everything ───────────────────
+  injectStyles();
+  window.addEventListener('DOMContentLoaded', injectHTML);
+  // If DOM already loaded (script is deferred)
+  if (document.readyState !== 'loading') injectHTML();
+
+  function showLoginModal() {
+    var bg = document.createElement('div');
+    bg.id = 'ed-login-bg';
+    bg.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-family:-apple-system,sans-serif;';
+    bg.innerHTML = `
+      <div style="background:#1c1c1e;border:1px solid rgba(255,255,255,0.12);border-radius:18px;padding:36px;width:380px;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
+        <h3 style="color:#fff;font-size:17px;font-weight:700;margin-bottom:20px;">Password</h3>
+        <input id="ed-pwd-inp" type="password" placeholder="Enter password"
+          style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#ebebf5;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;" />
+        <p id="ed-pwd-err" style="color:#ff453a;font-size:12px;margin-bottom:12px;display:none;">Incorrect password.</p>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button onclick="document.getElementById('ed-login-bg').remove()"
+            style="padding:8px 18px;border-radius:50px;border:none;background:rgba(255,255,255,0.1);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+          <button id="ed-pwd-btn"
+            style="padding:8px 18px;border-radius:50px;border:none;background:#0071e3;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Unlock</button>
+        </div>
+      </div>`;
+    document.body.appendChild(bg);
+    var inp = document.getElementById('ed-pwd-inp');
+    inp.focus();
+    async function tryLogin() {
+      var token = inp.value.trim();
+      if (!token) return;
+      document.getElementById('ed-pwd-btn').textContent = 'Verifying…';
+      try {
+        // Verify token by hitting GitHub API — only works if token is valid
+        var res = await fetch('https://api.github.com/repos/chancewu1/chancewu1.github.io', {
+          headers: { 'Authorization': 'token ' + token }
+        });
+        if (res.ok) {
+          localStorage.setItem('gh_token', token);
+          sessionStorage.setItem('admin_unlocked','1');
+          bg.remove();
+          location.reload();
+        } else {
+          document.getElementById('ed-pwd-err').style.display = 'block';
+          document.getElementById('ed-pwd-btn').textContent = 'Unlock';
+          inp.value = ''; inp.focus();
+        }
+      } catch(e) {
+        document.getElementById('ed-pwd-err').textContent = 'Network error. Check your connection.';
+        document.getElementById('ed-pwd-err').style.display = 'block';
+        document.getElementById('ed-pwd-btn').textContent = 'Unlock';
+      }
+    }
+    document.getElementById('ed-pwd-btn').onclick = tryLogin;
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') tryLogin(); });
+  }
+
+  // ── Inject styles ────────────────────────────────────────────
+  function injectStyles() {
+    var s = document.createElement('style');
+    s.textContent = `
+      /* Floating admin bar */
+      #ed-bar {
+        position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+        z-index:9000;display:flex;align-items:center;gap:8px;
+        background:rgba(20,20,22,0.94);
+        backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+        border:1px solid rgba(255,255,255,0.1);border-radius:50px;
+        padding:8px 16px;box-shadow:0 8px 40px rgba(0,0,0,0.35);
+        font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+      }
+      .ed-div{width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 2px;}
+      .ed-pill{
+        display:inline-flex;align-items:center;gap:5px;
+        padding:6px 14px;border-radius:50px;border:none;
+        font-family:inherit;font-size:12.5px;font-weight:600;
+        cursor:pointer;transition:opacity 0.15s,transform 0.1s;
+      }
+      .ed-pill:hover{opacity:.82;} .ed-pill:active{transform:scale(.95);}
+      .ed-pill:disabled{opacity:.3;cursor:default;}
+      .ed-pill svg{width:12px;height:12px;flex-shrink:0;}
+      .ep-new{background:#0071e3;color:#fff;}
+      .ep-edit{background:rgba(255,255,255,0.1);color:#e5e5ea;}
+      .ep-del{background:rgba(255,59,48,0.15);color:#ff453a;}
+      .ep-pub{background:#34c759;color:#fff;}
+      .ep-lock{background:rgba(255,255,255,0.07);color:#636366;padding:6px 10px;}
+
+      /* Full-screen overlay */
+      #ed-overlay{
+        display:none;position:fixed;inset:0;z-index:9100;
+        background:var(--main-bg,#f5f5f7);flex-direction:column;
+      }
+      #ed-overlay.open{display:flex;}
+
+      /* Top bar */
+      #ed-topbar{
+        display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+        padding:11px 20px;
+        background:rgba(255,255,255,0.9);
+        backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+        border-bottom:1px solid rgba(0,0,0,0.08);flex-shrink:0;
+        font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+      }
+      #ed-topbar h2{font-size:14px;font-weight:700;color:#1d1d1f;margin-right:auto;}
+      .ed-fi{display:flex;flex-direction:column;gap:2px;}
+      .ed-fi label{font-size:10px;font-weight:600;color:#aeaeb2;text-transform:uppercase;letter-spacing:.05em;}
+      .ed-inp{
+        padding:5px 10px;background:#f2f2f7;border:1px solid rgba(0,0,0,0.08);
+        border-radius:8px;font-size:13px;font-family:inherit;color:#1d1d1f;
+        outline:none;transition:border-color .2s;
+      }
+      .ed-inp:focus{border-color:#0071e3;background:#fff;}
+      select.ed-inp{cursor:pointer;}
+      #ed-title-inp{width:200px;}
+      #ed-date-inp{width:130px;}
+      #ed-file-inp{width:155px;font-family:"SF Mono",monospace;font-size:12px;}
+      .ed-tb{
+        display:inline-flex;align-items:center;gap:6px;
+        padding:7px 16px;border-radius:50px;border:none;
+        font-family:inherit;font-size:13px;font-weight:600;
+        cursor:pointer;transition:opacity .15s,transform .1s;
+      }
+      .ed-tb:hover{opacity:.82;} .ed-tb:active{transform:scale(.96);}
+      .ed-tb svg{width:13px;height:13px;}
+      .ed-cancel{background:rgba(0,0,0,0.06);color:#1d1d1f;}
+      .ed-pubBtn{background:#0071e3;color:#fff;box-shadow:0 2px 8px rgba(0,113,227,.3);}
+
+      /* Editor body */
+      #ed-body{display:flex;flex:1;overflow:hidden;}
+
+      /* Rich text toolbar */
+      #ed-rte-wrap{
+        width:50%;min-width:300px;display:flex;flex-direction:column;
+        border-right:1px solid rgba(0,0,0,0.08);
+      }
+      #ed-rte-toolbar{
+        display:flex;align-items:center;gap:2px;flex-wrap:wrap;
+        padding:8px 12px;background:#f9f9fb;
+        border-bottom:1px solid rgba(0,0,0,0.08);flex-shrink:0;
+      }
+      .rte-btn{
+        width:30px;height:28px;border:none;background:none;border-radius:6px;
+        font-size:13px;font-weight:700;cursor:pointer;color:#3a3a3c;
+        display:flex;align-items:center;justify-content:center;
+        transition:background .15s,color .15s;font-family:-apple-system,sans-serif;
+      }
+      .rte-btn:hover{background:rgba(0,0,0,0.07);color:#0071e3;}
+      .rte-btn.active{background:rgba(0,113,227,0.12);color:#0071e3;}
+      .rte-btn svg{width:14px;height:14px;}
+      .rte-sep{width:1px;height:20px;background:rgba(0,0,0,0.1);margin:0 4px;}
+      #ed-rte-select{
+        padding:3px 8px;border:1px solid rgba(0,0,0,0.1);border-radius:6px;
+        font-size:12.5px;font-family:inherit;background:#fff;color:#1d1d1f;
+        outline:none;cursor:pointer;margin-right:4px;
+      }
+      #ed-rte{
+        flex:1;padding:24px 28px;outline:none;overflow-y:auto;
+        font-family:"Lora",Georgia,serif;font-size:15px;line-height:1.8;
+        color:#3a3a3c;background:#fff;
+      }
+      #ed-rte:empty:before{content:attr(data-placeholder);color:#aeaeb2;}
+      /* RTE content styles mirror blog */
+      #ed-rte h1{font-size:2rem;font-weight:700;color:#1d1d1f;letter-spacing:-.02em;margin:0 0 16px;}
+      #ed-rte h2{font-size:1.2rem;font-weight:700;color:#1d1d1f;margin:32px 0 12px;padding-bottom:8px;border-bottom:1px solid #efefef;}
+      #ed-rte h3{font-size:1rem;font-weight:700;color:#1d1d1f;margin:22px 0 8px;}
+      #ed-rte p{margin-bottom:14px;}
+      #ed-rte strong{font-weight:700;color:#1d1d1f;}
+      #ed-rte em{font-style:italic;}
+      #ed-rte code{font-family:"SF Mono","Fira Code",monospace;font-size:.83em;background:#f2f2f7;color:#c0392b;padding:2px 5px;border-radius:4px;}
+      #ed-rte pre{background:#1c1c1e;color:#f0f0f0;padding:18px 22px;border-radius:10px;overflow-x:auto;margin:6px 0 18px;font-family:"SF Mono",monospace;font-size:13px;line-height:1.65;}
+      #ed-rte pre code{background:none;color:inherit;padding:0;}
+      #ed-rte blockquote{border-left:3px solid #0071e3;padding:12px 18px;background:rgba(0,113,227,.04);border-radius:0 8px 8px 0;font-style:italic;color:#6e6e73;margin:16px 0;}
+      #ed-rte ul,#ed-rte ol{padding-left:1.5em;margin-bottom:14px;}
+      #ed-rte a{color:#0071e3;}
+      #ed-rte:focus-visible{outline:none;}
+
+      /* Live preview */
+      #ed-preview-pane{
+        width:50%;overflow-y:auto;
+        background:var(--main-bg,#f5f5f7);display:flex;flex-direction:column;
+      }
+      #ed-preview-label{
+        padding:8px 16px;font-family:-apple-system,sans-serif;
+        font-size:11px;font-weight:600;color:#6e6e73;
+        text-transform:uppercase;letter-spacing:.06em;
+        border-bottom:1px solid rgba(0,0,0,0.08);flex-shrink:0;
+        background:#fff;
+      }
+      #ed-preview-content .post-content{margin:20px auto;}
+
+      /* Token modal */
+      .ed-modal-bg{
+        display:none;position:fixed;inset:0;z-index:9300;
+        background:rgba(0,0,0,0.55);
+        backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+        align-items:center;justify-content:center;
+        font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+      }
+      .ed-modal-bg.open{display:flex;}
+      .ed-modal-box{
+        background:#1c1c1e;border:1px solid rgba(255,255,255,0.12);
+        border-radius:18px;padding:32px;
+        box-shadow:0 24px 60px rgba(0,0,0,.5);
+      }
+      .ed-modal-box h3{color:#fff;font-size:17px;font-weight:700;margin-bottom:10px;}
+      .ed-modal-box p{color:#8e8e93;font-size:13px;line-height:1.65;margin-bottom:16px;}
+      .ed-modal-box a{color:#0071e3;}
+      .ed-dark-inp{
+        width:100%;padding:10px 14px;margin-bottom:16px;
+        background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+        border-radius:10px;color:#ebebf5;font-size:13px;
+        font-family:"SF Mono",monospace;outline:none;
+      }
+      .ed-dark-inp:focus{border-color:#0071e3;}
+      .ed-row{display:flex;gap:10px;justify-content:flex-end;}
+
+      /* Publish steps */
+      .pub-steps{margin:20px 0;text-align:left;}
+      .pub-step{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:13px;color:#636366;}
+      .pub-step.active{color:#fff;} .pub-step.done{color:#34c759;} .pub-step.fail{color:#ff453a;}
+      .pub-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
+    `;
+    document.head.appendChild(s);
+  }
+
+  // ── Inject HTML ──────────────────────────────────────────────
+  function injectHTML() {
+    if (document.getElementById('ed-bar')) return;
+    document.body.insertAdjacentHTML('beforeend', `
+      <!-- Admin toolbar -->
+      <div id="ed-bar">
+        <button class="ed-pill ep-new" onclick="ED.openNew()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Post
+        </button>
+        <div class="ed-div"></div>
+        <button class="ed-pill ep-edit" id="ed-edit-btn" onclick="ED.openEdit()" ${isPost?'':'disabled'}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="ed-pill ep-del" onclick="ED.askDelete()" ${isPost?'':'disabled'}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          Delete
+        </button>
+        <div class="ed-div"></div>
+        <button class="ed-pill ep-pub" onclick="ED.publishSite()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          Publish to Site
+        </button>
+        <div class="ed-div"></div>
+        <button class="ed-pill ep-lock" onclick="ED.openToken()" title="GitHub Token">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </button>
+        <button class="ed-pill ep-lock" onclick="ED.logout()" title="Lock admin" style="color:#ff453a;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+
+      <!-- Full-screen editor -->
+      <div id="ed-overlay">
+        <div id="ed-topbar">
+          <h2 id="ed-topbar-title">New Post</h2>
+          <div class="ed-fi">
+            <label>Title</label>
+            <input class="ed-inp" id="ed-title-inp" type="text" placeholder="Post title…" />
+          </div>
+          <div class="ed-fi">
+            <label>Category</label>
+            <select class="ed-inp" id="ed-cat-inp">
+              ${Object.entries(CATEGORIES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}
+            </select>
+          </div>
+          <div class="ed-fi">
+            <label>Date</label>
+            <input class="ed-inp" id="ed-date-inp" type="date" />
+          </div>
+          <div class="ed-fi">
+            <label>Filename</label>
+            <input class="ed-inp" id="ed-file-inp" type="text" placeholder="my-post.html" />
+          </div>
+          <button class="ed-tb ed-cancel" onclick="ED.close()">Cancel</button>
+          <button class="ed-tb ed-pubBtn" onclick="ED.publishPost()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg>
+            Publish
+          </button>
+        </div>
+        <div id="ed-body">
+          <!-- Rich text editor pane -->
+          <div id="ed-rte-wrap">
+            <div id="ed-rte-toolbar">
+              <select id="ed-rte-select" onchange="ED.rteBlock(this.value);this.value='p'">
+                <option value="p">Paragraph</option>
+                <option value="h2">Heading 2</option>
+                <option value="h3">Heading 3</option>
+                <option value="pre">Code Block</option>
+              </select>
+              <div class="rte-sep"></div>
+              <button class="rte-btn" onclick="ED.rteCmd('bold')" title="Bold"><b>B</b></button>
+              <button class="rte-btn" onclick="ED.rteCmd('italic')" title="Italic"><i>I</i></button>
+              <button class="rte-btn" onclick="ED.rteCmd('underline')" title="Underline"><u>U</u></button>
+              <button class="rte-btn" onclick="ED.rteInlineCode()" title="Inline code">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </button>
+              <div class="rte-sep"></div>
+              <button class="rte-btn" onclick="ED.rteCmd('insertUnorderedList')" title="Bullet list">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+              <button class="rte-btn" onclick="ED.rteCmd('insertOrderedList')" title="Numbered list">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+              </button>
+              <button class="rte-btn" onclick="ED.rteBlockquote()" title="Blockquote">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zm12 0c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+              </button>
+              <div class="rte-sep"></div>
+              <button class="rte-btn" onclick="ED.rteLink()" title="Insert link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+              <button class="rte-btn" onclick="ED.rteClear()" title="Clear formatting" style="margin-left:4px;color:#8e8e93;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+              </button>
+              <div class="rte-sep"></div>
+              <button class="rte-btn" onclick="ED.insertImage()" title="Insert image">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+              <button class="rte-btn" onclick="ED.insertVideo()" title="Insert video">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              </button>
+            </div>
+            <input type="file" id="ed-img-input" accept="image/*" style="display:none" />
+            <input type="file" id="ed-vid-input" accept="video/*" style="display:none" />
+            <div id="ed-rte" contenteditable="true"
+              data-placeholder="Start writing your post here…&#10;&#10;Use the toolbar above to format text, add headings, lists, and code blocks."></div>
+          </div>
+
+          <!-- Live preview — uses real blog CSS -->
+          <div id="ed-preview-pane">
+            <div id="ed-preview-label">Live Preview</div>
+            <div id="ed-preview-content">
+              <div class="post-content">
+                <div class="post-header">
+                  <div class="post-meta">
+                    <span class="post-date" id="prev-date"></span>
+                    <span class="post-tag" id="prev-tag"></span>
+                  </div>
+                  <h1 id="prev-title" style="margin-bottom:0;"></h1>
+                </div>
+                <div id="prev-body"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Token modal -->
+      <div id="ed-token-modal" class="ed-modal-bg">
+        <div class="ed-modal-box" style="width:440px;">
+          <h3>GitHub Token</h3>
+          <p>Required to publish to <strong>chancewu1.github.io</strong>.<br>
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=Blog+Editor" target="_blank">Generate a token ↗</a> with <strong>repo</strong> scope. Stored in your browser only.</p>
+          <input id="ed-token-inp" class="ed-dark-inp" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+          <div class="ed-row">
+            <button class="ed-tb ed-cancel" onclick="document.getElementById('ed-token-modal').classList.remove('open')">Cancel</button>
+            <button class="ed-tb ed-pubBtn" onclick="ED.saveToken()">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Publish progress modal -->
+      <div id="ed-pub-modal" class="ed-modal-bg">
+        <div class="ed-modal-box" style="width:380px;text-align:center;">
+          <h3 id="ed-pub-title">Publishing…</h3>
+          <p id="ed-pub-sub" style="min-height:18px;"></p>
+          <div class="pub-steps" id="ed-pub-steps"></div>
+          <a id="ed-pub-link" href="https://chancewu1.github.io" target="_blank"
+            style="display:none;color:#0071e3;font-size:13px;margin-top:12px;">View live site →</a>
+          <div id="ed-pub-done" style="display:none;margin-top:18px;">
+            <button class="ed-tb ed-cancel" onclick="document.getElementById('ed-pub-modal').classList.remove('open')">Done</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete confirm modal -->
+      <div id="ed-del-modal" class="ed-modal-bg">
+        <div class="ed-modal-box" style="width:360px;">
+          <h3>Delete this post?</h3>
+          <p id="ed-del-text">This will publish the removal immediately.</p>
+          <div class="ed-row">
+            <button class="ed-tb ed-cancel" onclick="document.getElementById('ed-del-modal').classList.remove('open')">Cancel</button>
+            <button class="ed-tb" id="ed-del-ok" style="background:#ff3b30;color:#fff;">Delete &amp; Publish</button>
+          </div>
+        </div>
+      </div>
+    `);
+
+    // Wire live preview
+    var rte = document.getElementById('ed-rte');
+    rte.addEventListener('input', syncPreview);
+    document.getElementById('ed-title-inp').addEventListener('input', function () {
+      syncPreview();
+      if (editing && editing.isNew)
+        document.getElementById('ed-file-inp').value =
+          this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '.html';
+    });
+    document.getElementById('ed-cat-inp').addEventListener('change', syncPreview);
+    document.getElementById('ed-date-inp').addEventListener('change', syncPreview);
+  }
+
+  // ── Sync live preview ────────────────────────────────────────
+  function syncPreview() {
+    var title   = document.getElementById('ed-title-inp').value || 'Untitled';
+    var cat     = document.getElementById('ed-cat-inp').value;
+    var dateVal = document.getElementById('ed-date-inp').value;
+    var dateStr = dateVal
+      ? new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})
+      : '';
+    document.getElementById('prev-title').textContent = title;
+    document.getElementById('prev-tag').textContent   = CATEGORIES[cat]||cat;
+    document.getElementById('prev-date').textContent  = dateStr;
+    document.getElementById('prev-body').innerHTML    = document.getElementById('ed-rte').innerHTML;
+  }
+
+  // ── Public API ───────────────────────────────────────────────
+  window.ED = {
+
+    openNew: function () {
+      editing = { isNew: true, filename: null };
+      document.getElementById('ed-topbar-title').textContent = 'New Post';
+      document.getElementById('ed-title-inp').value = '';
+      document.getElementById('ed-cat-inp').value   = 'machine-learning';
+      document.getElementById('ed-date-inp').value  = today();
+      document.getElementById('ed-file-inp').value  = '';
+      document.getElementById('ed-rte').innerHTML   = '';
+      syncPreview();
+      document.getElementById('ed-overlay').classList.add('open');
+      setTimeout(()=>document.getElementById('ed-rte').focus(), 100);
+    },
+
+    openEdit: function () {
+      if (!currentFile) return;
+      editing = { isNew: false, filename: currentFile };
+      document.getElementById('ed-topbar-title').textContent = 'Edit Post';
+
+      var titleEl = document.getElementById('post-title');
+      var tagEl   = document.querySelector('.post-tag');
+      var dateEl  = document.querySelector('.post-date');
+
+      document.getElementById('ed-title-inp').value = titleEl ? titleEl.textContent.trim() : '';
+      document.getElementById('ed-file-inp').value  = currentFile;
+
+      if (tagEl) {
+        var ck = Object.keys(CATEGORIES).find(k=>CATEGORIES[k]===tagEl.textContent.trim())||'machine-learning';
+        document.getElementById('ed-cat-inp').value = ck;
+      }
+      if (dateEl) {
+        var mo = {January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',July:'07',August:'08',September:'09',October:'10',November:'11',December:'12'};
+        var dm = dateEl.textContent.trim().match(/(\w+)\s+(\d+),\s+(\d+)/);
+        if (dm) document.getElementById('ed-date-inp').value = dm[3]+'-'+(mo[dm[1]]||'01')+'-'+dm[2].padStart(2,'0');
+      }
+
+      // Load body HTML from the current page's post-content
+      var bodyEl = document.querySelector('.post-content');
+      if (bodyEl) {
+        // Clone and strip everything except the actual content
+        var clone = bodyEl.cloneNode(true);
+        // Remove header, social share, post-nav
+        ['post-header','social-share','post-nav'].forEach(function(cls){
+          var el = clone.querySelector('.'+cls);
+          if (el) el.remove();
+        });
+        document.getElementById('ed-rte').innerHTML = clone.innerHTML.trim();
+      }
+      syncPreview();
+      document.getElementById('ed-overlay').classList.add('open');
+      setTimeout(()=>document.getElementById('ed-rte').focus(), 100);
+    },
+
+    close: function () {
+      document.getElementById('ed-overlay').classList.remove('open');
+    },
+
+    askDelete: function () {
+      if (!currentFile) return;
+      var t = document.getElementById('post-title');
+      document.getElementById('ed-del-text').textContent =
+        'Delete "' + (t ? t.textContent.trim() : currentFile) + '"? This will publish the removal immediately.';
+      document.getElementById('ed-del-modal').classList.add('open');
+      document.getElementById('ed-del-ok').onclick = function () {
+        document.getElementById('ed-del-modal').classList.remove('open');
+        ED._doDelete(currentFile);
+      };
+    },
+
+    // ── Rich text commands ─────────────────────────────────────
+    rteCmd: function (cmd) {
+      document.getElementById('ed-rte').focus();
+      document.execCommand(cmd, false, null);
+      syncPreview();
+    },
+
+    rteBlock: function (tag) {
+      if (!tag || tag === 'p') { document.execCommand('formatBlock', false, 'p'); }
+      else { document.execCommand('formatBlock', false, tag); }
+      document.getElementById('ed-rte').focus();
+      syncPreview();
+    },
+
+    rteInlineCode: function () {
+      var sel = window.getSelection();
+      if (!sel.rangeCount) return;
+      var range = sel.getRangeAt(0);
+      var text  = range.toString();
+      if (!text) return;
+      var code  = document.createElement('code');
+      code.textContent = text;
+      range.deleteContents();
+      range.insertNode(code);
+      syncPreview();
+    },
+
+    rteBlockquote: function () {
+      document.execCommand('formatBlock', false, 'blockquote');
+      document.getElementById('ed-rte').focus();
+      syncPreview();
+    },
+
+    rteLink: function () {
+      var url = prompt('Link URL:');
+      if (url) { document.execCommand('createLink', false, url); syncPreview(); }
+    },
+
+    rteClear: function () {
+      document.execCommand('removeFormat', false, null);
+      document.execCommand('formatBlock', false, 'p');
+      syncPreview();
+    },
+
+    insertImage: function () {
+      var input = document.getElementById('ed-img-input');
+      input.onchange = async function () {
+        var file = input.files[0];
+        if (!file) return;
+        if (!ghToken) { ED.openToken(); return; }
+        var filename = 'assets/media/' + Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+        try {
+          // Show uploading indicator
+          var rte = document.getElementById('ed-rte');
+          rte.focus();
+          document.execCommand('insertHTML', false, '<p><em style="color:#8e8e93">Uploading image…</em></p>');
+
+          // Read file as base64
+          var b64 = await readFileB64(file);
+
+          // Upload to GitHub
+          await ghPut('/repos/'+REPO+'/contents/'+filename, {
+            message: 'Upload image: ' + file.name,
+            content: b64,
+            branch: BRANCH
+          });
+
+          var url = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + filename;
+
+          // Replace placeholder with real image
+          var placeholder = rte.querySelector('em[style*="Uploading image"]');
+          if (placeholder && placeholder.parentNode) {
+            placeholder.parentNode.outerHTML = '<figure class="media-figure"><img src="' + url + '" alt="' + file.name + '" /></figure>';
+          } else {
+            document.execCommand('insertHTML', false, '<figure class="media-figure"><img src="' + url + '" alt="' + file.name + '" /></figure>');
+          }
+          syncPreview();
+        } catch(e) {
+          alert('Image upload failed: ' + e.message);
+        }
+        input.value = '';
+      };
+      input.click();
+    },
+
+    insertVideo: function () {
+      var input = document.getElementById('ed-vid-input');
+      input.onchange = async function () {
+        var file = input.files[0];
+        if (!file) return;
+        if (!ghToken) { ED.openToken(); return; }
+
+        // Check size — GitHub API limit is 50MB for a single file
+        if (file.size > 50 * 1024 * 1024) {
+          alert('Video must be under 50MB. For larger videos, upload to YouTube and use the YouTube embed option instead.');
+          input.value = ''; return;
+        }
+
+        var filename = 'assets/media/' + Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+        try {
+          var rte = document.getElementById('ed-rte');
+          rte.focus();
+          document.execCommand('insertHTML', false, '<p><em style="color:#8e8e93">Uploading video…</em></p>');
+
+          var b64 = await readFileB64(file);
+
+          await ghPut('/repos/'+REPO+'/contents/'+filename, {
+            message: 'Upload video: ' + file.name,
+            content: b64,
+            branch: BRANCH
+          });
+
+          var url = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + filename;
+          var html = '<figure class="media-figure"><video controls><source src="' + url + '" type="' + file.type + '"></video></figure>';
+
+          var placeholder = rte.querySelector('em[style*="Uploading video"]');
+          if (placeholder && placeholder.parentNode) {
+            placeholder.parentNode.outerHTML = html;
+          } else {
+            document.execCommand('insertHTML', false, html);
+          }
+          syncPreview();
+        } catch(e) {
+          alert('Video upload failed: ' + e.message);
+        }
+        input.value = '';
+      };
+      input.click();
+    },
+
+    // ── Publish new/edited post ────────────────────────────────
+    publishPost: async function () {
+      if (!ghToken) { this.openToken(); return; }
+      var title    = document.getElementById('ed-title-inp').value.trim();
+      var cat      = document.getElementById('ed-cat-inp').value;
+      var dateVal  = document.getElementById('ed-date-inp').value;
+      var filename = document.getElementById('ed-file-inp').value.trim() || slugify(title)+'.html';
+      var bodyHtml = document.getElementById('ed-rte').innerHTML;
+
+      if (!title) { alert('Please enter a title.'); return; }
+
+      var dateStr  = dateVal
+        ? new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})
+        : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      var catLabel = CATEGORIES[cat]||cat;
+      var postHtml = buildPostHtml(title, dateStr, cat, catLabel, filename, bodyHtml);
+
+      this.close();
+      showPub(['Fetching current site state','Updating post','Updating sidebar','Pushing to GitHub']);
+
+      try {
+        step(0,'active');
+        var ref      = await ghGet('/repos/'+REPO+'/git/ref/heads/'+BRANCH);
+        var commit   = await ghGet('/repos/'+REPO+'/git/commits/'+ref.object.sha);
+        step(0,'done');
+
+        step(2,'active');
+        var idxRes   = await ghGet('/repos/'+REPO+'/contents/index.html');
+        var idxHtml  = b64decode(idxRes.content);
+        var newIdx   = editing.isNew
+          ? addToSidebar(idxHtml, title, filename, cat)
+          : updateSidebar(idxHtml, title, filename);
+        step(2,'done');
+
+        step(1,'active');
+        var tree     = await ghPost('/repos/'+REPO+'/git/trees',{
+          base_tree: commit.tree.sha,
+          tree:[
+            {path:'posts/'+filename, mode:'100644', type:'blob', content:postHtml},
+            {path:'index.html',      mode:'100644', type:'blob', content:newIdx}
+          ]
+        });
+        var newCommit= await ghPost('/repos/'+REPO+'/git/commits',{
+          message:(editing.isNew?'Add':'Update')+' post: '+title,
+          tree:tree.sha, parents:[ref.object.sha]
+        });
+        step(1,'done');
+
+        step(3,'active');
+        await ghPatch('/repos/'+REPO+'/git/refs/heads/'+BRANCH,{sha:newCommit.sha});
+        step(3,'done');
+
+        pubDone('✓ Published!','Live at chancewu1.github.io (~1 min to propagate)');
+        editing = { isNew:false, filename };
+      } catch(e) { pubFail(e.message); }
+    },
+
+    // ── Delete + publish ───────────────────────────────────────
+    _doDelete: async function (filename) {
+      if (!ghToken) { this.openToken(); return; }
+      showPub(['Fetching current site state','Removing post file','Updating sidebar','Pushing to GitHub']);
+      try {
+        step(0,'active');
+        var idxRes  = await ghGet('/repos/'+REPO+'/contents/index.html');
+        var idxHtml = b64decode(idxRes.content);
+        var fileRes = await ghGet('/repos/'+REPO+'/contents/posts/'+filename);
+        step(0,'done');
+
+        step(1,'active');
+        await ghDelete('/repos/'+REPO+'/contents/posts/'+filename,{
+          message:'Delete post: '+filename, sha:fileRes.sha, branch:BRANCH
+        });
+        step(1,'done');
+
+        step(2,'active');
+        var newIdx = removeFromSidebar(idxHtml, filename);
+        var updIdx = await ghGet('/repos/'+REPO+'/contents/index.html');
+        await ghPut('/repos/'+REPO+'/contents/index.html',{
+          message:'Remove post from sidebar: '+filename,
+          content:b64encode(newIdx), sha:updIdx.sha, branch:BRANCH
+        });
+        step(2,'done'); step(3,'done');
+        pubDone('✓ Deleted!','Post removed from chancewu1.github.io');
+        setTimeout(()=>{ window.location.href='../index.html'; },1800);
+      } catch(e) { pubFail(e.message); }
+    },
+
+    // ── Publish entire site (all local files) ─────────────────
+    publishSite: async function () {
+      if (!ghToken) { this.openToken(); return; }
+      if (!('showDirectoryPicker' in window)) {
+        alert('Full-site publish requires Chrome or Edge.'); return;
+      }
+      showPub(['Select blog folder','Read all files','Push to GitHub','Done']);
+      try {
+        step(0,'active');
+        var root = await window.showDirectoryPicker({ mode:'read' });
+        step(0,'done');
+
+        step(1,'active');
+        var files = await collectFiles(root);
+        step(1,'done');
+
+        step(2,'active');
+        var ref   = await ghGet('/repos/'+REPO+'/git/ref/heads/'+BRANCH);
+        var cm    = await ghGet('/repos/'+REPO+'/git/commits/'+ref.object.sha);
+        var tree  = await ghPost('/repos/'+REPO+'/git/trees',{
+          base_tree:cm.tree.sha,
+          tree:Object.entries(files).map(([p,c])=>({path:p,mode:'100644',type:'blob',content:c}))
+        });
+        var nc    = await ghPost('/repos/'+REPO+'/git/commits',{
+          message:'Publish blog — '+new Date().toLocaleString(),
+          tree:tree.sha, parents:[ref.object.sha]
+        });
+        await ghPatch('/repos/'+REPO+'/git/refs/heads/'+BRANCH,{sha:nc.sha});
+        step(2,'done'); step(3,'done');
+        pubDone('✓ Published!','All changes live at chancewu1.github.io');
+      } catch(e) {
+        if (e.name!=='AbortError') pubFail(e.message);
+        else document.getElementById('ed-pub-modal').classList.remove('open');
+      }
+    },
+
+    openToken: function () {
+      document.getElementById('ed-token-inp').value = ghToken;
+      document.getElementById('ed-token-modal').classList.add('open');
+    },
+    saveToken: function () {
+      ghToken = document.getElementById('ed-token-inp').value.trim();
+      localStorage.setItem('gh_token', ghToken);
+      document.getElementById('ed-token-modal').classList.remove('open');
+    },
+    logout: function () {
+      sessionStorage.removeItem('admin_unlocked');
+      location.reload();
+    }
+  };
+
+  // ── Publish UI helpers ───────────────────────────────────────
+  function showPub(steps) {
+    document.getElementById('ed-pub-title').textContent = 'Publishing…';
+    document.getElementById('ed-pub-sub').textContent   = '';
+    document.getElementById('ed-pub-link').style.display= 'none';
+    document.getElementById('ed-pub-done').style.display= 'none';
+    document.getElementById('ed-pub-steps').innerHTML   = steps.map((s,i)=>
+      `<div class="pub-step" id="ps${i}"><div class="pub-dot"></div><span>${s}</span></div>`
+    ).join('');
+    document.getElementById('ed-pub-modal').classList.add('open');
+  }
+  function step(i,state){ var e=document.getElementById('ps'+i); if(e) e.className='pub-step '+state; }
+  function pubDone(title,sub){
+    document.getElementById('ed-pub-title').textContent=title;
+    document.getElementById('ed-pub-sub').textContent=sub;
+    document.getElementById('ed-pub-link').style.display='block';
+    document.getElementById('ed-pub-done').style.display='block';
+  }
+  function pubFail(msg){
+    var a=document.querySelector('.pub-step.active');
+    if(a) a.className='pub-step fail';
+    document.getElementById('ed-pub-title').textContent='Publish failed';
+    document.getElementById('ed-pub-sub').textContent=msg;
+    document.getElementById('ed-pub-done').style.display='block';
+  }
+
+  // ── GitHub API ───────────────────────────────────────────────
+  function ghFetch(path,opts){
+    return fetch('https://api.github.com'+path, Object.assign({
+      headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'}
+    },opts)).then(r=>r.ok?r.json():r.json().then(e=>{throw new Error(e.message||'GitHub '+r.status);}));
+  }
+  function ghGet(p)    {return ghFetch(p);}
+  function ghPost(p,b) {return ghFetch(p,{method:'POST',  body:JSON.stringify(b)});}
+  function ghPatch(p,b){return ghFetch(p,{method:'PATCH', body:JSON.stringify(b)});}
+  function ghDelete(p,b){return ghFetch(p,{method:'DELETE',body:JSON.stringify(b)});}
+  function ghPut(p,b)  {return ghFetch(p,{method:'PUT',   body:JSON.stringify(b)});}
+
+  // ── Sidebar helpers ──────────────────────────────────────────
+  function addToSidebar(html,title,filename,cat){
+    if(html.includes('href="posts/'+filename+'"')) return html;
+    var e='\n        <li><a class="toc-link" href="posts/'+filename+'" data-tags="'+cat+'">'+esc(title)+'</a></li>';
+    return html.replace(/(<ul id="post-toc-ul"[^>]*>)/,'$1'+e);
+  }
+  function updateSidebar(html,title,filename){
+    return html.replace(
+      new RegExp('(<a class="toc-link[^"]*"\\s+href="posts/'+filename+'"[^>]*>)[^<]*(</a>)'),
+      '$1'+esc(title)+'$2'
+    );
+  }
+  function removeFromSidebar(html,filename){
+    return html.replace(new RegExp('\\s*<li><a[^>]+href="posts/'+filename+'"[^>]*>[^<]*<\\/a><\\/li>','g'),'');
+  }
+
+  // ── File collector ───────────────────────────────────────────
+  async function collectFiles(root){
+    var files={};
+    async function walk(dir,pre){
+      for await(var [name,h] of dir.entries()){
+        if(h.kind==='directory'&&name!=='admin'&&name!=='.git') await walk(h,pre+name+'/');
+        else if(h.kind==='file'&&/\.(html|css|js)$/.test(name))
+          files[pre+name]=await(await h.getFile()).text();
+      }
+    }
+    await walk(root,'');
+    return files;
+  }
+
+  // ── Build post HTML ──────────────────────────────────────────
+  function buildPostHtml(title,dateStr,cat,catLabel,filename,bodyHtml){
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>${esc(title)} | Chris Wu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+  <div id="sidebar" class="open">
+    <div class="sidebar-left">
+      <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
+      <div class="sidebar-social">
+        <a href="mailto:chancewu1@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+        <a href="https://github.com/chancewu1" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+        <a href="https://twitter.com" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="https://linkedin.com" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+      </div>
+      <div id="sidebar-tags">
+        <div class="sidebar-tag active" data-filter="recent">最新文章</div>
+        <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
+        <div class="sidebar-tag" data-filter="machine-learning">机器学习</div>
+        <div class="sidebar-tag" data-filter="life">生活</div>
+        <div class="sidebar-tag" data-filter="leetcode">Leetcode</div>
+        <div class="sidebar-tag" data-filter="language">语言学习</div>
+        <div class="sidebar-tag" data-filter="interview">面试记录</div>
+        <div class="sidebar-tag" data-filter="resources">Resources</div>
+        <div class="sidebar-tag" data-filter="business">商业分析</div>
+        <div class="sidebar-tag" data-filter="statistics">数理统计</div>
+        <div class="sidebar-tag" data-filter="notes">转码笔记</div>
+      </div>
+      <div class="fs-control">
+        <button class="fs-btn" data-fs="sm">A</button>
+        <button class="fs-btn active" data-fs="md">A</button>
+        <button class="fs-btn" data-fs="lg">A</button>
+        <button class="fs-btn" data-fs="xl">A</button>
+      </div>
+    </div>
+    <div class="sidebar-right">
+      <input id="search-input" type="text" placeholder="Search posts…" autocomplete="off" />
+      <ul id="post-toc-ul" class="toc-ul">
+        <li><a class="toc-link active" href="${filename}" data-tags="${cat}">${esc(title)}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="menu">&#9776;</div>
+  <div id="main" class="fadeIn">
+    <div id="post-toc-menu" title="Table of Contents">&#8801;</div>
+    <div id="post-toc"><ul id="post-toc-inner"></ul></div>
+    <div class="post">
+      <div class="post-content">
+        <div class="post-header">
+          <div class="post-meta">
+            <span class="post-date">${dateStr}</span>
+            <span class="post-tag">${esc(catLabel)}</span>
+          </div>
+          <h1 id="post-title">${esc(title)}</h1>
+        </div>
+        ${bodyHtml}
+        <div class="social-share">
+          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}" target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          <a href="https://github.com/chancewu1" target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+        </div>
+        <div class="post-nav"><a href="../index.html" class="back-link">&#8592; Back to Home</a></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"><\/script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"><\/script>
+  <script src="../js/main.js"><\/script>
+  <script src="../js/editor.js"><\/script>
+</body>
+</html>`;
+  }
+
+  // ── Utilities ────────────────────────────────────────────────
+  function b64decode(str){ return decodeURIComponent(escape(atob(str.replace(/\n/g,'')))); }
+  function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
+
+  function readFileB64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload  = function(e) { resolve(e.target.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  function slugify(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'post'; }
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function today(){ return new Date().toISOString().split('T')[0]; }
+
+})();
