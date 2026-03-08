@@ -144,17 +144,25 @@ $(function () {
   // ===== SPA navigation =====
   // Resolve href always relative to the site root, not the current URL
   function resolveHref(href) {
-    // Use the browser's native URL resolution — most reliable approach
-    var a = document.createElement('a');
-    // Set a known root base: strip /posts/anything from current URL to get root
-    var base = window.location.href.replace(/\/posts\/[^\/]*$/, '/');
-    // If href is a bare filename (no directory), it needs posts/ prefix
-    // unless it's index.html
+    // Always resolve relative to the site root (where index.html lives)
+    // Root = everything before /posts/ or the last path segment
+    var loc = window.location;
+    var origin = loc.protocol + '//' + loc.host; // e.g. https://chancewu1.github.io
+    var pathname = loc.pathname; // e.g. /posts/sql.html or /index.html
+
+    // Find root path (strip /posts/filename or just /filename)
+    var rootPath = pathname.replace(/\/posts\/[^\/]*$/, '').replace(/\/[^\/]*\.html$/, '');
+    if (!rootPath.endsWith('/')) rootPath += '/';
+
+    // Normalize href: remove any accidental double posts/
+    href = href.replace(/^posts\/posts\//, 'posts/');
+
+    // If href is a bare .html filename with no path separator, add posts/
     if (!href.includes('/') && href.endsWith('.html') && href !== 'index.html') {
       href = 'posts/' + href;
     }
-    a.href = base + href;
-    return a.href;
+
+    return origin + rootPath + href;
   }
 
   $(document).on('click', '.toc-link, #sidebar-avatar', function (e) {
