@@ -44,22 +44,22 @@
       }
     });
 
-    // Mobile: triple-tap the CW avatar within 1.2s
-    // Runs after DOM is ready
+    // Mobile: long-press the CW avatar for 2 seconds
     function attachMobileTrigger() {
       var avatar = document.getElementById('sidebar-avatar');
       if (!avatar) return;
-      var _taps = 0, _tapTimer;
-      avatar.addEventListener('touchend', function (e) {
-        e.preventDefault(); // prevent ghost click
-        _taps++;
-        clearTimeout(_tapTimer);
-        _tapTimer = setTimeout(function () { _taps = 0; }, 1200);
-        if (_taps >= 3) {
-          _taps = 0;
+      var _pressTimer;
+      avatar.addEventListener('touchstart', function (e) {
+        _pressTimer = setTimeout(function () {
           showLoginModal();
-        }
-      }, { passive: false });
+        }, 2000);
+      }, { passive: true });
+      avatar.addEventListener('touchend', function () {
+        clearTimeout(_pressTimer);
+      });
+      avatar.addEventListener('touchmove', function () {
+        clearTimeout(_pressTimer);
+      });
     }
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', attachMobileTrigger);
