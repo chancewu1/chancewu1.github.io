@@ -150,19 +150,31 @@
     s.textContent = `
       /* Floating admin bar */
       #ed-bar {
-        position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
-        z-index:9000;display:flex;align-items:center;gap:8px;
-        background:rgba(20,20,22,0.94);
+        position:fixed;bottom:0;left:0;right:0;
+        transform:none;
+        z-index:9000;display:flex;align-items:center;gap:6px;
+        flex-wrap:wrap;justify-content:center;
+        background:rgba(20,20,22,0.97);
         backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-        border:1px solid rgba(255,255,255,0.1);border-radius:50px;
-        padding:8px 16px;box-shadow:0 8px 40px rgba(0,0,0,0.35);
+        border-top:1px solid rgba(255,255,255,0.1);border-radius:0;
+        padding:10px 12px;box-shadow:0 -4px 24px rgba(0,0,0,0.35);
         font-family:-apple-system,BlinkMacSystemFont,sans-serif;
       }
+      @media (min-width:700px) {
+        #ed-bar {
+          bottom:28px;left:50%;right:auto;
+          transform:translateX(-50%);
+          width:auto;border-radius:50px;border:1px solid rgba(255,255,255,0.1);
+          border-top:1px solid rgba(255,255,255,0.1);
+          flex-wrap:nowrap;
+        }
+      }
       .ed-div{width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 2px;}
+      @media (max-width:699px){ .ed-div{ display:none; } .ed-btn-label{ display:none; } }
       .ed-pill{
         display:inline-flex;align-items:center;gap:5px;
-        padding:6px 14px;border-radius:50px;border:none;
-        font-family:inherit;font-size:12.5px;font-weight:600;
+        padding:7px 12px;border-radius:50px;border:none;
+        font-family:inherit;font-size:12px;font-weight:600;
         cursor:pointer;transition:opacity 0.15s,transform 0.1s;
       }
       .ed-pill:hover{opacity:.82;} .ed-pill:active{transform:scale(.95);}
@@ -320,21 +332,21 @@
       <div id="ed-bar">
         <button class="ed-pill ep-new" onclick="ED.openNew()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New Post
+          <span class="ed-btn-label"> New Post</span>
         </button>
         <div class="ed-div"></div>
         <button class="ed-pill ep-edit" id="ed-edit-btn" onclick="ED.openEdit()" ${isPost?'':'disabled'}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Edit
+          <span class="ed-btn-label"> Edit</span>
         </button>
         <button class="ed-pill ep-del" id="ed-del-btn" onclick="ED.askDelete()" ${isPost?'':'disabled'}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-          Delete
+          <span class="ed-btn-label"> Delete</span>
         </button>
         <div class="ed-div"></div>
         <button class="ed-pill ep-pub" onclick="ED.publishSite()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
-          Publish to Site
+          <span class="ed-btn-label"> Publish</span>
         </button>
         <div class="ed-div"></div>
         <button class="ed-pill ep-lock" onclick="ED.openToken()" title="GitHub Token">
@@ -346,7 +358,7 @@
         <div class="ed-div"></div>
         <button class="ed-pill ep-edit" onclick="ED.openSidebar()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          Sidebar
+          <span class="ed-btn-label"> Sidebar</span>
         </button>
       </div>
 
