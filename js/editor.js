@@ -343,6 +343,26 @@
         /* RTE padding */
         #ed-rte { padding:16px; }
 
+        /* Show preview button only on mobile */
+        .ed-mobile-preview-btn { display:inline-flex !important; }
+
+        /* Mobile full-screen preview */
+        #ed-mobile-preview {
+          display:none;position:fixed;inset:0;z-index:9200;
+          background:#f5f5f7;overflow-y:auto;flex-direction:column;
+        }
+        #ed-mobile-preview.open { display:flex; }
+        #ed-mobile-preview-bar {
+          position:sticky;top:0;z-index:1;
+          background:rgba(255,255,255,0.92);
+          backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+          border-bottom:1px solid rgba(0,0,0,0.08);
+          padding:12px 16px;display:flex;align-items:center;gap:10px;
+          font-family:-apple-system,sans-serif;
+        }
+        #ed-mobile-preview-bar h3 { flex:1;font-size:14px;font-weight:700;color:#1d1d1f; }
+        #ed-mobile-preview-content { padding:20px 16px;flex:1; }
+
         /* Sidebar editor modal */
         #ed-sb-box { max-height:95vh;width:98vw; }
         #ed-sb-box > div:nth-child(2) { flex-direction:column; }
@@ -414,6 +434,10 @@
           </div>
           <div class="ed-topbar-actions">
             <button class="ed-tb ed-cancel" onclick="ED.close()">Cancel</button>
+            <button class="ed-tb ed-cancel ed-mobile-preview-btn" onclick="ED.toggleMobilePreview()" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Preview
+            </button>
             <button class="ed-tb ed-pubBtn" onclick="ED.publishPost()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg>
               Publish
@@ -516,6 +540,18 @@
             <button class="ed-tb ed-cancel" onclick="document.getElementById('ed-pub-modal').classList.remove('open')">Done</button>
           </div>
         </div>
+      </div>
+
+      <!-- Mobile full-screen preview -->
+      <div id="ed-mobile-preview">
+        <div id="ed-mobile-preview-bar">
+          <h3>Preview</h3>
+          <button class="ed-tb ed-cancel" onclick="ED.toggleMobilePreview()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Close
+          </button>
+        </div>
+        <div id="ed-mobile-preview-content"></div>
       </div>
 
       <!-- Delete confirm modal -->
@@ -976,6 +1012,35 @@
     logout: function () {
       sessionStorage.removeItem('admin_unlocked');
       location.reload();
+    },
+
+    toggleMobilePreview: function () {
+      var pane = document.getElementById('ed-mobile-preview');
+      var content = document.getElementById('ed-mobile-preview-content');
+      if (pane.classList.contains('open')) {
+        pane.classList.remove('open');
+        return;
+      }
+      // Build preview using real blog CSS classes
+      var title   = document.getElementById('ed-title-inp').value || 'Untitled';
+      var cat     = document.getElementById('ed-cat-inp').value;
+      var dateVal = document.getElementById('ed-date-inp').value;
+      var dateStr = dateVal
+        ? new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})
+        : '';
+      var body = document.getElementById('ed-rte').innerHTML;
+      content.innerHTML =
+        '<div class="post-content" style="background:#fff;border-radius:14px;margin:0;padding:28px 20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">' +
+          '<div class="post-header" style="margin-bottom:24px;">' +
+            '<div class="post-meta" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+              '<span class="post-date" style="font-size:12px;color:#8e8e93;">' + dateStr + '</span>' +
+              '<span class="post-tag">' + (CATEGORIES[cat]||cat) + '</span>' +
+            '</div>' +
+            '<h1 style="font-family:Lora,Georgia,serif;font-size:1.8rem;font-weight:700;color:#1d1d1f;letter-spacing:-.02em;">' + title + '</h1>' +
+          '</div>' +
+          body +
+        '</div>';
+      pane.classList.add('open');
     },
 
     // Rebuild category dropdown from live CATEGORIES (DOM-sourced)
