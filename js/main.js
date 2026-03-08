@@ -197,6 +197,8 @@ $(function () {
           $('.toc-link').removeClass('active').filter('[href="' + href + '"]').addClass('active');
           applyFilter(sessionStorage.getItem('sidebar_filter') || 'recent');
           if ($(window).width() <= 1024) sidebar.removeClass('open');
+          // Tell admin editor about the new page context
+          if (window.ED && window.ED._onNavigate) window.ED._onNavigate(absoluteUrl);
         } else {
           window.location.href = absoluteUrl;
         }

@@ -73,27 +73,42 @@
 
   // ── Admin is unlocked — inject everything ───────────────────
   injectStyles();
+
+  var _adminInitDone = false;
   function initAdmin() {
+    if (_adminInitDone) return; // prevent double-run
+    _adminInitDone = true;
+
     injectHTML();
+
+    // Detect if current page is a post
     var path2 = window.location.href;
-    isPost = path2.includes('/posts/') || path2.includes('\\posts\\') || path2.includes('%2Fposts%2F');
-    currentFile = isPost ? decodeURIComponent(path2).split(/[\/\\]/).pop().split('?')[0] : null;
+    isPost = path2.includes('/posts/') || path2.includes('%2Fposts%2F');
+    currentFile = isPost
+      ? decodeURIComponent(path2).split(/[\/\\?#]/).filter(function(s){ return s.endsWith('.html'); }).pop() || null
+      : null;
+
+    // Build CATEGORIES from live DOM (after injectHTML added the sidebar)
     CATEGORIES = getCategories();
-    setTimeout(function() {
+
+    // Enable/disable Edit+Delete based on whether we're on a post page
+    function refreshButtons() {
       var eb = document.getElementById('ed-edit-btn');
       var db = document.getElementById('ed-del-btn');
       if (eb) eb.disabled = !isPost;
       if (db) db.disabled = !isPost;
-    }, 50);
-    // Auto-open blog folder for local file sync (best-effort, silently ignored if declined)
-    if ('showDirectoryPicker' in window && !window._blogRootDir) {
-      window.showDirectoryPicker({ mode: 'readwrite' })
-        .then(function(root) { window._blogRootDir = root; })
-        .catch(function() {}); // user declined — that's fine
     }
+    refreshButtons();
+    // Try again after a short delay in case DOM isn't fully settled
+    setTimeout(refreshButtons, 200);
   }
-  window.addEventListener('DOMContentLoaded', initAdmin);
-  if (document.readyState !== 'loading') initAdmin();
+
+  // Run once when DOM is ready — avoid double-run
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAdmin);
+  } else {
+    initAdmin();
+  }
 
   function showLoginModal() {
     var bg = document.createElement('div');
@@ -1148,6 +1163,18 @@
     logout: function () {
       sessionStorage.removeItem('admin_unlocked');
       location.reload();
+    },
+
+    // Called by main.js after each SPA navigation to keep editor state in sync
+    _onNavigate: function (url) {
+      isPost = url.includes('/posts/') || url.includes('%2Fposts%2F');
+      currentFile = isPost
+        ? decodeURIComponent(url).split(/[\/\\?#]/).filter(function(s){ return s.endsWith('.html'); }).pop() || null
+        : null;
+      var eb = document.getElementById('ed-edit-btn');
+      var db = document.getElementById('ed-del-btn');
+      if (eb) eb.disabled = !isPost;
+      if (db) db.disabled = !isPost;
     },
 
     toggleMobilePreview: function () {
