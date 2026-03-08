@@ -95,12 +95,13 @@
     function refreshButtons() {
       var eb = document.getElementById('ed-edit-btn');
       var db = document.getElementById('ed-del-btn');
-      if (eb) eb.disabled = !isPost;
-      if (db) db.disabled = !isPost;
+      if (eb) { eb.disabled = !isPost; eb.style.opacity = isPost ? '1' : '0.3'; }
+      if (db) { db.disabled = !isPost; db.style.opacity = isPost ? '1' : '0.3'; }
     }
+    // Run immediately, at 100ms, and at 500ms to handle async DOM settling
     refreshButtons();
-    // Try again after a short delay in case DOM isn't fully settled
-    setTimeout(refreshButtons, 200);
+    setTimeout(refreshButtons, 100);
+    setTimeout(refreshButtons, 500);
   }
 
   // Run once when DOM is ready — avoid double-run
@@ -1173,8 +1174,8 @@
         : null;
       var eb = document.getElementById('ed-edit-btn');
       var db = document.getElementById('ed-del-btn');
-      if (eb) eb.disabled = !isPost;
-      if (db) db.disabled = !isPost;
+      if (eb) { eb.disabled = !isPost; eb.style.opacity = isPost ? '1' : '0.3'; }
+      if (db) { db.disabled = !isPost; db.style.opacity = isPost ? '1' : '0.3'; }
     },
 
     toggleMobilePreview: function () {

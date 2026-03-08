@@ -144,20 +144,17 @@ $(function () {
   // ===== SPA navigation =====
   // Resolve href always relative to the site root, not the current URL
   function resolveHref(href) {
-    // Use the browser's built-in URL resolution based on a known root anchor
-    // Find the root by going up from current path to remove /posts/filename
-    var currentHref = window.location.href;
-    // Strip everything after the last / to get directory
-    var dir = currentHref.substring(0, currentHref.lastIndexOf('/') + 1);
-    // If we're in /posts/, go up one level to root
-    if (dir.indexOf('/posts/') !== -1) {
-      dir = dir.substring(0, dir.lastIndexOf('/posts/') + 1);
+    // Use the browser's native URL resolution — most reliable approach
+    var a = document.createElement('a');
+    // Set a known root base: strip /posts/anything from current URL to get root
+    var base = window.location.href.replace(/\/posts\/[^\/]*$/, '/');
+    // If href is a bare filename (no directory), it needs posts/ prefix
+    // unless it's index.html
+    if (!href.includes('/') && href.endsWith('.html') && href !== 'index.html') {
+      href = 'posts/' + href;
     }
-    // Now resolve href relative to root dir
-    if (href.startsWith('posts/')) {
-      return dir + href;
-    }
-    return dir + href;
+    a.href = base + href;
+    return a.href;
   }
 
   $(document).on('click', '.toc-link, #sidebar-avatar', function (e) {
