@@ -142,15 +142,30 @@ $(function () {
   });
 
   // ===== SPA navigation =====
+  // Resolve href always relative to the site root, not the current URL
+  function resolveHref(href) {
+    // Get the root base (everything up to and including the repo name on GH Pages, or just origin)
+    var base = window.location.origin;
+    // If hosted in a subdirectory (e.g. /blog/), include it
+    var path = window.location.pathname;
+    // Find the root index.html directory
+    var rootDir = path.replace(/\/(posts\/)?[^/]*$/, '');
+    if (!rootDir.endsWith('/')) rootDir += '/';
+    // Absolute URL: combine base + rootDir + href
+    return base + rootDir + href;
+  }
+
   $(document).on('click', '.toc-link, #sidebar-avatar', function (e) {
     var href = $(this).attr('href');
     if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto')) return;
     e.preventDefault();
 
+    var absoluteUrl = resolveHref(href);
+
     NProgress.start();
     main.removeClass('fadeIn');
 
-    fetch(href)
+    fetch(absoluteUrl)
       .then(function (res) { return res.text(); })
       .then(function (html) {
         var parser = new DOMParser();
@@ -159,7 +174,7 @@ $(function () {
         if (newMain) {
           main.html(newMain.innerHTML);
           document.title = doc.title;
-          history.pushState(null, doc.title, href);
+          history.pushState(null, doc.title, absoluteUrl);
           main.scrollTop(0).addClass('fadeIn');
           afterLoad();
           toc = $('.toc-link');
@@ -169,12 +184,12 @@ $(function () {
         }
         NProgress.done();
       })
-      .catch(function () { NProgress.done(); window.location = href; });
+      .catch(function () { NProgress.done(); window.location = absoluteUrl; });
   });
 
   window.addEventListener('popstate', function () {
     NProgress.start();
-    fetch(location.pathname + location.search)
+    fetch(location.href)
       .then(function (res) { return res.text(); })
       .then(function (html) {
         var parser = new DOMParser();
