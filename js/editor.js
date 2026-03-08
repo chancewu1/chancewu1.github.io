@@ -1385,7 +1385,7 @@
 <body>
   <div id="sidebar" class="open">
     <div class="sidebar-left">
-      <a id="sidebar-avatar" href="../index.html" title="Home"><div class="avatar">CW</div></a>
+      <a id="sidebar-avatar" href="../index.html" title="Home"><img src="../assets/avatar.png" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" /></a>
       <div id="sidebar-tags">
         <div class="sidebar-tag active" data-filter="recent">最新文章</div>
         <div class="sidebar-tag" data-filter="deep-learning">深度学习</div>
