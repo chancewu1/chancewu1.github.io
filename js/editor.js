@@ -190,8 +190,9 @@
       #ed-overlay{
         display:none;position:fixed;inset:0;z-index:9100;
         background:var(--main-bg,#f5f5f7);flex-direction:column;
+        pointer-events:none;
       }
-      #ed-overlay.open{display:flex;}
+      #ed-overlay.open{display:flex;pointer-events:all;}
 
       /* Top bar */
       #ed-topbar{
@@ -296,8 +297,9 @@
         backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
         align-items:center;justify-content:center;
         font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+        pointer-events:none;
       }
-      .ed-modal-bg.open{display:flex;}
+      .ed-modal-bg.open{display:flex;pointer-events:all;}
       .ed-modal-box{
         background:#1c1c1e;border:1px solid rgba(255,255,255,0.12);
         border-radius:18px;padding:32px;
@@ -323,12 +325,12 @@
 
       /* Flowchart modal */
       #ed-flow-modal {
-        display:none;position:fixed;inset:0;z-index:9300;
+        display:none;pointer-events:none;position:fixed;inset:0;z-index:9300;
         background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);
         align-items:center;justify-content:center;
         font-family:-apple-system,sans-serif;
       }
-      #ed-flow-modal.open{display:flex;}
+      #ed-flow-modal.open{display:flex;pointer-events:all;}
       #ed-flow-box {
         background:#1c1c1e;border:1px solid rgba(255,255,255,0.12);
         border-radius:18px;padding:28px;width:min(560px,95vw);

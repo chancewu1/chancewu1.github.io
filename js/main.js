@@ -164,11 +164,16 @@ $(function () {
     var href = $(this).attr('href');
     if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto')) return;
     e.preventDefault();
+    e.stopPropagation();
 
     var absoluteUrl = resolveHref(href);
 
+    // Always get fresh reference to #main in case DOM was modified
+    var $main = $('#main');
+    if (!$main.length) { window.location.href = absoluteUrl; return; }
+
     NProgress.start();
-    main.removeClass('fadeIn');
+    $main.removeClass('fadeIn');
 
     fetch(absoluteUrl)
       .then(function (res) {
@@ -180,17 +185,19 @@ $(function () {
         var doc = parser.parseFromString(html, 'text/html');
         var newMain = doc.querySelector('#main');
         if (newMain) {
-          main.html(newMain.innerHTML);
+          // Re-get $main in case it changed
+          $main = $('#main');
+          $main.html(newMain.innerHTML);
           document.title = doc.title;
           history.pushState(null, doc.title, absoluteUrl);
-          main.scrollTop(0).addClass('fadeIn');
+          $main.scrollTop(0).addClass('fadeIn');
+          main = $main; // update module-level reference
           afterLoad();
           toc = $('.toc-link');
           $('.toc-link').removeClass('active').filter('[href="' + href + '"]').addClass('active');
           applyFilter(sessionStorage.getItem('sidebar_filter') || 'recent');
           if ($(window).width() <= 1024) sidebar.removeClass('open');
         } else {
-          // #main not found — fall back to hard navigation
           window.location.href = absoluteUrl;
         }
         NProgress.done();
