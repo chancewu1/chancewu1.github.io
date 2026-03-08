@@ -1073,11 +1073,17 @@
         step(0,'done');
 
         step(1,'active');
-        // Replace sidebar-tags block
-        idxHtml = idxHtml.replace(
-          /<div id="sidebar-tags">[\s\S]*?<\/div>\s*(?=\s*<div class="fs-control")/,
-          '<div id="sidebar-tags">\n' + tagsHtml + '\n      </div>\n      '
-        );
+        // Replace sidebar-tags block — match opening tag through its own closing </div>
+        // Use a split approach to reliably replace the entire block
+        var sbStart = idxHtml.indexOf('<div id="sidebar-tags">');
+        var fsStart = idxHtml.indexOf('<div class="fs-control">', sbStart);
+        // Find the </div> that closes sidebar-tags (last </div> before fs-control)
+        var sbEnd = idxHtml.lastIndexOf('</div>', fsStart) + '</div>'.length;
+        if (sbStart !== -1 && sbEnd > sbStart) {
+          idxHtml = idxHtml.slice(0, sbStart) +
+            '<div id="sidebar-tags">\n' + tagsHtml + '\n      </div>' +
+            idxHtml.slice(sbEnd);
+        }
         // Replace toc-ul block
         idxHtml = idxHtml.replace(
           /(<ul id="post-toc-ul"[^>]*>)[\s\S]*?(<\/ul>)/,
