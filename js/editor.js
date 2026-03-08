@@ -32,7 +32,7 @@
 
   // ── Never inject anything until unlocked ────────────────────
   if (!adminUnlocked) {
-    // Shortcut: type W then C then H within 1.5s
+    // Desktop: type W → C → H within 1.5s
     var _seq = [], _seqTimer;
     document.addEventListener('keydown', function (e) {
       _seq.push(e.key.toLowerCase());
@@ -43,6 +43,30 @@
         showLoginModal();
       }
     });
+
+    // Mobile: triple-tap the CW avatar within 1.2s
+    // Runs after DOM is ready
+    function attachMobileTrigger() {
+      var avatar = document.getElementById('sidebar-avatar');
+      if (!avatar) return;
+      var _taps = 0, _tapTimer;
+      avatar.addEventListener('touchend', function (e) {
+        e.preventDefault(); // prevent ghost click
+        _taps++;
+        clearTimeout(_tapTimer);
+        _tapTimer = setTimeout(function () { _taps = 0; }, 1200);
+        if (_taps >= 3) {
+          _taps = 0;
+          showLoginModal();
+        }
+      }, { passive: false });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attachMobileTrigger);
+    } else {
+      attachMobileTrigger();
+    }
+
     return; // stop here — no toolbar, no editor injected for public
   }
 
