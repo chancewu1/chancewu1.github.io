@@ -44,27 +44,30 @@
       }
     });
 
-    // Mobile: long-press the CW avatar for 2 seconds
-    function attachMobileTrigger() {
-      var avatar = document.getElementById('sidebar-avatar');
-      if (!avatar) return;
-      var _pressTimer;
-      avatar.addEventListener('touchstart', function (e) {
-        _pressTimer = setTimeout(function () {
-          showLoginModal();
-        }, 2000);
-      }, { passive: true });
-      avatar.addEventListener('touchend', function () {
-        clearTimeout(_pressTimer);
-      });
-      avatar.addEventListener('touchmove', function () {
-        clearTimeout(_pressTimer);
-      });
+    // Inject a subtle lock button at the bottom of the sidebar
+    function attachAdminBtn() {
+      var fsControl = document.querySelector('.fs-control');
+      if (!fsControl || document.getElementById('ed-admin-btn')) return;
+      var btn = document.createElement('button');
+      btn.id = 'ed-admin-btn';
+      btn.title = 'Admin login';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+      btn.style.cssText = [
+        'display:flex', 'align-items:center', 'justify-content:center',
+        'width:32px', 'height:32px', 'margin:10px auto 0',
+        'background:none', 'border:1px solid rgba(255,255,255,0.1)',
+        'border-radius:8px', 'cursor:pointer', 'color:rgba(255,255,255,0.25)',
+        'transition:color 0.2s,border-color 0.2s'
+      ].join(';');
+      btn.addEventListener('mouseenter', function(){ btn.style.color='rgba(255,255,255,0.7)'; btn.style.borderColor='rgba(255,255,255,0.4)'; });
+      btn.addEventListener('mouseleave', function(){ btn.style.color='rgba(255,255,255,0.25)'; btn.style.borderColor='rgba(255,255,255,0.1)'; });
+      btn.addEventListener('click', function(e){ e.preventDefault(); showLoginModal(); });
+      fsControl.parentNode.appendChild(btn);
     }
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', attachMobileTrigger);
+      document.addEventListener('DOMContentLoaded', attachAdminBtn);
     } else {
-      attachMobileTrigger();
+      attachAdminBtn();
     }
 
     return; // stop here — no toolbar, no editor injected for public
