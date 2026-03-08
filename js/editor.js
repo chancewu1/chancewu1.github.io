@@ -320,6 +320,34 @@
       .pub-step{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:13px;color:#636366;}
       .pub-step.active{color:#fff;} .pub-step.done{color:#34c759;} .pub-step.fail{color:#ff453a;}
       .pub-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+      /* ── Mobile editor layout ── */
+      @media (max-width:699px) {
+        /* Topbar: stack fields vertically */
+        #ed-topbar {
+          flex-direction:column;align-items:stretch;gap:8px;padding:12px 14px;
+        }
+        #ed-topbar h2 { margin-right:0; }
+        .ed-fi { flex-direction:row;align-items:center;gap:8px; }
+        .ed-fi label { min-width:64px;margin-bottom:0; }
+        #ed-title-inp,#ed-file-inp { width:100%;flex:1; }
+        #ed-date-inp { width:100%;flex:1; }
+        .ed-topbar-actions { display:flex;gap:8px;width:100%; }
+        .ed-cancel,.ed-pubBtn { flex:1;justify-content:center; }
+
+        /* Editor body: full width, no preview */
+        #ed-body { flex-direction:column; }
+        #ed-rte-wrap { width:100%;min-width:0;border-right:none;border-bottom:1px solid rgba(0,0,0,0.08); }
+        #ed-preview-pane { display:none !important; }
+
+        /* RTE padding */
+        #ed-rte { padding:16px; }
+
+        /* Sidebar editor modal */
+        #ed-sb-box { max-height:95vh;width:98vw; }
+        #ed-sb-box > div:nth-child(2) { flex-direction:column; }
+        #ed-sb-box > div:nth-child(2) > div { width:100%;border-right:none;border-bottom:1px solid rgba(255,255,255,0.07); }
+      }
     `;
     document.head.appendChild(s);
   }
@@ -384,11 +412,13 @@
             <label>Filename</label>
             <input class="ed-inp" id="ed-file-inp" type="text" placeholder="my-post.html" />
           </div>
-          <button class="ed-tb ed-cancel" onclick="ED.close()">Cancel</button>
-          <button class="ed-tb ed-pubBtn" onclick="ED.publishPost()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg>
-            Publish
-          </button>
+          <div class="ed-topbar-actions">
+            <button class="ed-tb ed-cancel" onclick="ED.close()">Cancel</button>
+            <button class="ed-tb ed-pubBtn" onclick="ED.publishPost()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg>
+              Publish
+            </button>
+          </div>
         </div>
         <div id="ed-body">
           <!-- Rich text editor pane -->
