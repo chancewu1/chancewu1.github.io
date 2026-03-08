@@ -981,6 +981,8 @@
             'style="background:rgba(255,255,255,0.07);border:none;color:#8e8e93;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">↑</button>' +
           '<button onclick="ED._movePost(this,1)" data-file="' + file + '" title="Move down" ' +
             'style="background:rgba(255,255,255,0.07);border:none;color:#8e8e93;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">↓</button>' +
+          '<button onclick="ED._deletePost(this)" data-file="' + file + '" data-title="' + title.replace(/"/g,'&quot;') + '" title="Delete post" ' +
+            'style="background:rgba(255,59,48,0.12);border:none;color:#ff453a;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">✕</button>' +
         '</div>';
       });
       document.getElementById('ed-posts-list').innerHTML = html || '<p style="color:#636366;font-size:13px;padding:12px 6px;">No posts yet.</p>';
@@ -1041,6 +1043,54 @@
       if (dir === -1 && li.previousElementSibling) ul.insertBefore(li, li.previousElementSibling);
       if (dir ===  1 && li.nextElementSibling)     ul.insertBefore(li.nextElementSibling, li);
       this._renderPosts();
+    },
+
+    _deletePost: async function (btn) {
+      var file  = btn.dataset.file;
+      var title = btn.dataset.title || file;
+      if (!confirm('Delete "' + title + '"?\n\nThis will permanently delete the post file and remove it from the sidebar.')) return;
+      if (!ghToken) { this.openToken(); return; }
+
+      // Remove from sidebar DOM first
+      var ul = document.getElementById('post-toc-ul');
+      var li = Array.from(ul.children).find(function(l){ return l.querySelector('a[href*="'+file+'"]'); });
+      if (li) li.remove();
+      this._renderPosts();
+
+      // Delete file from GitHub and save updated sidebar in one go
+      showPub(['Deleting post file', 'Updating sidebar', 'Publishing']);
+      try {
+        step(0,'active');
+        // Get file SHA for deletion
+        var fileRes = await ghGet('/repos/'+REPO+'/contents/posts/'+file);
+        await ghDelete('/repos/'+REPO+'/contents/posts/'+file, {
+          message: 'Delete post: ' + file,
+          sha: fileRes.sha,
+          branch: BRANCH
+        });
+        step(0,'done');
+
+        // Update index.html on GitHub to remove entry
+        step(1,'active');
+        var idxRes  = await ghGet('/repos/'+REPO+'/contents/index.html');
+        var idxHtml = b64decode(idxRes.content);
+        // Remove the li entry
+        idxHtml = idxHtml.replace(
+          new RegExp('\\s*<li><a[^>]+href="posts/'+file+'"[^>]*>[^<]*<\\/a><\\/li>', 'g'), ''
+        );
+        var idxFile = await ghGet('/repos/'+REPO+'/contents/index.html');
+        await ghPut('/repos/'+REPO+'/contents/index.html', {
+          message: 'Remove post from sidebar: ' + file,
+          content: b64encode(idxHtml),
+          sha: idxFile.sha,
+          branch: BRANCH
+        });
+        step(1,'done');
+        step(2,'done');
+        pubDone('✓ Post deleted!', '"' + title + '" removed from site.');
+      } catch(e) {
+        pubFail(e.message);
+      }
     },
 
     // Save sidebar changes and publish index.html
