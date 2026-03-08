@@ -321,6 +321,36 @@
       .pub-step.active{color:#fff;} .pub-step.done{color:#34c759;} .pub-step.fail{color:#ff453a;}
       .pub-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
 
+      /* Flowchart modal */
+      #ed-flow-modal {
+        display:none;position:fixed;inset:0;z-index:9300;
+        background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);
+        align-items:center;justify-content:center;
+        font-family:-apple-system,sans-serif;
+      }
+      #ed-flow-modal.open{display:flex;}
+      #ed-flow-box {
+        background:#1c1c1e;border:1px solid rgba(255,255,255,0.12);
+        border-radius:18px;padding:28px;width:min(560px,95vw);
+        box-shadow:0 24px 60px rgba(0,0,0,.5);
+      }
+      #ed-flow-box h3{color:#fff;font-size:16px;font-weight:700;margin-bottom:10px;}
+      #ed-flow-box p{color:#8e8e93;font-size:13px;margin-bottom:14px;line-height:1.6;}
+      #ed-flow-textarea{
+        width:100%;height:160px;padding:12px;
+        background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);
+        border-radius:10px;color:#ebebf5;font-family:"SF Mono",monospace;font-size:12.5px;
+        resize:vertical;outline:none;line-height:1.6;
+      }
+      #ed-flow-textarea:focus{border-color:#0071e3;}
+      .ed-flow-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;}
+
+      /* Table styles in editor */
+      #ed-rte table{width:100%;border-collapse:collapse;margin:16px 0;}
+      #ed-rte th,#ed-rte td{border:1px solid #ddd;padding:8px 12px;text-align:left;min-width:80px;}
+      #ed-rte th{background:#f2f2f7;font-weight:700;font-size:12px;text-transform:uppercase;color:#555;}
+      #ed-rte td:focus{outline:2px solid #0071e3;outline-offset:-2px;}
+
       /* ── Mobile editor layout ── */
       @media (max-width:699px) {
         /* Topbar: stack fields vertically */
@@ -488,6 +518,34 @@
               <button class="rte-btn" onclick="ED.embedVideoUrl()" title="Embed video from URL (YouTube, Vimeo, etc.)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/><line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="4" y2="18"/></svg>
               </button>
+              <div class="rte-sep"></div>
+              <!-- Text color picker -->
+              <div class="rte-color-wrap" title="Text color" style="position:relative;display:flex;align-items:center;">
+                <button class="rte-btn" onclick="document.getElementById('ed-text-color').click()" title="Text color" style="position:relative;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M9 3L5 21"/><path d="M15 3l4 18"/><path d="M4 10h16"/><path d="M3 17h4"/><path d="M17 17h4"/></svg>
+                  <span id="ed-text-color-bar" style="position:absolute;bottom:2px;left:4px;right:4px;height:3px;background:#000;border-radius:2px;"></span>
+                </button>
+                <input type="color" id="ed-text-color" value="#000000" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none;"
+                  oninput="ED.rteTextColor(this.value)" onchange="ED.rteTextColor(this.value)" />
+              </div>
+              <!-- Highlight color picker -->
+              <div class="rte-color-wrap" title="Highlight" style="position:relative;display:flex;align-items:center;">
+                <button class="rte-btn" onclick="document.getElementById('ed-highlight-color').click()" title="Highlight text">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+                  <span id="ed-highlight-bar" style="position:absolute;bottom:2px;left:4px;right:4px;height:3px;background:#ffff00;border-radius:2px;"></span>
+                </button>
+                <input type="color" id="ed-highlight-color" value="#ffff00" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none;"
+                  oninput="ED.rteHighlight(this.value)" onchange="ED.rteHighlight(this.value)" />
+              </div>
+              <div class="rte-sep"></div>
+              <!-- Insert table -->
+              <button class="rte-btn" onclick="ED.insertTable()" title="Insert table">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+              </button>
+              <!-- Insert flowchart -->
+              <button class="rte-btn" onclick="ED.insertFlowchart()" title="Insert flowchart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="2" width="8" height="5" rx="1"/><rect x="13" y="9" width="8" height="5" rx="1"/><rect x="3" y="17" width="8" height="5" rx="1"/><path d="M7 7v2.5M7 9.5H17M17 9.5V14M7 14.5V17"/></svg>
+              </button>
             </div>
             <input type="file" id="ed-img-input" accept="image/*" style="display:none" />
             <input type="file" id="ed-vid-input" accept="video/*" style="display:none" />
@@ -538,6 +596,20 @@
             style="display:none;color:#0071e3;font-size:13px;margin-top:12px;">View live site →</a>
           <div id="ed-pub-done" style="display:none;margin-top:18px;">
             <button class="ed-tb ed-cancel" onclick="document.getElementById('ed-pub-modal').classList.remove('open')">Done</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flowchart modal -->
+      <div id="ed-flow-modal">
+        <div id="ed-flow-box">
+          <h3>Insert Flowchart</h3>
+          <p>Describe your flow — one step per line. Use <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">→</code> to connect steps.<br>
+          Example:<br><code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;font-size:12px;">Start → Collect Data → Clean Data → Train Model → Deploy → End</code></p>
+          <textarea id="ed-flow-textarea" placeholder="Start → Step 1 → Step 2 → End"></textarea>
+          <div class="ed-flow-actions">
+            <button class="ed-tb ed-cancel" onclick="document.getElementById('ed-flow-modal').classList.remove('open')">Cancel</button>
+            <button class="ed-tb ed-pubBtn" onclick="ED.buildFlowchart()">Insert</button>
           </div>
         </div>
       </div>
@@ -734,6 +806,68 @@
     rteLink: function () {
       var url = prompt('Link URL:');
       if (url) { document.execCommand('createLink', false, url); syncPreview(); }
+    },
+
+    rteTextColor: function (color) {
+      document.getElementById('ed-text-color-bar').style.background = color;
+      document.getElementById('ed-rte').focus();
+      document.execCommand('foreColor', false, color);
+      syncPreview();
+    },
+
+    rteHighlight: function (color) {
+      document.getElementById('ed-highlight-bar').style.background = color;
+      document.getElementById('ed-rte').focus();
+      document.execCommand('hiliteColor', false, color);
+      syncPreview();
+    },
+
+    insertTable: function () {
+      var rows = parseInt(prompt('Number of rows:', '3')) || 3;
+      var cols = parseInt(prompt('Number of columns:', '3')) || 3;
+      var html = '<table><thead><tr>';
+      for (var c = 0; c < cols; c++) html += '<th contenteditable="true">Header ' + (c+1) + '</th>';
+      html += '</tr></thead><tbody>';
+      for (var r = 0; r < rows; r++) {
+        html += '<tr>';
+        for (var cc = 0; cc < cols; cc++) html += '<td contenteditable="true"></td>';
+        html += '</tr>';
+      }
+      html += '</tbody></table><p><br></p>';
+      document.getElementById('ed-rte').focus();
+      document.execCommand('insertHTML', false, html);
+      syncPreview();
+    },
+
+    insertFlowchart: function () {
+      document.getElementById('ed-flow-textarea').value = '';
+      document.getElementById('ed-flow-modal').classList.add('open');
+    },
+
+    buildFlowchart: function () {
+      var text = document.getElementById('ed-flow-textarea').value.trim();
+      if (!text) return;
+      document.getElementById('ed-flow-modal').classList.remove('open');
+
+      var steps = text.split('→').map(function(s){ return s.trim(); }).filter(Boolean);
+      if (steps.length === 0) return;
+
+      var colors = ['#0071e3','#34c759','#ff9f0a','#ff453a','#bf5af2','#32ade6'];
+      var html = '<div class="flow-chart" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:24px 0;padding:20px;background:#f9f9fb;border-radius:12px;border:1px solid #efefef;">';
+      steps.forEach(function(step, i) {
+        var color = colors[i % colors.length];
+        html += '<div style="display:flex;align-items:center;gap:8px;">';
+        html += '<div style="background:' + color + ';color:#fff;padding:10px 18px;border-radius:8px;font-family:-apple-system,sans-serif;font-size:13px;font-weight:600;white-space:nowrap;">' + step + '</div>';
+        if (i < steps.length - 1) {
+          html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+        }
+        html += '</div>';
+      });
+      html += '</div><p><br></p>';
+
+      document.getElementById('ed-rte').focus();
+      document.execCommand('insertHTML', false, html);
+      syncPreview();
     },
 
     embedVideoUrl: function () {

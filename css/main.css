@@ -670,3 +670,20 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
+
+/* ===== Flowchart ===== */
+.flow-chart {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0;
+  padding: 20px;
+  background: #f9f9fb;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+/* ===== Text color & highlight ===== */
+.post-content font { /* browser inserts <font> tag for foreColor */ }
