@@ -8,13 +8,19 @@
 
   var REPO      = 'chancewu1/chancewu1.github.io';
   var BRANCH    = 'main';
-  var CATEGORIES = {
-    'machine-learning': '机器学习',  'deep-learning': '深度学习',
-    'life': '生活',                  'leetcode': 'Leetcode',
-    'language': '语言学习',          'interview': '面试记录',
-    'resources': 'Resources',        'business': '商业分析',
-    'statistics': '数理统计',        'notes': '转码笔记'
-  };
+
+  // CATEGORIES is always built dynamically from the live DOM sidebar-tags
+  // so it always reflects exactly what is on the website — no hardcoded list.
+  function getCategories() {
+    var cats = {};
+    document.querySelectorAll('#sidebar-tags .sidebar-tag').forEach(function (el) {
+      var key = el.dataset.filter;
+      if (key && key !== 'recent') cats[key] = el.textContent.trim();
+    });
+    return cats;
+  }
+  // Keep a live reference — always call getCategories() where needed
+  var CATEGORIES = {};
 
   var ghToken     = localStorage.getItem('gh_token') || '';
   var adminUnlocked = !!sessionStorage.getItem('admin_unlocked');
@@ -48,6 +54,8 @@
     var path2 = window.location.href;
     isPost = path2.includes('/posts/') || path2.includes('\\posts\\') || path2.includes('%2Fposts%2F');
     currentFile = isPost ? decodeURIComponent(path2).split(/[\/\\]/).pop().split('?')[0] : null;
+    // Always rebuild CATEGORIES from live DOM — this is the single source of truth
+    CATEGORIES = getCategories();
     // Enable/disable buttons based on current page
     setTimeout(function() {
       var eb = document.getElementById('ed-edit-btn');
@@ -513,10 +521,12 @@
   window.ED = {
 
     openNew: function () {
+      CATEGORIES = getCategories();
+      this._refreshCatDropdown();
       editing = { isNew: true, filename: null };
       document.getElementById('ed-topbar-title').textContent = 'New Post';
       document.getElementById('ed-title-inp').value = '';
-      document.getElementById('ed-cat-inp').value   = 'machine-learning';
+      document.getElementById('ed-cat-inp').value   = Object.keys(CATEGORIES)[0] || 'machine-learning';
       document.getElementById('ed-date-inp').value  = today();
       document.getElementById('ed-file-inp').value  = '';
       document.getElementById('ed-rte').innerHTML   = '';
@@ -526,6 +536,8 @@
     },
 
     openEdit: function () {
+      CATEGORIES = getCategories();
+      this._refreshCatDropdown();
       if (!currentFile) return;
       editing = { isNew: false, filename: currentFile };
       document.getElementById('ed-topbar-title').textContent = 'Edit Post';
@@ -895,8 +907,20 @@
       location.reload();
     },
 
+    // Rebuild category dropdown from live CATEGORIES (DOM-sourced)
+    _refreshCatDropdown: function () {
+      var sel = document.getElementById('ed-cat-inp');
+      if (!sel) return;
+      var cur = sel.value;
+      sel.innerHTML = Object.entries(CATEGORIES).map(function(e) {
+        return '<option value="' + e[0] + '">' + e[1] + '</option>';
+      }).join('');
+      if (cur && CATEGORIES[cur]) sel.value = cur;
+    },
+
     // ── Sidebar editor ─────────────────────────────────────────
     openSidebar: function () {
+      CATEGORIES = getCategories();
       var modal = document.getElementById('ed-sb-modal');
       var catsList = document.getElementById('ed-cats-list');
       var postsList = document.getElementById('ed-posts-list');
