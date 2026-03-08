@@ -1389,7 +1389,7 @@
         return '        <li><a class="toc-link" href="' + href + '" data-tags="' + (a.dataset.tags||'') + '">' + a.textContent.trim() + '</a></li>';
       }).join('\n');
 
-      showPub(['Fetching index.html','Updating sidebar','Pushing to GitHub']);
+      showPub(['Fetching index.html','Updating sidebar','Syncing all posts','Pushing to GitHub']);
       try {
         step(0,'active');
         var idxRes  = await ghGet('/repos/'+REPO+'/contents/index.html');
@@ -1397,11 +1397,9 @@
         step(0,'done');
 
         step(1,'active');
-        // Replace sidebar-tags block — match opening tag through its own closing </div>
-        // Use a split approach to reliably replace the entire block
+        // Replace sidebar-tags block
         var sbStart = idxHtml.indexOf('<div id="sidebar-tags">');
         var fsStart = idxHtml.indexOf('<div class="fs-control">', sbStart);
-        // Find the </div> that closes sidebar-tags (last </div> before fs-control)
         var sbEnd = idxHtml.lastIndexOf('</div>', fsStart) + '</div>'.length;
         if (sbStart !== -1 && sbEnd > sbStart) {
           idxHtml = idxHtml.slice(0, sbStart) +
@@ -1415,22 +1413,46 @@
         );
         step(1,'done');
 
+        // Sync updated sidebar-tags to all post files
         step(2,'active');
-        var ref      = await ghGet('/repos/'+REPO+'/git/ref/heads/'+BRANCH);
-        var commit   = await ghGet('/repos/'+REPO+'/git/commits/'+ref.object.sha);
-        var tree     = await ghPost('/repos/'+REPO+'/git/trees',{
-          base_tree: commit.tree.sha,
-          tree:[{path:'index.html', mode:'100644', type:'blob', content:idxHtml}]
+        var newTagsBlock = idxHtml.slice(
+          idxHtml.indexOf('<div id="sidebar-tags">'),
+          idxHtml.lastIndexOf('</div>', idxHtml.indexOf('<div class="fs-control">')) + '</div>'.length
+        );
+
+        // Fetch all post files from GitHub and update their sidebar-tags
+        var treeItems = [{path:'index.html', mode:'100644', type:'blob', content:idxHtml}];
+        var postsTree = await ghGet('/repos/'+REPO+'/contents/posts');
+        for (var pi = 0; pi < postsTree.length; pi++) {
+          var pf = postsTree[pi];
+          if (!pf.name.endsWith('.html')) continue;
+          var pRes = await ghGet('/repos/'+REPO+'/contents/posts/'+pf.name);
+          var pHtml = b64decode(pRes.content);
+          // Replace sidebar-tags in this post file
+          var pSbStart = pHtml.indexOf('<div id="sidebar-tags">');
+          var pFsStart = pHtml.indexOf('<div class="fs-control">', pSbStart);
+          var pSbEnd = pHtml.lastIndexOf('</div>', pFsStart) + '</div>'.length;
+          if (pSbStart !== -1 && pSbEnd > pSbStart) {
+            pHtml = pHtml.slice(0, pSbStart) + newTagsBlock + pHtml.slice(pSbEnd);
+            treeItems.push({path:'posts/'+pf.name, mode:'100644', type:'blob', content:pHtml});
+          }
+        }
+        step(2,'done');
+
+        step(3,'active');
+        var ref    = await ghGet('/repos/'+REPO+'/git/ref/heads/'+BRANCH);
+        var commit = await ghGet('/repos/'+REPO+'/git/commits/'+ref.object.sha);
+        var tree   = await ghPost('/repos/'+REPO+'/git/trees',{
+          base_tree: commit.tree.sha, tree: treeItems
         });
         var nc = await ghPost('/repos/'+REPO+'/git/commits',{
-          message:'Update sidebar',
+          message:'Update sidebar categories across all files',
           tree:tree.sha, parents:[ref.object.sha]
         });
         await ghPatch('/repos/'+REPO+'/git/refs/heads/'+BRANCH,{sha:nc.sha});
-        step(2,'done');
-        // Write updated index.html back to local file to keep in sync
+        step(3,'done');
         await writeLocalIndex(idxHtml);
-        pubDone('✓ Sidebar updated!','Changes live at chancewu1.github.io');
+        pubDone('✓ Sidebar updated!','All files synced at chancewu1.github.io');
       } catch(e) { pubFail(e.message); }
     }
   };
