@@ -50,19 +50,22 @@
   injectStyles();
   function initAdmin() {
     injectHTML();
-    // Re-evaluate isPost now that DOM is ready (handles file:// paths)
     var path2 = window.location.href;
     isPost = path2.includes('/posts/') || path2.includes('\\posts\\') || path2.includes('%2Fposts%2F');
     currentFile = isPost ? decodeURIComponent(path2).split(/[\/\\]/).pop().split('?')[0] : null;
-    // Always rebuild CATEGORIES from live DOM — this is the single source of truth
     CATEGORIES = getCategories();
-    // Enable/disable buttons based on current page
     setTimeout(function() {
       var eb = document.getElementById('ed-edit-btn');
       var db = document.getElementById('ed-del-btn');
       if (eb) eb.disabled = !isPost;
       if (db) db.disabled = !isPost;
     }, 50);
+    // Auto-open blog folder for local file sync (best-effort, silently ignored if declined)
+    if ('showDirectoryPicker' in window && !window._blogRootDir) {
+      window.showDirectoryPicker({ mode: 'readwrite' })
+        .then(function(root) { window._blogRootDir = root; })
+        .catch(function() {}); // user declined — that's fine
+    }
   }
   window.addEventListener('DOMContentLoaded', initAdmin);
   if (document.readyState !== 'loading') initAdmin();
@@ -866,7 +869,8 @@
       showPub(['Select blog folder','Read all files','Push to GitHub','Done']);
       try {
         step(0,'active');
-        var root = await window.showDirectoryPicker({ mode:'read' });
+        var root = await window.showDirectoryPicker({ mode:'readwrite' });
+        window._blogRootDir = root; // cache for writeLocalIndex
         step(0,'done');
 
         step(1,'active');
@@ -1078,16 +1082,20 @@
         idxHtml = idxHtml.replace(
           new RegExp('\\s*<li><a[^>]+href="posts/'+file+'"[^>]*>[^<]*<\\/a><\\/li>', 'g'), ''
         );
-        var idxFile = await ghGet('/repos/'+REPO+'/contents/index.html');
         await ghPut('/repos/'+REPO+'/contents/index.html', {
           message: 'Remove post from sidebar: ' + file,
           content: b64encode(idxHtml),
-          sha: idxFile.sha,
+          sha: idxRes.sha,
           branch: BRANCH
         });
         step(1,'done');
         step(2,'done');
-        pubDone('✓ Post deleted!', '"' + title + '" removed from site.');
+        // Remove from live DOM
+        var liveLi = document.querySelector('#post-toc-ul a[href="posts/'+file+'"], #post-toc-ul a[href="'+file+'"]');
+        if (liveLi) liveLi.closest('li').remove();
+        // Write updated index.html back to local file
+        await writeLocalIndex(idxHtml);
+        pubDone('✓ Post deleted!', '"' + title + '" permanently removed from site and admin.');
       } catch(e) {
         pubFail(e.message);
       }
@@ -1154,6 +1162,8 @@
         });
         await ghPatch('/repos/'+REPO+'/git/refs/heads/'+BRANCH,{sha:nc.sha});
         step(2,'done');
+        // Write updated index.html back to local file to keep in sync
+        await writeLocalIndex(idxHtml);
         pubDone('✓ Sidebar updated!','Changes live at chancewu1.github.io');
       } catch(e) { pubFail(e.message); }
     }
@@ -1302,6 +1312,20 @@
   }
 
   // ── Utilities ────────────────────────────────────────────────
+  // Write updated index.html to local file so admin stays in sync after reload
+  async function writeLocalIndex(html) {
+    try {
+      if (!('showDirectoryPicker' in window)) return;
+      // Try to get root dir handle — reuse if already open, otherwise skip silently
+      var root = window._blogRootDir;
+      if (!root) return;
+      var h = await root.getFileHandle('index.html');
+      var w = await h.createWritable();
+      await w.write(html);
+      await w.close();
+    } catch(e) { /* non-fatal — local write is best-effort */ }
+  }
+
   function b64decode(str){ return decodeURIComponent(escape(atob(str.replace(/\n/g,'')))); }
   function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
 
