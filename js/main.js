@@ -144,15 +144,20 @@ $(function () {
   // ===== SPA navigation =====
   // Resolve href always relative to the site root, not the current URL
   function resolveHref(href) {
-    // Get the root base (everything up to and including the repo name on GH Pages, or just origin)
-    var base = window.location.origin;
-    // If hosted in a subdirectory (e.g. /blog/), include it
-    var path = window.location.pathname;
-    // Find the root index.html directory
-    var rootDir = path.replace(/\/(posts\/)?[^/]*$/, '');
-    if (!rootDir.endsWith('/')) rootDir += '/';
-    // Absolute URL: combine base + rootDir + href
-    return base + rootDir + href;
+    // Use the browser's built-in URL resolution based on a known root anchor
+    // Find the root by going up from current path to remove /posts/filename
+    var currentHref = window.location.href;
+    // Strip everything after the last / to get directory
+    var dir = currentHref.substring(0, currentHref.lastIndexOf('/') + 1);
+    // If we're in /posts/, go up one level to root
+    if (dir.indexOf('/posts/') !== -1) {
+      dir = dir.substring(0, dir.lastIndexOf('/posts/') + 1);
+    }
+    // Now resolve href relative to root dir
+    if (href.startsWith('posts/')) {
+      return dir + href;
+    }
+    return dir + href;
   }
 
   $(document).on('click', '.toc-link, #sidebar-avatar', function (e) {
@@ -166,7 +171,10 @@ $(function () {
     main.removeClass('fadeIn');
 
     fetch(absoluteUrl)
-      .then(function (res) { return res.text(); })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
       .then(function (html) {
         var parser = new DOMParser();
         var doc = parser.parseFromString(html, 'text/html');
@@ -181,10 +189,13 @@ $(function () {
           $('.toc-link').removeClass('active').filter('[href="' + href + '"]').addClass('active');
           applyFilter(sessionStorage.getItem('sidebar_filter') || 'recent');
           if ($(window).width() <= 1024) sidebar.removeClass('open');
+        } else {
+          // #main not found — fall back to hard navigation
+          window.location.href = absoluteUrl;
         }
         NProgress.done();
       })
-      .catch(function () { NProgress.done(); window.location = absoluteUrl; });
+      .catch(function () { NProgress.done(); window.location.href = absoluteUrl; });
   });
 
   window.addEventListener('popstate', function () {
