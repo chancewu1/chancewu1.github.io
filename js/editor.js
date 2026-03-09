@@ -691,9 +691,12 @@
     rte.addEventListener('input', syncPreview);
     document.getElementById('ed-title-inp').addEventListener('input', function () {
       syncPreview();
-      if (editing && editing.isNew)
-        document.getElementById('ed-file-inp').value =
-          this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '.html';
+      if (editing && editing.isNew) {
+        var slug = this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+        // If title is non-ASCII (e.g. Chinese), slug will be empty — use timestamp instead
+        if (!slug) slug = 'post-' + Date.now();
+        document.getElementById('ed-file-inp').value = slug + '.html';
+      }
     });
     document.getElementById('ed-cat-inp').addEventListener('change', syncPreview);
     document.getElementById('ed-date-inp').addEventListener('change', syncPreview);
@@ -1034,7 +1037,13 @@
       var title    = document.getElementById('ed-title-inp').value.trim();
       var cat      = document.getElementById('ed-cat-inp').value;
       var dateVal  = document.getElementById('ed-date-inp').value;
-      var filename = document.getElementById('ed-file-inp').value.trim() || slugify(title)+'.html';
+      var filename = document.getElementById('ed-file-inp').value.trim();
+      // Ensure filename is valid — never allow just ".html"
+      if (!filename || filename === '.html' || !filename.match(/^[a-z0-9][a-z0-9\-_]*\.html$/)) {
+        filename = slugify(title) + '.html';
+        if (filename === '.html' || filename === 'post.html') filename = 'post-' + Date.now() + '.html';
+        document.getElementById('ed-file-inp').value = filename;
+      }
       var bodyHtml = document.getElementById('ed-rte').innerHTML;
 
       if (!title) { alert('Please enter a title.'); return; }
