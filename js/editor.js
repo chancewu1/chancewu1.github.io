@@ -91,17 +91,20 @@
     // Build CATEGORIES from live DOM (after injectHTML added the sidebar)
     CATEGORIES = getCategories();
 
-    // Enable/disable Edit+Delete based on whether we're on a post page
+    // Enable/disable Edit+Delete — defer until ED object is ready
     function refreshButtons() {
-      var eb = document.getElementById('ed-edit-btn');
-      var db = document.getElementById('ed-del-btn');
-      if (eb) { eb.disabled = !isPost; eb.style.opacity = isPost ? '1' : '0.3'; }
-      if (db) { db.disabled = !isPost; db.style.opacity = isPost ? '1' : '0.3'; }
+      if (window.ED && window.ED._refreshEditButtons) {
+        window.ED._refreshEditButtons();
+      } else {
+        var eb = document.getElementById('ed-edit-btn');
+        var db = document.getElementById('ed-del-btn');
+        if (eb) { eb.disabled = !isPost; eb.style.opacity = isPost ? '1' : ''; }
+        if (db) { db.disabled = !isPost; db.style.opacity = isPost ? '1' : ''; }
+      }
     }
-    // Run immediately, at 100ms, and at 500ms to handle async DOM settling
     refreshButtons();
-    setTimeout(refreshButtons, 100);
-    setTimeout(refreshButtons, 500);
+    setTimeout(refreshButtons, 150);
+    setTimeout(refreshButtons, 600);
   }
 
   // Run once when DOM is ready — avoid double-run
@@ -1181,10 +1184,14 @@
       currentFile = isPost
         ? decodeURIComponent(url).split(/[\/\\?#]/).filter(function(s){ return s.endsWith('.html'); }).pop() || null
         : null;
+      this._refreshEditButtons();
+    },
+
+    _refreshEditButtons: function () {
       var eb = document.getElementById('ed-edit-btn');
       var db = document.getElementById('ed-del-btn');
-      if (eb) { eb.disabled = !isPost; eb.style.opacity = isPost ? '1' : '0.3'; }
-      if (db) { db.disabled = !isPost; db.style.opacity = isPost ? '1' : '0.3'; }
+      if (eb) { eb.disabled = !isPost; eb.style.opacity = isPost ? '1' : ''; }
+      if (db) { db.disabled = !isPost; db.style.opacity = isPost ? '1' : ''; }
     },
 
     toggleMobilePreview: function () {
@@ -1400,6 +1407,13 @@
         if (liveLi) liveLi.closest('li').remove();
         // Write updated index.html back to local file
         await writeLocalIndex(idxHtml);
+        // Also delete local file if File System API available
+        try {
+          if (window._blogRootDir) {
+            var postsDir = await window._blogRootDir.getDirectoryHandle('posts');
+            await postsDir.removeEntry(file);
+          }
+        } catch(e2) { /* local delete best-effort */ }
         pubDone('✓ Post deleted!', '"' + title + '" permanently removed from site and admin.');
       } catch(e) {
         pubFail(e.message);

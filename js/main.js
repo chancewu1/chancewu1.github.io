@@ -33,6 +33,9 @@ $(function () {
     // Re-apply sidebar filter after every page load
     applyFilter(sessionStorage.getItem('sidebar_filter') || 'recent');
 
+    // Refresh admin edit/delete button state
+    if (window.ED && window.ED._refreshEditButtons) window.ED._refreshEditButtons();
+
     var tocInner = $('#post-toc-inner');
     if (tocInner.length) {
       tocInner.empty();
